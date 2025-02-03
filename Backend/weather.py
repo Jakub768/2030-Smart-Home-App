@@ -13,6 +13,20 @@ def getTemperature(weatherData):
 
     return temperature - KELVIN_CONSTANT
 
+def getDescription(weatherData):
+    return weatherData['weather']['description']
+
+def getHumidity(weatherData):
+    return f"{weatherData['main']['humidity']}%"
+
+def getWind(weatherData):
+    #note: wind returns meters per second so convert to miles per hour
+    METERS_PER_SECOND_CONSTANT = 2.236936
+    calculateWind = round(weatherData['wind']['speed'] * METERS_PER_SECOND_CONSTANT)
+
+    return f"{calculateWind}mph" 
+
+
 curWeather = getWeatherData("Edinburgh", "05f9f314f71d9d69f947eeffac9a4a1d")
 
-print(getTemperature(curWeather))
+print(getWind(curWeather))
