@@ -1,32 +1,43 @@
-import React, { useState } from "react";
-
+import React from "react";
 import "./Navbar.css";
 import { Link, NavLink } from "react-router-dom";
 
 export const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
-    <nav>
-      <Link to="/" className="title">
-        Website
-      </Link>
-      <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>
-        <span></span>
-        <span></span>
-        <span></span>
+    <nav className="sidebar">
+
+      {/* Top Links */}
+      <div className="sidebar-top">
+        <ul className="sidebar-links">
+          <li>
+            <NavLink to="/">Home</NavLink>
+          </li>
+          <li>
+            <NavLink to="/rooms">Rooms</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard">Dashboard</NavLink>
+          </li>
+          <li>
+            <NavLink to="/devices">Devices</NavLink>
+          </li>
+          <li>
+            <NavLink to="/stats">Stats</NavLink>
+          </li>
+        </ul>
       </div>
-      <ul className={menuOpen ? "open" : ""}>
-        <li>
-          <NavLink to="/about">About</NavLink>
-        </li>
-        <li>
-          <NavLink to="/services">Services</NavLink>
-        </li>
-        <li>
-          <NavLink to="/signin">Signin</NavLink>
-        </li>
-      </ul>
+
+      {/* Bottom Links */}
+      <div className="sidebar-bottom">
+        <ul className="sidebar-links">
+          <li>
+            <NavLink to="/users">Users</NavLink>
+          </li>
+          <li>
+            <NavLink to="/settings">Settings</NavLink>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 };
