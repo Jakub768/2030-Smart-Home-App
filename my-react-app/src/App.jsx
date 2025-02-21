@@ -1,8 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Navbar } from "./components/Navbar";
-import { About, Signin, Home, Services, Settings} from "./components/pages"; // Import Settings
-
+import { About, Signin, Home, Services, Settings/*, MyProfile*/ } from "./components/pages"; // Import Settings
 
 function App() {
   return (

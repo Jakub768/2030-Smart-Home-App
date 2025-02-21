@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    height: 100vh;  /* Use 100vh to occupy the full screen height */
+    width: 100vw;   /* Use 100vw to occupy the full screen width */
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.profile-main {
+    position: fixed;
+    background-color: rgba(105, 105, 105, 0.5);
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
+    padding: 40px;
+    top: 3vw;
+    right: 3vw;
+    left: 26vw;
+    color: rgb(255, 255, 255);
+    border-top: 2px solid rgba(240, 240, 240, 0.5);
+    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+    border-right: 2px solid rgba(240, 240, 240, 0.5);
+    width: 71vw;
+    height: 85vh;
+}

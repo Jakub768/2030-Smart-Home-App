@@ -54,19 +54,26 @@ h2 {
 }
 
 button {
+    display: flex;
+    justify-content: space-between; /* Pushes the text to the left and the arrow to the right */
+    text-align: left;
     width: 100%;
     padding: 12px;
     font-size: 1rem;
     background-color: rgba(35, 35, 35, 0.5);
     color: white;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 10px;
     cursor: pointer;
     transition: background 0.3s;
 }
 
+button .arrow {
+    margin-left: 10px; /* Optional: Adds a little space between the text and the arrow */
+}
+
 button:hover {
-    background-color: rgba(55, 55, 55, 0.7);
+    background-color: black;
 }
 
 /* Remove gap and adjust border radius for joined buttons */
@@ -94,7 +101,108 @@ button:hover {
     margin-bottom: 0;
 }
 
-.individual-button{
-    margin-top: 24px;
+.individual-button {
     width: 100%;
 }
+
+.help-button button {
+    margin-top: 18px;
+}
+
+.sign-out-button button, 
+.change-user-button button{
+    display: block;
+    text-align: center;
+}
+
+.sign-out-button button{
+    margin-top: 10px;
+}
+
+.change-user-button button {
+    margin-top: 12.5px;
+}
+
+.toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .toggle-switch {
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 30px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .toggle-switch.on {
+    background-color: rgba(110,220,95,255); /* Green color for "on" state */
+  }
+  
+  .toggle-switch.off {
+    background-color: rgba(219,219,219,255); /* Red color for "off" state */
+  }
+  
+  .toggle-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    transition: transform 0.3s;
+  }
+  
+  .toggle-switch.on .toggle-thumb {
+    transform: translateX(20px); /* Moves the thumb to the right when on */
+  }
+  
+  .toggle-switch.off .toggle-thumb {
+    transform: translateX(0); /* Keeps the thumb to the left when off */
+  }
+
+  .top-left-button,
+  .top-right-button {
+    position: absolute;
+    top: 20px; /* Distance from the top */
+    padding: 10px;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .top-left-button {
+    position: absolute;
+    top: 20px; /* Distance from the top */
+    left: 20px; /* Distance from the left */
+    width: 40px; /* Set the width and height to make it square */
+    height: 40px; /* Same value as width */
+    display: flex; /* Enable flexbox */
+    justify-content: center; /* Centers text horizontally */
+    align-items: center; /* Centers text vertically */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    color: white; /* Text color */
+    border: none;
+    cursor: pointer;
+  }
+  
+  .top-right-button {
+    right: 20px; /* Distance from the right */
+    width: 40px; /* Set the width and height to make it square */
+    height: 40px; /* Same value as width */
+    border-radius: 50%; /* Makes the button round */
+  }
+  
+  .top-right-button img {
+    width: 100%; /* Ensures the image scales to fill the button */
+    height: 100%; /* Ensures the image scales to fill the button */
+    border-radius: 50%; /* Ensures the image inside the button has rounded corners */
+    object-fit: cover; /* Ensures the image covers the entire space without stretching */
+  }  
