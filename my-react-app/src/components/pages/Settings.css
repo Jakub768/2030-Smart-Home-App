@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    height: 0vh;
+    width: 0vw;
+    overflow: hidden;
+    position: fixed; /* Ensures it stays in place */
+    top: 0;
+    left: 0;
+}
+
+
+.settings-main {
+    position: fixed;
+    background-color: rgba(105, 105, 105, 0.5); /* Grey shade to match home page */
+    border-bottom-right-radius: 25px; /* Rounded corners bottom right */
+    border-top-right-radius: 25px; /* Rounded corners top right */
+    padding: 40px; /* Padding inside the main section */
+    top: 3vw; /* Corrected from margin-top */
+    right: 3vw; /* Ensure correct positioning */
+    left: 26vw; /* Align with sidebar */
+    color: rgb(255, 255, 255); /* Set text color to white */
+
+    border-top: 2px solid rgba(240, 240, 240, 0.5); /* Border on top */
+    border-bottom: 2px solid rgba(240, 240, 240, 0.5); /* Border on bottom */
+    border-right: 2px solid rgba(240, 240, 240, 0.5); /* Border on right */
+
+    width: 71vw; /* Width of the main section */
+    height: 85vh; /* Height of the main section */
+}
+
+html, body {
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
