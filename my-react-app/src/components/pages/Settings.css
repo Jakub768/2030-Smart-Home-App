@@ -1,208 +1,208 @@
+/* Main Container */
 .container {
-    display: flex;
-    height: 0vh;
-    width: 0vw;
-    overflow: hidden;
-    position: fixed;
-    top: 0;
-    left: 0;
+  display: flex;
+  height: 0vh;
+  width: 0vw;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
+/* Settings Main Section */
 .settings-main {
-    position: fixed;
-    background-color: rgba(105, 105, 105, 0.5);
-    border-bottom-right-radius: 25px;
-    border-top-right-radius: 25px;
-    padding: 40px;
-    top: 3vw;
-    right: 3vw;
-    left: 26vw;
-    color: rgb(255, 255, 255);
-    border-top: 2px solid rgba(240, 240, 240, 0.5);
-    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
-    border-right: 2px solid rgba(240, 240, 240, 0.5);
-    width: 71vw;
-    height: 85vh;
+  position: fixed;
+  background-color: rgba(105, 105, 105, 0.5);
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+  padding: 40px;
+  top: 3vw;
+  right: 3vw;
+  left: 26vw;
+  color: rgb(255, 255, 255);
+  border-top: 2px solid rgba(240, 240, 240, 0.5);
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw;
+  height: 85vh;
 }
 
+/* Settings Layout */
 .settings-columns {
-    display: flex;
-    justify-content: space-between;
-    height: 100%;
-    width: 100%;
-    gap: 50px;
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  gap: 50px;
 }
 
 .settings-left, .settings-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    width: 48%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 48%;
 }
 
+/* Titles */
 .settings-title {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
 h2 {
-    font-size: 1.5rem;
-    margin-top: 20px;
-    margin-bottom: 10px;
+  font-size: 1.5rem;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
+/* Buttons */
 button {
-    display: flex;
-    justify-content: space-between; /* Pushes the text to the left and the arrow to the right */
-    text-align: left;
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    background-color: rgba(35, 35, 35, 0.5);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s;
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  background-color: rgba(35, 35, 35, 0.5);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
 button .arrow {
-    margin-left: 10px; /* Optional: Adds a little space between the text and the arrow */
+  margin-left: 10px;
 }
 
 button:hover {
-    background-color: black;
+  background-color: black;
 }
 
-/* Remove gap and adjust border radius for joined buttons */
+/* Button Spacing and Styling */
 .no-gap {
-    margin-bottom: -10px; /* Removes spacing between these buttons */
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+  margin-bottom: -10px;
+  border-radius: 0;
 }
 
 .no-gap1 {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-bottom: -10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: -10px;
 }
 
 .no-gap2 {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    margin-bottom: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  margin-bottom: 0;
 }
 
 .individual-button {
-    width: 100%;
+  width: 100%;
 }
 
 .help-button button {
-    margin-top: 18px;
+  margin-top: 18px;
 }
 
-.sign-out-button button, 
-.change-user-button button{
-    display: block;
-    text-align: center;
-}
-
-.sign-out-button button{
-    margin-top: 10px;
+.sign-out-button button {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
 }
 
 .change-user-button button {
-    margin-top: 12.5px;
+  display: block;
+  text-align: center;
+  margin-top: 12.5px;
 }
 
+/* Toggle Switch */
 .toggle-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .toggle-switch {
-    width: 40px;
-    height: 20px;
-    background-color: #ccc;
-    border-radius: 30px;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .toggle-switch.on {
-    background-color: rgba(110,220,95,255); /* Green color for "on" state */
-  }
-  
-  .toggle-switch.off {
-    background-color: rgba(219,219,219,255); /* Red color for "off" state */
-  }
-  
-  .toggle-thumb {
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    transition: transform 0.3s;
-  }
-  
-  .toggle-switch.on .toggle-thumb {
-    transform: translateX(20px); /* Moves the thumb to the right when on */
-  }
-  
-  .toggle-switch.off .toggle-thumb {
-    transform: translateX(0); /* Keeps the thumb to the left when off */
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
 
-  .top-left-button,
-  .top-right-button {
-    position: absolute;
-    top: 20px; /* Distance from the top */
-    padding: 10px;
-    color: white;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .top-left-button {
-    position: absolute;
-    top: 20px; /* Distance from the top */
-    left: 20px; /* Distance from the left */
-    width: 40px; /* Set the width and height to make it square */
-    height: 40px; /* Same value as width */
-    display: flex; /* Enable flexbox */
-    justify-content: center; /* Centers text horizontally */
-    align-items: center; /* Centers text vertically */
-    font-size: 1.5rem; /* Adjust font size as needed */
-    color: white; /* Text color */
-    border: none;
-    cursor: pointer;
-  }
-  
-  .top-right-button {
-    right: 20px; /* Distance from the right */
-    width: 40px; /* Set the width and height to make it square */
-    height: 40px; /* Same value as width */
-    border-radius: 50%; /* Makes the button round */
-  }
-  
-  .top-right-button img {
-    width: 100%; /* Ensures the image scales to fill the button */
-    height: 100%; /* Ensures the image scales to fill the button */
-    border-radius: 50%; /* Ensures the image inside the button has rounded corners */
-    object-fit: cover; /* Ensures the image covers the entire space without stretching */
-  }  
+.toggle-switch {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-switch.on {
+  background-color: rgba(110,220,95,255);
+}
+
+.toggle-switch.off {
+  background-color: rgba(219,219,219,255);
+}
+
+.toggle-thumb {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transition: transform 0.3s;
+}
+
+.toggle-switch.on .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.toggle-switch.off .toggle-thumb {
+  transform: translateX(0);
+}
+
+/* Top Buttons */
+.previousPage,
+.profilePage {
+  position: absolute;
+  top: 20px;
+  padding: 10px;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.previousPage {
+  left: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.profilePage {
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.profilePage img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
