@@ -50,7 +50,9 @@
     cursor: pointer; /* change cursor to pointer when hovering over */
     width: 49%; /* width of buttons */
     height: 45px; /* height of buttons */
-    text-align: center; /* centre text in buttons */
+    display: flex; /* set up a flexible layout in the button */
+    justify-content: center; /* centre the content in the button */
+    align-items: center; 
   }
   
   .blockPro {
