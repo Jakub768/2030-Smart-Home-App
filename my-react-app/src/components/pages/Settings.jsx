@@ -22,7 +22,7 @@ export const Settings = () => {
   return (
     <div className="containerSettings">
       <main className="settings-mainSettings">
-        <button className="previousPage">&lt;</button>
+        <button className="previousPage" onClick={() => navigate(-1)}>&lt;</button>
         <button className="profilePage" onClick={() => navigate("/profile")}>
           <img src={userIcon} alt="User Icon" />
         </button>
