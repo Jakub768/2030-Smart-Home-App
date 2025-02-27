@@ -1,0 +1,67 @@
+.mainRooms {
+    position: fixed; /* keep the page content in place */
+    background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
+    border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
+    border-top-right-radius: 25px;
+    padding: 40px; /* padding inside the main element */
+    margin-top: 3vw; /* margin on the top and left of the main element */
+    margin-left: 26vw;
+    color: rgb(255, 255, 255); /* text colour */
+    border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
+    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+    border-right: 2px solid rgba(240, 240, 240, 0.5);
+    width: 71vw; /* width of the main element */
+    height: 85vh; /* height of the main element */
+  }
+
+  .roomsHeader {
+    display: flex; /* set up a flexible layout in the header */
+    justify-content: space-between; /* even spacing between elements */
+    margin-bottom: 10px; /* margin at the bottom of the header */
+  }
+  
+  .navButtonRooms {
+    background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
+    color: white; /* colour of the text in the button */
+    border: none; /* remove the border on the button */
+    border-radius: 10px; /* round the corners of the button */
+    cursor: pointer; /* change cursor when hovering */
+    width: 40px; /* width of button */
+    height: 40px; /* height of button */
+    display: flex; /* set up a flexible layout in the button */
+    align-items: center; /* centre the content in the button */
+    justify-content: center;
+  }
+
+  .contentRooms {
+    height: 100vh;
+    overflow-y: scroll;
+  }
+
+  .sectionRooms {
+    display: flex; /* set up a flexible layout in the section */
+    gap: 2px; /* gap between the blocks */
+    margin-top: 20px; /* margin at the top of the section */
+  }
+
+  .blockRooms {
+    background-color: rgba(35, 35, 35, 0.5); /* block colour */
+    width: 25%; /* width of each block */
+    height: 80px; /* height of each block */
+    display: grid; /* set up a grid layout inside the box */
+    place-items: center; /* put the content inside the block in the centre */
+  }
+
+  .firstBlockRooms {
+    border-top-left-radius: 10px; /* round the top and bottom left corners of the first block */
+    border-bottom-left-radius: 10px;
+  }
+
+  .lastBlockRooms {
+    border-top-right-radius: 10px; /* round the top and bottom right corners of the last block */
+    border-bottom-right-radius: 10px;
+  }
+
+  .headingsRooms {
+    margin-top: 20px; /* margin at the bottom of the headings */
+  }

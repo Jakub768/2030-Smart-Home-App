@@ -4,6 +4,11 @@ import { Navbar } from "./components/Navbar";
 import { About, Signin, Home, Services, Settings/*, MyProfile*/ } from "./components/pages"; // Import Settings
 import Dashboard from "./components/pages/Dashboard";
 import Profile from "./components/pages/Profile";
+import Rooms from "./components/pages/Rooms";
+import Stats from "./components/pages/Stats";
+import Devices from "./components/pages/Devices";
+
+
 
 function App() {
   return (
@@ -17,6 +22,9 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/rooms" element={<Rooms />} />
+        <Route path="/stats" element={<Stats />} />
+        <Route path="/devices" element={<Devices />} />
       </Routes>
     </div>
   );
