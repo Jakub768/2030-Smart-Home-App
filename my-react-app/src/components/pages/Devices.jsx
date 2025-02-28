@@ -26,6 +26,7 @@ const Devices = () => {
       <main className="mainDevices">
         <div className="DevicesHeader">
           <button className="navButtonDevices" onClick={() => navigate(-1)}>{"<"}</button>
+          <button className="addDevice">Add Device</button>
           <h1>Devices</h1>
           <button className="navButtonDevices" onClick={() => navigate("/profile")}>👤</button>
         </div>

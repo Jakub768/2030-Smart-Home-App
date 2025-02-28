@@ -147,3 +147,11 @@
   .toggle-switch.off .toggle-thumb {
     transform: translateX(0);
   }
+
+  .addDevice {
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    width: 115px;
+    text-align: center;
+  }
