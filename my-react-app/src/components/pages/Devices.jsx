@@ -25,8 +25,10 @@ const Devices = () => {
   return (
       <main className="mainDevices">
         <div className="DevicesHeader">
+          <div className="leftHeader">
           <button className="navButtonDevices" onClick={() => navigate(-1)}>{"<"}</button>
           <button className="addDevice">Add Device</button>
+          </div>
           <h1>Devices</h1>
           <button className="navButtonDevices" onClick={() => navigate("/profile")}>👤</button>
         </div>
