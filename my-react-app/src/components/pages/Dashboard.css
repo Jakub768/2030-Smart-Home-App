@@ -1,127 +1,150 @@
-  .mainDashboard {
-    position: fixed; /* Keeps the page fixed in place */
-    background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
-    border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
-    border-top-right-radius: 25px;
-    padding: 40px; /* padding inside the main element */
-    margin-top: 3vw; /* margin on the top and left of the main element */
-    margin-left: 26vw;
-    color: rgb(255, 255, 255); /* text colour */
-    border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
-    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
-    border-right: 2px solid rgba(240, 240, 240, 0.5);
-    width: 71vw; /* width of the main element */
-    height: 85vh; /* height of the main element */
-    display: flex; /* set up a flexible layout in the main element */
-    flex-direction: column; /* put content vertically */
-  }
-  
-  .headerDashboard {
-    display: flex; /* set up a flexible layout in the header */
-    justify-content: space-between; /* even spacing between elements */
-    margin-bottom: 10px; /* margin at the bottom of the header */
-  }
-    
-  .navButtonDashboard {
-    background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
-    color: white; /* colour of the text in the button */
-    border: none; /* remove the border on the button */
-    border-radius: 10px; /* round the corners of the button */
-    cursor: pointer; /* change cursor when hovering */
-    width: 40px; /* width of button */
-    height: 40px; /* height of button */
-    display: flex; /* set up a flexible layout in the button */
-    align-items: center; /* centre the content in the button */
-    justify-content: center;
-  }
-  
-  .contentRowDashboard {
-    display: flex; /* set up a flexible layout in the content row */
-    justify-content: space-between; /* even space between elements */
-    gap: 20px; /* between the columns in the upper half */
-  }
-  
-  .leftSectionDashboard {
-    display: flex; /* set up a flexible layout in the left column of the content row */
-    flex-direction: column; /*stack elements vertically */
-  }
-  
-  .rightSectionDashboard {
-    display: flex; /* set up a flexible layout in the right column of the content row */
-    flex-direction: column; /*stack elements vertically */
-  }
-  
-  .blockColumnDashboard {
-    display: grid; /* set up a grid layout in the block columns */
-    gap: 2px; /* gap between blocks vertically */
-  }
-  
-  .blockDashboard {
-    background-color: rgba(35, 35, 35, 0.5); /* block colour */
-    width: 450px; /* block width */
-    height: 50px; /* block height */
-    display: flex; /* set up a flexible layout in the block */
-    justify-content: center; /* centre the content within the block */
-    align-items: center;
-  }
-  
-  .topBlockDashboard {
-    border-top-left-radius: 10px; /* round the top corners of the top blocks */
-    border-top-right-radius: 10px;
-    display: flex; /* set up a flexible layout in the top block */
-    justify-content: center; /* centre the content within the block */
-    align-items: center;
-  }
-  
-  .bottomBlockDashboard {
-    border-bottom-left-radius: 10px; /* round the bottom corners of the bottom blocks */
-    border-bottom-right-radius: 10px;
-    display: flex; /* set up a flexible layout in the top block */
-    justify-content: center; /* centre the content within the block */
-    align-items: center;
-  }
-  
-  .barChartBlockDashboard {
-    background-color: rgba(35, 35, 35, 0.5); /* barchart background colour */
-    width: 400px; /* width of barchart section */
-    height: 250px; /* height of barchart section */
-    display: flex; /* set up a flexible layout in the barchart section */
-    justify-content: center; /* centre the content in the barchart section */
-    align-items: center;
-    border-radius: 10px; /* round the corners of the barchart section */
-  }
-  
-  .scrollBlockDashboard {
-    background-color: rgba(35, 35, 35, 0.5); /* colour of messages blocks */
-    width: 700px; /* width of messages blocks */
-    height: 50px; /* height of messages blocks */
-    display: flex; /* set up a flexible layout in the blocks */
-    justify-content: center; /* centre the content in the blocks */
-    align-items: center;
-  }
-  
-  .bottomSectionDashboard {
-    position: relative; /* fix position of pie chart */
-    display: flex; /* set up a flexible layout in the bottom section */
-  }
-  
-  .circularBlockWrapperDashboard {
-    position: absolute; /*  */
-    bottom: 0; /* put pie chart right at the bottom */
-    right: 0; /* put pie chart al the way to the right */
-  }
-  
-  .circularBlockDashboard {
-    background-color: rgba(35, 35, 35, 0.5); /* colour of pie chart backround */
-    width: 200px; /* width of pie chart */
-    height: 200px; /* height of piechart */
-    border-radius: 50%; /* make the block a circle */
-    display: flex; /* set up a flexible layout in the pie chart */
-    justify-content: center; /* centre the content in the pie chart */
-    align-items: center;
-  }
-  
-  .headingsDashboard {
-    margin-bottom: 10px; /* margin at the bottom of the headings */
-  }
-  
+/* Main dashboard container */
+.mainDashboard {
+  position: fixed; /* Keep the page content in place */
+  background-color: rgba(105, 105, 105, 0.5); /* Color of the main element */
+  border-bottom-right-radius: 25px; /* Add radius to the bottom and top right corners */
+  border-top-right-radius: 25px;
+  padding: 40px; /* Padding inside the main element */
+  margin-top: 3vw; /* Margin on the top and left of the main element */
+  margin-left: 26vw;
+  color: rgb(255, 255, 255); /* Text color */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* Border on the top, bottom, and right of the main element */
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw; /* Width of the main element */
+  height: 85vh; /* Height of the main element */
+}
+
+/* Header section - back button, title, profile button */
+.headerDashboard {
+  display: flex; /* Flex layout for header */
+  justify-content: space-between; /* Evenly space the items */
+  margin-bottom: 10px; /* Space below the header */
+}
+
+/* Navigation button style */
+.navButtonDashboard {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  width: 40px; /* Button width */
+  height: 40px; /* Button height */
+  display: flex; /* Flex layout */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.navButtonDashboard:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+}
+
+/* Content layout section */
+.contentRowDashboard {
+  display: flex; /* Flex layout for content row */
+  justify-content: space-between; /* Evenly space the sections */
+  gap: 20px; /* Space between columns */
+}
+
+/* Left content section */
+.leftSectionDashboard, .rightSectionDashboard {
+  display: flex; /* Flex layout */
+  flex-direction: column; /* Stack items vertically */
+}
+
+/* Block column layout */
+.blockColumnDashboard {
+  display: grid; /* Grid layout for blocks */
+  gap: 2px; /* Gap between blocks vertically */
+}
+
+/* Common styles for all blocks */
+.blockDashboard {
+  background-color: rgba(35, 35, 35, 0.5); /* Background color for blocks */
+  width: 450px; /* Block width */
+  height: 50px; /* Block height */
+  display: flex; /* Flex layout for blocks */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+}
+
+/* Top block with rounded top corners */
+.topBlockDashboard {
+  border-radius: 10px 10px 0 0; /* Rounded top corners */
+}
+
+/* Bottom block with rounded bottom corners */
+.bottomBlockDashboard {
+  border-radius: 0 0 10px 10px; /* Rounded bottom corners */
+}
+
+/* Bar chart block */
+.barChartBlockDashboard {
+  background-color: rgba(35, 35, 35, 0.5); /* Background color */
+  width: 400px; /* Bar chart width */
+  height: 250px; /* Bar chart height */
+  display: flex; /* Flex layout */
+  justify-content: center; /* Center the chart */
+  align-items: center; /* Center the content */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/* Scrollable messages container */
+.scrollableMessages {
+  max-height: 150px; /* Fixed height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  scrollbar-width: thin; /* Makes scrollbar thinner */
+  scrollbar-color: rgba(35, 35, 35, 0.5) transparent; /* Thumb color, then track color */
+}
+
+/* Message block in scrollable section */
+.scrollBlockDashboard {
+  background-color: rgba(35, 35, 35, 0.5); /* Message block color */
+  width: 700px; /* Width of the messages block */
+  height: 50px; /* Height of the message block */
+  display: flex; /* Flex layout */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  margin-bottom: 2px; /* Space between messages */
+  transition: background-color 0.3s ease; /* Hover effect */
+}
+
+.scrollBlockDashboard:hover {
+  background-color: rgba(35, 35, 35, 0.7); /* Darker background on hover */
+}
+
+/* Bottom section for pie chart */
+.bottomSectionDashboard {
+  position: relative; /* Position relative for pie chart wrapper */
+  display: flex; /* Flex layout */
+  justify-content: flex-start; /* Align items to the start */
+}
+
+/* Wrapper for circular block (pie chart) */
+.circularBlockWrapperDashboard {
+  position: absolute; /* Position the pie chart absolutely */
+  bottom: 0; /* Stick to the bottom */
+  right: 0; /* Stick to the right */
+}
+
+/* Circular pie chart block */
+.circularBlockDashboard {
+  background-color: rgba(35, 35, 35, 0.5); /* Background color for pie chart */
+  width: 200px; /* Width */
+  height: 200px; /* Height */
+  border-radius: 50%; /* Make it circular */
+  display: flex; /* Flex layout */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+}
+
+/* Heading styles */
+.headingsDashboard {
+  margin-bottom: 10px; /* Space below headings */
+}
+
+.navButtonDashboard img {
+  width: 100%;
+  height: 100%;
+}

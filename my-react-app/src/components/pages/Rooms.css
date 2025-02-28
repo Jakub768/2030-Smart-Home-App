@@ -1,67 +1,110 @@
 .mainRooms {
-    position: fixed; /* keep the page content in place */
-    background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
-    border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
-    border-top-right-radius: 25px;
-    padding: 40px; /* padding inside the main element */
-    margin-top: 3vw; /* margin on the top and left of the main element */
-    margin-left: 26vw;
-    color: rgb(255, 255, 255); /* text colour */
-    border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
-    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
-    border-right: 2px solid rgba(240, 240, 240, 0.5);
-    width: 71vw; /* width of the main element */
-    height: 85vh; /* height of the main element */
-  }
+  position: fixed; /* Keep the page content in place */
+  background-color: rgba(105, 105, 105, 0.5); /* Color of the main element */
+  border-bottom-right-radius: 25px; /* Add radius to the bottom and top right corners */
+  border-top-right-radius: 25px;
+  padding: 40px; /* Padding inside the main element */
+  margin-top: 3vw; /* Margin on the top and left of the main element */
+  margin-left: 26vw;
+  color: rgb(255, 255, 255); /* Text color */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* Border on the top, bottom, and right of the main element */
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw; /* Width of the main element */
+  height: 85vh; /* Height of the main element */
+  display: flex;
+  flex-direction: column;
+}
 
-  .roomsHeader {
-    display: flex; /* set up a flexible layout in the header */
-    justify-content: space-between; /* even spacing between elements */
-    margin-bottom: 10px; /* margin at the bottom of the header */
-  }
-  
-  .navButtonRooms {
-    background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
-    color: white; /* colour of the text in the button */
-    border: none; /* remove the border on the button */
-    border-radius: 10px; /* round the corners of the button */
-    cursor: pointer; /* change cursor when hovering */
-    width: 40px; /* width of button */
-    height: 40px; /* height of button */
-    display: flex; /* set up a flexible layout in the button */
-    align-items: center; /* centre the content in the button */
-    justify-content: center;
-  }
+.roomsHeader {
+  display: flex; /* Set up a flexible layout in the header */
+  justify-content: space-between; /* Even spacing between elements */
+  margin-bottom: 10px; /* Margin at the bottom of the header */
+  flex-shrink: 0;
+}
 
-  .contentRooms {
-    height: 100vh;
-    overflow-y: scroll;
-  }
+.navButtonRooms {
+  background-color: rgba(255, 255, 255, 0.2); /* Color of the button */
+  color: white; /* Color of the text in the button */
+  border: none; /* Remove the border on the button */
+  border-radius: 10px; /* Round the corners of the button */
+  cursor: pointer; /* Change cursor when hovering */
+  width: 40px; /* Width of button */
+  height: 40px; /* Height of button */
+  display: flex; /* Set up a flexible layout in the button */
+  align-items: center; /* Center the content in the button */
+  justify-content: center;
+}
 
-  .sectionRooms {
-    display: flex; /* set up a flexible layout in the section */
-    gap: 2px; /* gap between the blocks */
-    margin-top: 20px; /* margin at the top of the section */
-  }
+.contentRooms {
+  flex-grow: 1; /* Takes remaining space */
+  overflow-y: auto; /* Enables scrolling */
+  height: 100%; /* Ensures it fits within .mainRooms */
+  scrollbar-width: thin; /* Makes scrollbar thinner */
+  scrollbar-color: rgba(35, 35, 35, 0.5) transparent; /* Thumb color, then track color */
+}
 
-  .blockRooms {
-    background-color: rgba(35, 35, 35, 0.5); /* block colour */
-    width: 25%; /* width of each block */
-    height: 80px; /* height of each block */
-    display: grid; /* set up a grid layout inside the box */
-    place-items: center; /* put the content inside the block in the centre */
-  }
+/* Make the section scrollable horizontally */
+.sectionRooms {
+  display: flex; /* Set up a flexible layout in the section */
+  gap: 2px; /* Gap between the blocks */
+  margin-top: 20px; /* Margin at the top of the section */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  width: 100%; /* Ensure it takes full width */
+  position: relative; /* Position for the buttons */
+}
 
-  .firstBlockRooms {
-    border-top-left-radius: 10px; /* round the top and bottom left corners of the first block */
-    border-bottom-left-radius: 10px;
-  }
+/* Style for the scroll buttons (outside the scrollable section) */
+.scrollButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.4); /* Background of the button */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Round button edges */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  z-index: 10; /* Ensure buttons are above blocks */
+}
 
-  .lastBlockRooms {
-    border-top-right-radius: 10px; /* round the top and bottom right corners of the last block */
-    border-bottom-right-radius: 10px;
-  }
+/* Position for the left and right scroll buttons */
+.scrollButton.left {
+  left: 0; /* Position left button at the left side of the container */
+}
 
-  .headingsRooms {
-    margin-top: 20px; /* margin at the bottom of the headings */
-  }
+.scrollButton.right {
+  right: 0; /* Position right button at the right side of the container */
+}
+
+.blockRooms {
+  background-color: rgba(35, 35, 35, 0.5); /* Block color */
+  width: 25%; /* Width of each block */
+  height: 80px; /* Height of each block */
+  display: grid; /* Set up a grid layout inside the box */
+  place-items: center; /* Put the content inside the block in the center */
+}
+
+/* First and last block corner radius */
+.firstBlockRooms {
+  border-top-left-radius: 10px; /* Round the top and bottom left corners of the first block */
+  border-bottom-left-radius: 10px;
+}
+
+.lastBlockRooms {
+  border-top-right-radius: 10px; /* Round the top and bottom right corners of the last block */
+  border-bottom-right-radius: 10px;
+}
+
+.headingsRooms {
+  margin-top: 20px; /* Margin at the bottom of the headings */
+}
+
+.navButtonRooms img {
+  width: 100%;
+  height: 100%;
+}
