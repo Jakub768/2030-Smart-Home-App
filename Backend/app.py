@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import execute_DB
+# import weather_auto_update
 
 app = Flask(__name__)
 
