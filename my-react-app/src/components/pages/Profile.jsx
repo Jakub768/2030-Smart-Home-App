@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import './Profile.css'; // Import the CSS file
+import userIcon from '../images/User.png';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -11,7 +12,9 @@ const Profile = () => {
         <div className="profileHeader">
           <button className="navButtonProfile" onClick={() => navigate(-1)}>{"<"}</button>
           <h1>My Profile</h1>
-          <button className="navButtonProfile" onClick={() => navigate("/profile")}>👤</button>
+          <button className="navButtonProfile" onClick={() => navigate("/profile")}>
+            <img src={userIcon} alt="User Icon" />
+          </button>
         </div>
         <div className="profileColumns">
             <div className="blockPro topBlockProfile">Block 1</div>
