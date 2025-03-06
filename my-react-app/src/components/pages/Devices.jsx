@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Devices.css'; // Import the CSS file
+
 
 const ToggleButton = ({ isOn, toggleSwitch }) => (
   <div className={`toggle-switch ${isOn ? "on" : "off"}`} onClick={toggleSwitch}>
@@ -19,6 +20,53 @@ const Devices = () => {
   const [MicrowaveOn, setMicrowaveOn] = useState(false);
   const [WMOn, setWMOn] = useState(false);
   const [DMOn, setDMOn] = useState(false);
+
+  // Prepping for pull from Back-end
+  const [devices, setDevices] = useState([]);
+
+  // Fetch devices from an API
+  useEffect(() => {
+    fetch('https://api.example.com/devices') // Replace with your API endpoint
+      .then((response) => response.json())
+      .then((data) => setDevices(data))
+      .catch((error) => console.error("Error fetching devices:", error));
+  }, []);
+
+  const toggleDevice = (id) => {
+    setDevices(devices.map(device =>
+      device.id === id ? { ...device, isOn: !device.isOn } : device
+    ));
+  };
+
+  const addDevice = () => {
+    const newDevice = {
+      id: devices.length + 1, // Generate a new ID
+      name: `New Device ${devices.length + 1}`,
+      type: "light", // Default type, you can change this as needed
+      isOn: false,
+    };
+    setDevices([...devices, newDevice]);
+  };
+
+  const removeDevice = (id) => {
+    setDevices(devices.filter(device => device.id !== id));
+  };
+
+  const renderDevicesByType = (type) => {
+    return devices
+      .filter(device => device.type === type)
+      .map(device => (
+        <div className="toggle-container" key={device.id}>
+          <button className="no-gap1">
+            {device.name}
+            <ToggleButton isOn={device.isOn} toggleSwitch={() => toggleDevice(device.id)} />
+            <button onClick={() => removeDevice(device.id)}>Remove</button>
+          </button>
+        </div>
+      ));
+  }
+
+  // These need under "sectionDevices" class :   {renderDevicesByType("light")}, {renderDevicesByType("kitchen")}, {renderDevicesByType("laundry")}
   
   const navigate = useNavigate();
 
