@@ -1,7 +1,7 @@
-import database_execute, weather_update_database, schedule, time, threading
+import functions.database_execute, functions.weather_update_database, schedule, time, threading
 
-for houseID, in database_execute.execute_SQL("SELECT houseID FROM House"):
-    schedule.every(1).seconds.do(weather_update_database.update_weather, houseID)
+for houseID, in functions.database_execute.execute_SQL("SELECT houseID FROM House"):
+    schedule.every(10).seconds.do(functions.weather_update_database.update_weather, houseID)
 
 def run_scheduler():
     while True:

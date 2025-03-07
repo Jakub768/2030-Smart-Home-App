@@ -1,14 +1,14 @@
-import database_execute
+import functions.database_execute
 
 def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth, roles):
-    result = database_execute.execute_SQL("""
+    result = functions.database_execute.execute_SQL("""
         SELECT * FROM Users WHERE username = %s
     """, (username,))
 
     if result is None:
         data = (username, password, eMailAddress, firstName, lastName, dateOfBirth, roles)
         
-        rows_affected = database_execute.execute_SQL("""
+        rows_affected = functions.database_execute.execute_SQL("""
             INSERT INTO Users (username, password, eMailAddress, firstName, lastName, dateOfBirth, roles) 
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, data)
@@ -24,12 +24,12 @@ def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth,
 
 def remove_user(username):
     
-    result = database_execute.execute_SQL("""
+    result = functions.database_execute.execute_SQL("""
         SELECT * FROM Users WHERE username = %s
     """, (username,))
 
     if result:
-        rows_deleted = database_execute.execute_SQL("""
+        rows_deleted = functions.database_execute.execute_SQL("""
             DELETE FROM Users WHERE username = %s
         """, (username,))
 
@@ -47,12 +47,12 @@ def change_role(username, role):
         print("Invalid role! Choose from 'admin', 'user', or 'guest'.")
         return
 
-    result = database_execute.execute_SQL("""
+    result = functions.database_execute.execute_SQL("""
         SELECT * FROM Users WHERE username = %s
     """, (username,))
 
     if result:
-        rows_updated = database_execute.execute_SQL("""
+        rows_updated = functions.database_execute.execute_SQL("""
             UPDATE Users
             SET roles = %s
             WHERE username = %s;

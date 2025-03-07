@@ -1,7 +1,7 @@
-import database_execute
+import functions.database_execute
 
-def add_device(deviceName, deviceType, roomID, userID, energyConsumption, energyGeneration, status):
-    result = database_execute.execute_SQL("""
+def add_device(deviceName, deviceType, roomID, userID, energyConsumption, energyGeneration):
+    result = functions.database_execute.execute_SQL("""
         SELECT * FROM Devices WHERE deviceName = %s AND userID = %s
     """, (deviceName, userID))
 
@@ -13,12 +13,13 @@ def add_device(deviceName, deviceType, roomID, userID, energyConsumption, energy
             userID, 
             energyConsumption, 
             energyGeneration, 
-            status
+            "inactive",
+            0
             )
 
-        rows_affected = database_execute.execute_SQL("""
-            INSERT INTO Devices (deviceName, deviceType, roomID, userID, energyConsumption, energyGeneration, status) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        rows_affected = functions.database_execute.execute_SQL("""
+            INSERT INTO Devices (deviceName, deviceType, roomID, userID, energyConsumption, energyGeneration, deviceStatus, deviceUsage) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, data)
 
         if rows_affected:
@@ -30,12 +31,12 @@ def add_device(deviceName, deviceType, roomID, userID, energyConsumption, energy
 
 
 def remove_device(deviceID):
-    result = database_execute.execute_SQL("""
+    result = functions.database_execute.execute_SQL("""
         SELECT * FROM Devices WHERE deviceID = %s
     """, (deviceID,))
 
     if result:
-        rows_deleted = database_execute.execute_SQL("""
+        rows_deleted = functions.database_execute.execute_SQL("""
             DELETE FROM Devices WHERE deviceID = %s;
         """, (deviceID,))
 
@@ -50,12 +51,12 @@ def remove_device(deviceID):
 def change_name(deviceID, newDeviceName):
     """ Updates the name of a device if it exists. """
 
-    result = database_execute.execute_SQL("""
+    result = functions.database_execute.execute_SQL("""
         SELECT * FROM Devices WHERE deviceID = %s
     """, (deviceID,))
 
     if result:
-        rows_updated = database_execute.execute_SQL("""
+        rows_updated = functions.database_execute.execute_SQL("""
             UPDATE Devices
             SET deviceName = %s
             WHERE deviceID = %s;
@@ -67,3 +68,68 @@ def change_name(deviceID, newDeviceName):
             print("Failed to update device name.")
     else:
         print("Device not found.")
+
+def device_activate(deviceID):
+    result = functions.database_execute.execute_SQL("""
+        SELECT deviceName FROM Devices WHERE deviceID = %s AND deviceStatus = 'inactive'
+    """, (deviceID,))
+
+    if result:
+        rows_updated = functions.database_execute.execute_SQL("""
+            UPDATE Devices
+            SET deviceStatus = %s
+            WHERE deviceID = %s;
+        """, ("active", deviceID))
+        if rows_updated:
+            print(f"Device ID '{deviceID}' activated successfully!")
+        else:
+            print(f"Failed to activate {result[0][0]}.")
+    else:
+        print("Device already active or not found.")
+
+def device_activate(deviceID):
+    result = functions.database_execute.execute_SQL("""
+        SELECT deviceName FROM Devices WHERE deviceID = %s AND deviceStatus = 'active'
+    """, (deviceID,))
+
+    if result:
+        rows_updated = functions.database_execute.execute_SQL("""
+            UPDATE Devices
+            SET deviceStatus = %s,
+            deviceUsage = deviceUsage + 1
+            WHERE deviceID = %s;
+        """, ("inactive", deviceID))
+        if rows_updated:
+            print(f"Device ID '{deviceID}' deactivated successfully!")
+        else:
+            print(f"Failed to deactivate {result[0][0]}.")
+    else:
+        print("Device already deactivated or not found.")
+
+def reset_usage(deviceID):
+    result = functions.database_execute.execute_SQL("""
+        SELECT deviceUsage FROM Devices WHERE deviceID = %s
+    """, (deviceID,))
+
+    if not result:
+        print("Device not found.")
+        return
+
+    current_usage = result[0][0]
+
+    if current_usage == 0:
+        print("Device usage is already 0. No update needed.")
+        return
+
+    rows_updated = functions.database_execute.execute_SQL(
+        """
+        UPDATE Devices
+        SET deviceUsage = 0
+        WHERE deviceID = %s;
+        """, (deviceID,)
+    )
+
+    if rows_updated:
+        print("Device usage has been successfully reset to 0!")
+    else:
+        print("Failed to reset device usage.")

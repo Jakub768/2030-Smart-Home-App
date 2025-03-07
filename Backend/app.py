@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import functions.database_execute as database_execute
+import functions.stats_auto_update, functions.weather_auto_update
 
 app = Flask(__name__)
 
