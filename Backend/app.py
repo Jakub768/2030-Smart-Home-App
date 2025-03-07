@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-import database.execute_DB as execute_DB
+import functions.database_execute as database_execute
 
 app = Flask(__name__)
 
@@ -13,7 +13,7 @@ def get_home():
         JOIN Rooms ON Devices.roomID = Rooms.roomID
         WHERE Devices.status = 'active' AND Rooms.houseID = %s;
     """
-    active_devices = execute_DB.execute_SQL(query_active_devices, (house_id,))
+    active_devices = database_execute.execute_SQL(query_active_devices, (house_id,))
     active_devices_count = active_devices[0][0] if active_devices and active_devices[0] else 0
 
     query_occupied_rooms = """
@@ -21,7 +21,7 @@ def get_home():
         FROM Rooms
         WHERE Occupied = 'occupied' AND houseID = %s;
     """
-    occupied_rooms = execute_DB.execute_SQL(query_occupied_rooms, (house_id,))
+    occupied_rooms = database_execute.execute_SQL(query_occupied_rooms, (house_id,))
     occupied_rooms_count = occupied_rooms[0][0] if occupied_rooms and occupied_rooms[0] else 0
 
     query_energy_cost = """
@@ -31,7 +31,7 @@ def get_home():
         JOIN Rooms ON Devices.roomID = Rooms.roomID
         WHERE Rooms.houseID = %s;
     """
-    energy_cost = execute_DB.execute_SQL(query_energy_cost, (house_id,))
+    energy_cost = database_execute.execute_SQL(query_energy_cost, (house_id,))
     energy_cost_total = energy_cost[0][0] if energy_cost and energy_cost[0][0] is not None else 0
 
     query_latest_weather = """
@@ -41,7 +41,7 @@ def get_home():
         ORDER BY timestamp DESC
         LIMIT 1;
     """
-    latest_weather = execute_DB.execute_SQL(query_latest_weather, (house_id,))
+    latest_weather = database_execute.execute_SQL(query_latest_weather, (house_id,))
 
     if latest_weather and latest_weather[0]:
         weather_type, temperature, humidity, wind_speed = latest_weather[0]
