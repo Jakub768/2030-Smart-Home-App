@@ -1,4 +1,4 @@
-import execute_DB
+import database_execute
 
 def add_device(Name, Type, roomID, userID, Consumption, energyGen, status):
 
@@ -13,8 +13,9 @@ def add_device(Name, Type, roomID, userID, Consumption, energyGen, status):
     )
 
     print("lol")
-    execute_DB.execute_SQL(
-        "INSERT INTO Devices (deviceName, deviceType, roomID, userID, energyConsumption, energyGeneration, status) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+    database_execute.execute_SQL("""
+        INSERT INTO Devices (deviceName, deviceType, roomID, userID, energyConsumption, energyGeneration, status) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s)""",
         data
     )
     

@@ -1,7 +1,7 @@
-import datetime, weather_API, execute_DB
+import datetime, weather_API, database_execute
 
 def update_weather(houseId):
-    city = execute_DB.execute_SQL("SELECT city FROM House WHERE houseID = %s", (houseId,))
+    city = database_execute.execute_SQL("SELECT city FROM House WHERE houseID = %s", (houseId,))
     if not city: return f"Error: No city found for houseID {houseId}"
 
     weather = weather_API.getWeatherData(city[0][0])
@@ -16,7 +16,7 @@ def update_weather(houseId):
         houseId
     )
     
-    return execute_DB.execute_SQL(
+    return database_execute.execute_SQL(
         "INSERT INTO Weather (temperature, humidity, windSpeed, weatherType, timestamp, houseID) VALUES (%s, %s, %s, %s, %s, %s)",
         data
     )
