@@ -4,7 +4,7 @@ import functions.database_execute as database_execute
 
 app = Flask(__name__)
 
-@app.route('/api/home', methods=['GET'])
+@app.route('/home', methods=['GET'])
 def get_home():
     house_id = 1 #request.args.get('house_id')
 
@@ -16,7 +16,7 @@ def get_home():
             SELECT COUNT(*) 
             FROM Devices
             JOIN Rooms ON Devices.roomID = Rooms.roomID
-            WHERE Devices.status = 'active' AND Rooms.houseID = %s;
+            WHERE Devices.deviceStatus = 'active' AND Rooms.houseID = %s;
         """
         active_devices = database_execute.execute_SQL(query_active_devices, (house_id,))
         active_devices_count = active_devices[0][0] if active_devices else 0
@@ -77,19 +77,31 @@ def get_home():
 
         current_amount = energy_cost_total
 
-        response_data = {
+        inside_the_residence = {
             "Devices_Active": active_devices_count,
-            "Rooms_Occupied": occupied_rooms_count,
+            "Rooms_Occupied": occupied_rooms_count
+        }
+
+        outside_the_residence = {
             "Weather_Description": weather_type,
             "Temperature": temperature,
             "Humidity": humidity,
-            "Wind_Speed": wind_speed,
+            "Wind_Speed": wind_speed
+        }
+
+        energy_bill = {
             "Bill_Paid_Status": paid_status,
             "Past_Bill_Amount": past_bill_amount,
             "Last_Paid_Date": timestamp,
             "Next_Due_Date": next_due_date,
             "Current_Amount": current_amount
         }
+
+        response_data = (
+            inside_the_residence,
+            outside_the_residence,
+            energy_bill
+        )
 
         return jsonify(response_data)
 
