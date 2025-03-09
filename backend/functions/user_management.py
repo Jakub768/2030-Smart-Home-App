@@ -1,18 +1,18 @@
 import functions.database_execute
 
-def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth, roles):
+def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth):
     # Check if the username already exists
     result = functions.database_execute.execute_SQL("""
         SELECT * FROM Users WHERE username = %s
     """, (username,))
 
     if result is None:
-        data = (username, password, eMailAddress, firstName, lastName, dateOfBirth, roles)
+        data = (username, password, eMailAddress, firstName, lastName, dateOfBirth)
         
         # Insert the new user into the database
         rows_affected = functions.database_execute.execute_SQL("""
-            INSERT INTO Users (username, password, eMailAddress, firstName, lastName, dateOfBirth, roles) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO Users (username, password, eMailAddress, firstName, lastName, dateOfBirth) 
+            VALUES (%s, %s, %s, %s, %s, %s)
         """, data)
 
         if rows_affected:
@@ -38,31 +38,5 @@ def remove_user(username):
             print(f"User '{username}' removed successfully!")
         else:
             print("Failed to remove user.")
-    else:
-        print("User not found.")
-
-def change_role(username, role):
-    # Validate the role
-    if role not in ("admin", "user", "guest"):
-        print("Invalid role! Choose from 'admin', 'user', or 'guest'.")
-        return
-
-    # Check if the user exists
-    result = functions.database_execute.execute_SQL("""
-        SELECT * FROM Users WHERE username = %s
-    """, (username,))
-
-    if result:
-        # Update the user's role in the database
-        rows_updated = functions.database_execute.execute_SQL("""
-            UPDATE Users
-            SET roles = %s
-            WHERE username = %s;
-        """, (role, username))
-
-        if rows_updated:
-            print(f"Role changed successfully for '{username}' to '{role}'.")
-        else:
-            print("Failed to change role.")
     else:
         print("User not found.")
