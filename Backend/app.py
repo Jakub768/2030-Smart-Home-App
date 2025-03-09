@@ -44,6 +44,34 @@ def logout():
     session.clear()
     return jsonify({"message": "Logout successful"}), 200
 
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    role = data.get('role')
+
+    if not all([username, password, email, first_name, last_name, role]):
+        return jsonify({"error": "All fields are required"}), 400
+
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+    try:
+        query = """
+            INSERT INTO Users (username, password, eMailAddress, firstName, lastName, roles)
+            VALUES (%s, %s, %s, %s, %s, %s);
+        """
+        params = (username, hashed_password, email, first_name, last_name, role)
+        functions.database_execute.execute_SQL(query, params)
+
+        return jsonify({"message": "User registered successfully"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 # User Management Functions
 # -------------------------
 
@@ -94,6 +122,26 @@ def update_user_role():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/update_permissionos', methods=['POST'])
+def update_permissions():
+    data = request.get_json()
+
+    user_id = data.get('user_id')
+    device_management = data.get('device_management')
+    stat_view = data.get('stat_view')
+
+    if not all([user_id, device_management, stat_view]):
+        return jsonify({"error": "user_id, device_management, and stat_view are required"}), 400
+
+    try:
+        # Update the user permissions
+        functions.permissions_management.allow_device_management(user_id, device_management)
+        functions.permissions_management.allow_statView(user_id, stat_view)
+
+        return jsonify({"message": "User permissions updated successfully"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 # Home and Dashboard Data Functions
 # ---------------------------------
 

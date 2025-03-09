@@ -7,7 +7,7 @@ import threading
 def schedule_weather_updates():
     houses = functions.database_execute.execute_SQL("SELECT houseID FROM House")
     for houseID, in houses:
-        schedule.every(10).seconds.do(functions.weather_update_database.update_weather, houseID)
+        schedule.every(15).minutes.do(functions.weather_update_database.update_weather, houseID)
 
 def run_scheduler():
     while True:

@@ -9,7 +9,7 @@ def schedule_device_updates():
     devices = functions.database_execute.execute_SQL("SELECT deviceID, deviceType FROM Devices")
 
     for deviceID, deviceType in devices:
-        schedule.every(10).seconds.do(
+        schedule.every(15).minutes.do(
             functions.device_stats_update_database.update_device_stats, 
             deviceID=deviceID, 
             deviceType=deviceType
