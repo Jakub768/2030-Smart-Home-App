@@ -30,8 +30,10 @@ def get_home():
         occupied_rooms_count = occupied_rooms[0][0] if occupied_rooms else 0
 
         last_payment_date = database_execute.execute_SQL("""
-                                SELECT timestamp FROM BillStats WHERE houseID = %s ORDER BY timestamp DESC LIMIT 1  
-                            """, (house_id,))
+            SELECT timestamp FROM BillStats WHERE houseID = %s ORDER BY timestamp DESC LIMIT 1  
+        """, (house_id,))
+
+        last_payment_date = last_payment_date[0][0] if last_payment_date else None
 
         query_energy_cost = """
             SELECT SUM(DeviceStats.costsOfEnergy) 
@@ -41,8 +43,8 @@ def get_home():
             WHERE Rooms.houseID = %s
             AND DeviceStats.timestamp > %s;
         """
-        energy_cost = database_execute.execute_SQL(query_energy_cost, (house_id, last_payment_date[0][0]))
-        energy_cost_total = energy_cost[0][0]
+        energy_cost = database_execute.execute_SQL(query_energy_cost, (house_id, last_payment_date))
+        energy_cost_total = energy_cost[0][0] if energy_cost and energy_cost[0][0] is not None else 0
 
         query_latest_weather = """
             SELECT weatherType, temperature, humidity, windSpeed
@@ -71,19 +73,17 @@ def get_home():
             timestamp = bill_status[0][2]
             next_due_date = bill_status[0][3]
         else:
-            paid_status, amount_of_bill, next_due_date, current_amount = (None, None, None, None)
+            paid_status, past_bill_amount, next_due_date, current_amount, timestamp = (None, None, None, None, None)
 
         current_amount = energy_cost_total
 
         response_data = {
             "Devices_Active": active_devices_count,
             "Rooms_Occupied": occupied_rooms_count,
-
             "Weather_Description": weather_type,
             "Temperature": temperature,
             "Humidity": humidity,
             "Wind_Speed": wind_speed,
-            
             "Bill_Paid_Status": paid_status,
             "Past_Bill_Amount": past_bill_amount,
             "Last_Paid_Date": timestamp,
