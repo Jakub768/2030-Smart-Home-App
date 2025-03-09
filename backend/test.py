@@ -1,1 +1,1 @@
-import functions.stats_auto_update, functions.weather_auto_update
+import functions.device_stats_auto_update, functions.weather_auto_update, functions.bill_stats_auto_update

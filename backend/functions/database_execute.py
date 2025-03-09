@@ -3,6 +3,7 @@ from mysql.connector import Error
 
 def execute_SQL(query, params=None):
     try:
+        # Establish the database connection
         mydb = mysql.connector.connect(
             host="virtual-butler-minchengpiao03152004-8434.g.aivencloud.com",
             port=19919,
@@ -13,12 +14,18 @@ def execute_SQL(query, params=None):
 
         cursor = mydb.cursor()
 
-        cursor.execute(query, params) if params else cursor.execute(query)
+        # Execute the query with or without parameters
+        if params:
+            cursor.execute(query, params)
+        else:
+            cursor.execute(query)
 
+        # If the query is a SELECT statement, fetch and return the results
         if query.strip().lower().startswith("select"):
             results = cursor.fetchall()
             return results if results else None
         
+        # Commit the transaction for non-SELECT statements
         mydb.commit()
         print("Commit successful!")
         return cursor.rowcount
@@ -28,6 +35,7 @@ def execute_SQL(query, params=None):
         return None
 
     finally:
+        # Close the cursor and database connection
         if 'cursor' in locals():
             cursor.close()
         if 'mydb' in locals():

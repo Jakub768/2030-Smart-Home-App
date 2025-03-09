@@ -1,19 +1,15 @@
 import functions.database_execute
 
 def add_room(roomName, userID, houseID):
-
+    # Check if the room already exists for the user
     result = functions.database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomName = %s AND userID = %s
     """, (roomName, userID))
 
     if result is None:
-        data = (
-            roomName, 
-            userID,
-            houseID,
-            "Free"
-            )
+        data = (roomName, userID, houseID, "Free")
 
+        # Insert the new room into the database
         rows_affected = functions.database_execute.execute_SQL("""
             INSERT INTO Rooms (roomName, userID, houseID, occupation) 
             VALUES (%s, %s, %s, %s)
@@ -26,13 +22,14 @@ def add_room(roomName, userID, houseID):
     else:
         print("Room already exists for this user.")
 
-
 def remove_room(roomID):
+    # Check if the room exists
     result = functions.database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomID = %s
     """, (roomID,))
 
     if result:
+        # Delete the room from the database
         rows_deleted = functions.database_execute.execute_SQL("""
             DELETE FROM Rooms WHERE roomID = %s;
         """, (roomID,))
@@ -44,13 +41,14 @@ def remove_room(roomID):
     else:
         print("Room not found.")
 
-
 def change_room_name(roomID, newRoomName):
+    # Check if the room exists
     result = functions.database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomID = %s
     """, (roomID,))
 
     if result:
+        # Update the room name in the database
         rows_updated = functions.database_execute.execute_SQL("""
             UPDATE Rooms
             SET roomName = %s
@@ -64,21 +62,22 @@ def change_room_name(roomID, newRoomName):
     else:
         print("Room not found.")
 
-
 def change_room_status(roomID, newOccupation):
-
+    # Validate the new occupation status
     if newOccupation not in ("Occupied", "Free"):
         print("Invalid status! Choose from 'Occupied' or 'Free'")
         return
 
+    # Check if the room exists
     result = functions.database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomID = %s
     """, (roomID,))
 
     if result:
+        # Update the room occupation status in the database
         rows_updated = functions.database_execute.execute_SQL("""
             UPDATE Rooms
-            SET status = %s
+            SET occupation = %s
             WHERE roomID = %s;
         """, (newOccupation, roomID))
 
