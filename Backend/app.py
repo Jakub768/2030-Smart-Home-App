@@ -4,77 +4,131 @@ import functions.database_execute as database_execute
 
 app = Flask(__name__)
 
+def get_active_devices_count(house_id):
+    query = """
+        SELECT COUNT(*) 
+        FROM Devices
+        JOIN Rooms ON Devices.roomID = Rooms.roomID
+        WHERE Devices.deviceStatus = 'active' AND Rooms.houseID = %s;
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result[0][0] if result else 0
+
+def get_occupied_rooms_count(house_id):
+    query = """
+        SELECT COUNT(*) 
+        FROM Rooms
+        WHERE Occupied = 'occupied' AND houseID = %s;
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result[0][0] if result else 0
+
+def get_last_payment_date(house_id):
+    query = """
+        SELECT timestamp FROM BillStats WHERE houseID = %s ORDER BY timestamp DESC LIMIT 1;
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result[0][0] if result else None
+
+def get_energy_cost_total(house_id, last_payment_date):
+    query = """
+        SELECT SUM(DeviceStats.costsOfEnergy) 
+        FROM DeviceStats
+        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
+        JOIN Rooms ON Devices.roomID = Rooms.roomID
+        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > %s;
+    """
+    result = database_execute.execute_SQL(query, (house_id, last_payment_date))
+    return result[0][0] if result and result[0][0] is not None else 0
+
+def get_latest_weather(house_id):
+    query = """
+        SELECT weatherType, temperature, humidity, windSpeed
+        FROM Weather
+        WHERE houseID = %s
+        ORDER BY timestamp DESC
+        LIMIT 1;
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result[0] if result else ("Unknown", None, None, None)
+
+def get_bill_status(house_id):
+    query = """
+        SELECT amount, paidStatus, timestamp, nextBillDue
+        FROM BillStats
+        WHERE houseID = %s
+        ORDER BY timestamp DESC
+        LIMIT 1;
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    if result:
+        amount, paid_status, timestamp, next_due_date = result[0]
+        paid_status = "Paid" if paid_status == 1 else "Unpaid"
+        return amount, paid_status, timestamp, next_due_date
+    return None, None, None, None
+
+def get_last_24_hours_energy_consumption(house_id):
+    query = """
+        SELECT SUM(DeviceStats.energyConsumption)
+        FROM DeviceStats
+        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
+        JOIN Rooms ON Devices.roomID = Rooms.roomID
+        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > DATE_SUB(NOW(), INTERVAL 24 HOUR);
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result[0][0] if result and result[0][0] is not None else 0
+
+def get_last_24_hours_energy_cost(house_id):
+    query = """
+        SELECT SUM(DeviceStats.costsOfEnergy)
+        FROM DeviceStats
+        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
+        JOIN Rooms ON Devices.roomID = Rooms.roomID
+        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > DATE_SUB(NOW(), INTERVAL 24 HOUR);
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result[0][0] if result and result[0][0] is not None else 0
+
+def get_last_24_hours_top_3_most_used_device(houseID):
+    query = """
+        SELECT Devices.deviceType, SUM(DeviceStats.energyConsumption) AS energyConsumed
+        FROM DeviceStats
+        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
+        JOIN Rooms ON Devices.roomID = Rooms.roomID
+        WHERE Rooms.houseID = %s
+        AND DeviceStats.timestamp > DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        GROUP BY Devices.deviceType
+        ORDER BY energyConsumed DESC
+        LIMIT 3;
+    """
+    result = database_execute.execute_SQL(query, (houseID,))
+    return result
+
+def get_energy_consumption_by_interval(house_id, start_hour, end_hour):
+    query = """
+        SELECT SUM(DeviceStats.energyConsumption)
+        FROM DeviceStats
+        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
+        JOIN Rooms ON Devices.roomID = Rooms.roomID
+        WHERE Rooms.houseID = %s AND DeviceStats.timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL %s HOUR AND DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL %s HOUR;
+    """
+    result = database_execute.execute_SQL(query, (house_id, start_hour, end_hour))
+    return result[0][0] if result and result[0][0] is not None else 0
+
 @app.route('/home', methods=['GET'])
 def get_home():
-    house_id = 1 #request.args.get('house_id')
+    house_id = 1#request.args.get('house_id')
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
 
     try:
-        query_active_devices = """
-            SELECT COUNT(*) 
-            FROM Devices
-            JOIN Rooms ON Devices.roomID = Rooms.roomID
-            WHERE Devices.deviceStatus = 'active' AND Rooms.houseID = %s;
-        """
-        active_devices = database_execute.execute_SQL(query_active_devices, (house_id,))
-        active_devices_count = active_devices[0][0] if active_devices else 0
-
-        query_occupied_rooms = """
-            SELECT COUNT(*) 
-            FROM Rooms
-            WHERE Occupied = 'occupied' AND houseID = %s;
-        """
-        occupied_rooms = database_execute.execute_SQL(query_occupied_rooms, (house_id,))
-        occupied_rooms_count = occupied_rooms[0][0] if occupied_rooms else 0
-
-        last_payment_date = database_execute.execute_SQL("""
-            SELECT timestamp FROM BillStats WHERE houseID = %s ORDER BY timestamp DESC LIMIT 1  
-        """, (house_id,))
-
-        last_payment_date = last_payment_date[0][0] if last_payment_date else None
-
-        query_energy_cost = """
-            SELECT SUM(DeviceStats.costsOfEnergy) 
-            FROM DeviceStats
-            JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
-            JOIN Rooms ON Devices.roomID = Rooms.roomID
-            WHERE Rooms.houseID = %s
-            AND DeviceStats.timestamp > %s;
-        """
-        energy_cost = database_execute.execute_SQL(query_energy_cost, (house_id, last_payment_date))
-        energy_cost_total = energy_cost[0][0] if energy_cost and energy_cost[0][0] is not None else 0
-
-        query_latest_weather = """
-            SELECT weatherType, temperature, humidity, windSpeed
-            FROM Weather
-            WHERE houseID = %s
-            ORDER BY timestamp DESC
-            LIMIT 1;
-        """
-        latest_weather = database_execute.execute_SQL(query_latest_weather, (house_id,))
-
-        weather_data = latest_weather[0] if latest_weather else ("Unknown", None, None, None)
-        weather_type, temperature, humidity, wind_speed = weather_data
-
-        query_bill_status = """
-            SELECT amount, paidStatus, timestamp, nextBillDue
-            FROM BillStats
-            WHERE houseID = %s
-            ORDER BY timestamp DESC
-            LIMIT 1;
-        """
-        bill_status = database_execute.execute_SQL(query_bill_status, (house_id,))
-
-        if bill_status:
-            past_bill_amount = bill_status[0][0]
-            paid_status = "Paid" if bill_status[0][1] == 1 else "Unpaid"
-            timestamp = bill_status[0][2]
-            next_due_date = bill_status[0][3]
-        else:
-            paid_status, past_bill_amount, next_due_date, current_amount, timestamp = (None, None, None, None, None)
-
+        active_devices_count = get_active_devices_count(house_id)
+        occupied_rooms_count = get_occupied_rooms_count(house_id)
+        last_payment_date = get_last_payment_date(house_id)
+        energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
+        weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)
+        past_bill_amount, paid_status, timestamp, next_due_date = get_bill_status(house_id)
         current_amount = energy_cost_total
 
         inside_the_residence = {
@@ -97,11 +151,54 @@ def get_home():
             "Current_Amount": current_amount
         }
 
-        response_data = (
-            inside_the_residence,
-            outside_the_residence,
-            energy_bill
-        )
+        response_data = {
+            "Inside_The_Residence": inside_the_residence,
+            "Outside_The_Residence": outside_the_residence,
+            "Energy_Bill": energy_bill
+        }
+
+        return jsonify(response_data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/dashboard', methods=['GET'])
+def get_dashboard():
+    house_id = 1#request.args.get('house_id')
+
+    if not house_id:
+        return jsonify({"error": "house_id is required"}), 400
+
+    try:
+        energy_consumed = get_last_24_hours_energy_consumption(house_id)
+        energy_cost = get_last_24_hours_energy_cost(house_id)
+
+        last_24_hours = {
+            "energy_consumed": energy_consumed,
+            "energy_cost": energy_cost
+        }
+
+        result = get_last_24_hours_top_3_most_used_device(house_id)
+
+        most_energy_used_by = {
+            "device_1": result[0][0] if len(result) > 0 else None,
+            "device_2": result[1][0] if len(result) > 1 else None,
+            "device_3": result[2][0] if len(result) > 2 else None
+        }
+
+        consumption = {
+            "12am_to_6am": get_energy_consumption_by_interval(house_id, 0, 6),
+            "6am_to_12pm": get_energy_consumption_by_interval(house_id, 6, 12),
+            "12pm_to_4pm": get_energy_consumption_by_interval(house_id, 12, 16),
+            "4pm_to_8pm": get_energy_consumption_by_interval(house_id, 16, 20),
+            "8pm_to_12am": get_energy_consumption_by_interval(house_id, 20, 24)
+        }
+
+        response_data = {
+            "Last_24_Hours": last_24_hours,
+            "Most_Energy_Used_By": most_energy_used_by,
+            "Consumption": consumption
+        }
 
         return jsonify(response_data)
 
