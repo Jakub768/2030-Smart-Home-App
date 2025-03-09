@@ -1,6 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 .App {
   background-color: hotpink ; /* testing opacity */
   height: 100vh;
   width: 100%;
   position: fixed; /* keep the page content in place */
+}
+
+main, div, h1, h2, button, p {
+  font-family: 'Inter';
+  font-style: normal;
 }

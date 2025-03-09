@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Devices.css'; // Import the CSS file
+import userIcon from '../images/User.png';
 
 const ToggleButton = ({ isOn, toggleSwitch }) => (
   <div className={`toggle-switch ${isOn ? "on" : "off"}`} onClick={toggleSwitch}>
@@ -27,7 +28,9 @@ const Devices = () => {
         <div className="DevicesHeader">
           <button className="navButtonDevices" onClick={() => navigate(-1)}>{"<"}</button>
           <h1>Devices</h1>
-          <button className="navButtonDevices" onClick={() => navigate("/profile")}>👤</button>
+          <button className="navButtonDashboard" onClick={() => navigate("/profile")}>
+            <img src={userIcon} alt="User Icon" />
+          </button>
         </div>
         <div style={{ height: '68vh', overflowY: 'scroll' }}>
             <h2 className="headingsDevices">Lights</h2>

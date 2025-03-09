@@ -1,0 +1,88 @@
+.mainUsers {
+  position: fixed; /* Keep the page content in place */
+  background-color: rgba(105, 105, 105, 0.5); /* Color of the main element */
+  border-bottom-right-radius: 25px; /* Add radius to the bottom and top right corners */
+  border-top-right-radius: 25px;
+  padding: 40px; /* Padding inside the main element */
+  margin-top: 3vw; /* Margin on the top and left of the main element */
+  margin-left: 26vw;
+  color: rgb(255, 255, 255); /* Text color */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* Border on the top, bottom, and right of the main element */
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw; /* Width of the main element */
+  height: 85vh; /* Height of the main element */
+}
+
+/* Header section - back button, title, profile button */
+.headerUsers {
+  display: flex; /* Flex layout for header */
+  justify-content: space-between; /* Evenly space the items */
+  margin-bottom: 10px; /* Space below the header */
+}
+
+/* Navigation button style */
+.navButtonUsers {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  width: 40px; /* Button width */
+  height: 40px; /* Button height */
+  display: flex; /* Flex layout */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.navButtonUsers:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+}
+
+.navButtonUsers img {
+  width: 100%;
+  height: 100%;
+}
+
+.usersTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  background-color: #3a3a3a;
+  color: white;
+  border-radius: 5px;
+  border: none;
+}
+
+.usersList {
+  background-color: #1e1e1e;
+  padding: 16px;
+  border-radius: 10px;
+}
+
+.userItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #444;
+}
+
+.username {
+  padding-right: 400px;
+}
+
+.roleSelect {
+  background-color: #3a3a3a;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  border: none;
+}

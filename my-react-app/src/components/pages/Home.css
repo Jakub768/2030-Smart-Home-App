@@ -1,5 +1,4 @@
 /* Home.css */
-
 .mainHome {
     position: fixed; /* keep the page content in place */
     background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
@@ -21,6 +20,8 @@
     margin-bottom: 20px; /* space below the header */
     flex-direction: row; /* puts the elements inside the header on the same line */
     justify-content: space-between; /* puts space between the elements in the header */
+    font-size: 20px;
+    font-weight: 700;
   }
 
   .contentBoxHome {
@@ -40,10 +41,49 @@
     background-color: rgba(35, 35, 35, 0.5); /* block colour */
     width: 25%; /* width of each block */
     height: 80px; /* height of each block */
-    display: grid; /* set up a grid layout inside the box */
-    place-items: center; /* put the content inside the block in the centre */
+    display: flex; /* set up a flexible layout inside the box */
+    align-items: center; /* vertically center the items */
+    justify-content: center; /* position items on opposite ends */
+    font-size: 30px;
+    font-weight: 700;
+    padding: 0; /* add horizontal padding to ensure spacing inside */
   }
-  
+
+  .minus{
+    background-color: rgba(35, 35, 35, 0); /* same color as block */
+    color: white;
+    font-size: 20px;
+    padding: 5px;
+    border: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* smooth background transition on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%
+  }
+
+  .plus{
+    background-color: rgba(35, 35, 35, 0); /* same color as block */
+    color: white;
+    font-size: 20px;
+    padding: 5px;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* smooth background transition on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%
+  }
+
+  .blockHome button:hover {
+    background-color: rgba(70, 70, 70, 0.5); /* hover effect */
+  }
+
   .firstBlockHome {
     border-top-left-radius: 10px; /* round the top and bottom left corners of the first block */
     border-bottom-left-radius: 10px;
@@ -74,8 +114,9 @@
     width: 48%; /* width of the top blocks */
     height: 40px; /* height of the top blocks */
     display: flex; /* set up a flexible layout in the blocks */
-    justify-content: center; /* puts the blcoks content in the centre */
+    justify-content: space-between; /* puts the blcoks content in the centre */
     align-items: center;
+    padding: 20px;
   }
   
   .bottomBlockHome {
@@ -84,8 +125,9 @@
     width: 48%; /* width of the top blocks */
     height: 40px; /* height of the top blocks */
     display: flex; /* set up a flexible layout in the blocks */
-    justify-content: center; /* puts the blcoks content in the centre */
+    justify-content: space-between; /* puts the blcoks content in the centre */
     align-items: center;
+    padding: 20px;
   }
   
   .paragraphsContainer1Home {
@@ -104,8 +146,20 @@
   .paragraphHome {
     width: 25%; /* width of each paragraph */
     text-align: center; /* centre the text in the paragraph */
+    font-weight: 400;
   }
   
   .energyTitleHome {
     margin-left: 20px; /* indent the energy bill heading */
+  }
+
+  .bottomTextLeft {
+    font-size: 18px;
+    font-weight: 200;
+  }
+
+  .bottomTextRight {
+    font-size: 18px;
+    font-weight: 200;
+    color: rgb(220, 220, 220)
   }

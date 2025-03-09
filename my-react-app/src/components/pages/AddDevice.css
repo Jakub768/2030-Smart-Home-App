@@ -1,4 +1,4 @@
-.mainDashboard {
+.mainAddDevice {
   position: fixed; /* Keeps the page fixed in place */
   background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
   border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
@@ -16,10 +16,34 @@
   flex-direction: column; /* put content vertically */
 }
 
-.headerDashboard {
-  display: flex; /* set up a flexible layout in the header */
-  justify-content: space-between; /* even spacing between elements */
-  margin-bottom: 10px; /* margin at the bottom of the header */
+/* Header section - back button, title, profile button */
+.addDeviceHeader {
+  display: flex; /* Flex layout for header */
+  justify-content: space-between; /* Evenly space the items */
+  margin-bottom: 10px; /* Space below the header */
+}
+
+/* Navigation button style */
+.navButtonAddDevice {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  width: 40px; /* Button width */
+  height: 40px; /* Button height */
+  display: flex; /* Flex layout */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.navButtonAddDevice:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+}
+
+.navButtonAddDevice img {
+  width: 100%;
+  height: 100%;
 }
 
 .search-container {
@@ -30,32 +54,19 @@
 .search-bar {
   width: 300px;
 }
-  
-.navButtonDashboard {
-  background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
-  color: white; /* colour of the text in the button */
-  border: none; /* remove the border on the button */
-  border-radius: 10px; /* round the corners of the button */
-  cursor: pointer; /* change cursor when hovering */
-  width: 40px; /* width of button */
-  height: 40px; /* height of button */
-  display: flex; /* set up a flexible layout in the button */
-  align-items: center; /* centre the content in the button */
-  justify-content: center;
-}
 
-.contentRowDashboard {
+.contentRowAddDevice {
   display: flex; /* set up a flexible layout in the content row */
   justify-content: space-between; /* even space between elements */
   gap: 20px; /* between the columns in the upper half */
 }
 
-.leftSectionDashboard {
+.leftSectionAddDevice {
   display: flex; /* set up a flexible layout in the left column of the content row */
   flex-direction: column; /*stack elements vertically */
 }
 
-.blockColumnDashboard {
+.blockColumnAddDevice {
   display: grid; /* set up a grid layout in the block columns */
   gap: 2px; /* gap between blocks vertically */
 }
@@ -64,21 +75,23 @@
   cursor: pointer;
 }
 
-.blockDashboard {
+.blockAddDevice {
   background-color: rgba(35, 35, 35, 0.5); /* block colour */
   width: 150px; /* block width */
   height: 30px; /* block height */
+  border-radius: 10px; /* round the corners of the button */
   display: list-item; /* set up a flexible layout in the block */
   justify-content: center; /* centre the content within the block */
   align-items: center;
 }
 
-.topBlockDashboard {
+.topBlockAddDevice {
   display: flex; /* set up a flexible layout in the top block */
   justify-content: center; /* centre the content within the block */
+  border-radius: 10px; /* round the corners of the button */
   align-items: center;
 }
 
-.headingsDashboard {
+.headingsAddDevice {
   margin-bottom: 10px; /* margin at the bottom of the headings */
 }
