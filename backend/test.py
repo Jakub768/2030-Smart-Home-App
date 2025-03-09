@@ -1,0 +1,1 @@
+import functions.stats_auto_update, functions.weather_auto_update
