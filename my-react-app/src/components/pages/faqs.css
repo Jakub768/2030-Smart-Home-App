@@ -1,0 +1,77 @@
+/* Main Container */
+.mainFaqs {
+  position: fixed; /* Keep the page content in place */
+  background-color: rgba(105, 105, 105, 0.5); /* Color of the main element */
+  border-bottom-right-radius: 25px; /* Add radius to the bottom and top right corners */
+  border-top-right-radius: 25px;
+  padding: 40px; /* Padding inside the main element */
+  margin-top: 3vw; /* Margin on the top and left of the main element */
+  margin-left: 26vw;
+  color: rgb(255, 255, 255); /* Text color */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* Border on the top, bottom, and right of the main element */
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw; /* Width of the main element */
+  height: 85vh; /* Height of the main element */
+}
+
+/* Header section - back button, title, profile button */
+.headerFaqs {
+  display: flex; /* Flex layout for header */
+  justify-content: space-between; /* Evenly space the items */
+  margin-bottom: 10px; /* Space below the header */
+}
+
+/* Navigation button style */
+.navButtonFaqs {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  width: 40px; /* Button width */
+  height: 40px; /* Button height */
+  display: flex; /* Flex layout */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.navButtonFaqs:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+}
+
+.navButtonFaqs img {
+  width: 100%;
+  height: 100%;
+}
+
+.blockFaqs {
+  background-color: rgba(35, 35, 35, 0.5); /* colour of blocks */
+  width: 100%; /* width of blocks */
+  height: 55px; /* height of blocks */
+  display: flex; /* set up a flexible layout in the blocks */
+  justify-content: center; /* centre content in the blocks */
+  align-items: center;
+  padding: 20px;
+}
+
+.question {
+  border-top-left-radius: 10px; /* round top corners of the top blocks */
+  border-top-right-radius: 10px;
+}
+
+.answer {
+  margin-bottom: 20px;
+  border-bottom-left-radius: 10px; /* round bottom corners of the bottom blocks */
+  border-bottom-right-radius: 10px;
+}
+
+.faqsColumn {
+  display: grid; /* set up a grid layout in the columns of blocks */
+  gap: 2px; /* gap between blocks vertically */
+  margin-bottom: 20px; /* margin below each column of blocks */
+}
+
+.centeredText {
+  text-align: center; /* Center text horizontally */
+}

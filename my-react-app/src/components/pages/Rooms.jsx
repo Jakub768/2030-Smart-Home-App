@@ -21,35 +21,35 @@ const Rooms = () => {
                 <div className="blockRooms firstBlockRooms">Block 1</div>
                 <div className="blockRooms">Block 2</div>
                 <div className="blockRooms">Block 3</div>
-                <div className="blockRooms lastBlockRooms">More...</div>
+                <button className="actionButtonRooms" onClick={() => navigate("/room")}>More...</button>
             </div>
             <h2 className="headingsRooms">Living Room</h2>
             <div className="sectionRooms">
                 <div className="blockRooms firstBlockRooms">Block 1</div>
                 <div className="blockRooms">Block 2</div>
                 <div className="blockRooms">Block 3</div>
-                <div className="blockRooms lastBlockRooms">More...</div>
+                <button className="actionButtonRooms">More...</button>
             </div>
             <h2 className="headingsRooms">Bathroom</h2>
             <div className="sectionRooms">
                 <div className="blockRooms firstBlockRooms">Block 1</div>
                 <div className="blockRooms">Block 2</div>
                 <div className="blockRooms">Block 3</div>
-                <div className="blockRooms lastBlockRooms">More...</div>
+                <button className="actionButtonRooms">More...</button>
             </div>
             <h2 className="headingsRooms">Bedroom 1</h2>
             <div className="sectionRooms">
                 <div className="blockRooms firstBlockRooms">Block 1</div>
                 <div className="blockRooms">Block 2</div>
                 <div className="blockRooms">Block 3</div>
-                <div className="blockRooms lastBlockRooms">More...</div>
+                <button className="actionButtonRooms">More...</button>
             </div>
             <h2 className="headingsRooms">Living Room</h2>
             <div className="sectionRooms">
                 <div className="blockRooms firstBlockRooms">Block 1</div>
                 <div className="blockRooms">Block 2</div>
                 <div className="blockRooms">Block 3</div>
-                <div className="blockRooms lastBlockRooms">More...</div>
+                <button className="actionButtonRooms">More...</button>
             </div>
         </div>
       </main>

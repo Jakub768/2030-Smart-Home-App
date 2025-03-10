@@ -10,7 +10,7 @@ export const Navbar = () => {
       <div className="sidebar-top">
         <ul className="sidebar-links">
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/home">Home</NavLink>
           </li>
           <li>
             <NavLink to="/rooms">Rooms</NavLink>

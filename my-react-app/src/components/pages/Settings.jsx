@@ -20,14 +20,15 @@ export const Settings = () => {
   const goToMyProfile = () => navigate("/myProfile");
 
   return (
-    <div className="containerSettings">
-      <main className="settings-mainSettings">
-        <button className="previousPage" onClick={() => navigate(-1)}>&lt;</button>
-        <button className="profilePage" onClick={() => navigate("/profile")}>
-          <img src={userIcon} alt="User Icon" />
-        </button>
-
-        <h1 className="settings-title">Settings</h1>
+    
+      <main className="mainSettings">
+        <div className="settingsHeader">
+          <button className="navButtonSettings" onClick={() => navigate(-1)}>{"<"}</button>
+          <h1>Settings</h1>
+          <button className="navButtonSettings" onClick={() => navigate("/profile")}>
+            <img src={userIcon} alt="User Icon" />
+          </button>
+        </div>
 
         <div className="settings-columns">
           <div className="settings-left">
@@ -76,6 +77,5 @@ export const Settings = () => {
           </div>
         </div>
       </main>
-    </div>
   );
 };

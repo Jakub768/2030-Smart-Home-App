@@ -89,6 +89,20 @@
   place-items: center; /* Put the content inside the block in the center */
 }
 
+.actionButtonRooms {
+  background-color: rgba(35, 35, 35, 0.5); /* background colour of buttons at the bottom */
+  color: white; /* text colour in the buttons */
+  border-top-left-radius: 0px; /* round corners of the buttons */
+  border-bottom-left-radius: 0px; /* round corners of the buttons */
+  border: none; /* remove border on the buttons */
+  cursor: pointer; /* change cursor to pointer when hovering over */
+  width: 25%; /* width of buttons */
+  height: 80px; /* height of buttons */
+  display: flex; /* set up a flexible layout in the button */
+  justify-content: center; /* centre the content in the button */
+  align-items: center; 
+}
+
 /* First and last block corner radius */
 .firstBlockRooms {
   border-top-left-radius: 10px; /* Round the top and bottom left corners of the first block */
