@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, session
 from flask_session import Session
-import functions.database_execute, functions.permissions_management, functions.device_management, bcrypt
+import database_execute, permissions_management, device_management, bcrypt
 from datetime import timedelta
 
 # Initialize Flask app
@@ -23,7 +23,7 @@ def login():
     if not all([username, password]):
         return jsonify({"error": "username and password are required"}), 400
 
-    user = functions.database_execute.execute_SQL("""
+    user = database_execute.execute_SQL("""
         SELECT userID, password FROM Users WHERE username = %s
     """, (username,))
 
@@ -66,7 +66,7 @@ def register():
             VALUES (%s, %s, %s, %s, %s, %s);
         """
         params = (username, hashed_password, email, first_name, last_name, role)
-        functions.database_execute.execute_SQL(query, params)
+        database_execute.execute_SQL(query, params)
 
         return jsonify({"message": "User registered successfully"}), 201
 
@@ -81,7 +81,7 @@ def get_all_users():
         SELECT userID, username, eMailAddress, firstName, lastName, roles
         FROM Users;
     """
-    result = functions.database_execute.execute_SQL(query)
+    result = database_execute.execute_SQL(query)
     return result if result else []
 
 # Route to get all users
@@ -108,11 +108,11 @@ def update_user_role():
 
     try:
         # Check if the requester has permission to update the user role
-        if not functions.permissions_management.has_permission(requester_id, user_id):
+        if not permissions_management.has_permission(requester_id, user_id):
             return jsonify({"error": "Requester does not have permission to update this user"}), 403
 
         # Update the user role
-        rows_affected = functions.permissions_management.set_role(user_id, new_role)
+        rows_affected = permissions_management.set_role(user_id, new_role)
 
         if rows_affected:
             return jsonify({"message": "User role updated successfully"}), 200
@@ -135,8 +135,8 @@ def update_permissions():
 
     try:
         # Update the user permissions
-        functions.permissions_management.allow_device_management(user_id, device_management)
-        functions.permissions_management.allow_statView(user_id, stat_view)
+        permissions_management.allow_device_management(user_id, device_management)
+        permissions_management.allow_statView(user_id, stat_view)
 
         return jsonify({"message": "User permissions updated successfully"}), 200
 
@@ -153,7 +153,7 @@ def get_active_devices_count(house_id):
         JOIN Rooms ON Devices.roomID = Rooms.roomID
         WHERE Devices.deviceStatus = 'active' AND Rooms.houseID = %s;
     """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
+    result = database_execute.execute_SQL(query, (house_id,))
     return result[0][0] if result else 0
 
 # Function to get the count of occupied rooms in a house
@@ -163,7 +163,7 @@ def get_occupied_rooms_count(house_id):
         FROM Rooms
         WHERE occupation = 'Occupied' AND houseID = %s;
     """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
+    result = database_execute.execute_SQL(query, (house_id,))
     return result[0][0] if result else 0
 
 # Function to get the last payment date for a house
@@ -171,7 +171,7 @@ def get_last_payment_date(house_id):
     query = """
         SELECT timestamp FROM BillStats WHERE houseID = %s ORDER BY timestamp DESC LIMIT 1;
     """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
+    result = database_execute.execute_SQL(query, (house_id,))
     return result[0][0] if result else None
 
 # Function to get the total energy cost since the last payment date for a house
@@ -183,7 +183,7 @@ def get_energy_cost_total(house_id, last_payment_date):
         JOIN Rooms ON Devices.roomID = Rooms.roomID
         WHERE Rooms.houseID = %s AND DeviceStats.timestamp > %s;
     """
-    result = functions.database_execute.execute_SQL(query, (house_id, last_payment_date))
+    result = database_execute.execute_SQL(query, (house_id, last_payment_date))
     return result[0][0] if result and result[0][0] is not None else 0
 
 # Function to get the latest weather information for a house
@@ -195,7 +195,7 @@ def get_latest_weather(house_id):
         ORDER BY timestamp DESC
         LIMIT 1;
     """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
+    result = database_execute.execute_SQL(query, (house_id,))
     return result[0] if result else ("Unknown", None, None, None)
 
 # Function to get the bill status for a house
@@ -207,69 +207,17 @@ def get_bill_status(house_id):
         ORDER BY timestamp DESC
         LIMIT 1;
     """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
+    result = database_execute.execute_SQL(query, (house_id,))
     if result:
         amount, paid_status, timestamp, next_due_date = result[0]
         paid_status = "Paid" if paid_status == 1 else "Unpaid"
         return amount, paid_status, timestamp, next_due_date
     return None, None, None, None
 
-# Function to get the energy consumption in the last 24 hours for a house
-def get_last_24_hours_energy_consumption(house_id):
-    query = """
-        SELECT SUM(DeviceStats.energyConsumption)
-        FROM DeviceStats
-        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
-        JOIN Rooms ON Devices.roomID = Rooms.roomID
-        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > DATE_SUB(NOW(), INTERVAL 24 HOUR);
-    """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
-    return result[0][0] if result and result[0][0] is not None else 0
-
-# Function to get the energy cost in the last 24 hours for a house
-def get_last_24_hours_energy_cost(house_id):
-    query = """
-        SELECT SUM(DeviceStats.costsOfEnergy)
-        FROM DeviceStats
-        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
-        JOIN Rooms ON Devices.roomID = Rooms.roomID
-        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > DATE_SUB(NOW(), INTERVAL 24 HOUR);
-    """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
-    return result[0][0] if result and result[0][0] is not None else 0
-
-# Function to get the top 3 most used devices in the last 24 hours for a house
-def get_last_24_hours_top_3_most_used_device(houseID):
-    query = """
-        SELECT Devices.deviceType, SUM(DeviceStats.energyConsumption) AS energyConsumed
-        FROM DeviceStats
-        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
-        JOIN Rooms ON Devices.roomID = Rooms.roomID
-        WHERE Rooms.houseID = %s
-        AND DeviceStats.timestamp > DATE_SUB(NOW(), INTERVAL 24 HOUR)
-        GROUP BY Devices.deviceType
-        ORDER BY energyConsumed DESC
-        LIMIT 3;
-    """
-    result = functions.database_execute.execute_SQL(query, (houseID,))
-    return result
-
-# Function to get the energy consumption by interval for a house
-def get_energy_consumption_by_interval(house_id, start_hour, end_hour):
-    query = """
-        SELECT SUM(DeviceStats.energyConsumption)
-        FROM DeviceStats
-        JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
-        JOIN Rooms ON Devices.roomID = Rooms.roomID
-        WHERE Rooms.houseID = %s AND DeviceStats.timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL %s HOUR AND DATE_SUB(NOW(), INTERVAL 1 DAY) + INTERVAL %s HOUR;
-    """
-    result = functions.database_execute.execute_SQL(query, (house_id, start_hour, end_hour))
-    return result[0][0] if result and result[0][0] is not None else 0
-
 # Route to get home data
 @app.route('/home', methods=['GET'])
 def get_home():
-    house_id = request.args.get('house_id')
+    house_id = 1 #request.args.get('house_id')
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -314,44 +262,73 @@ def get_home():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Function to get the past 24-hour energy consumption sorted by device type
+def get_last_24_hours_energy_consumption_per_device(house_id):
+    query = """
+        WITH LastStatus AS (
+            SELECT ds.deviceID, ds.deviceStatus, ds.deviceUsage
+            FROM DeviceStats ds
+            WHERE ds.timestamp = (
+                SELECT MAX(timestamp) 
+                FROM DeviceStats 
+                WHERE deviceID = ds.deviceID
+                AND timestamp >= NOW() - INTERVAL 24 HOUR
+            )
+        ),
+        InactiveUsage AS (
+            SELECT deviceID, SUM(deviceUsage) AS totalInactiveUsage
+            FROM DeviceStats
+            WHERE deviceStatus = 'inactive'
+            AND timestamp >= NOW() - INTERVAL 24 HOUR
+            GROUP BY deviceID
+        ),
+        LatestActive AS (
+            SELECT ds.deviceID, ds.deviceUsage AS latestActiveUsage
+            FROM DeviceStats ds
+            WHERE ds.deviceStatus = 'active'
+            AND timestamp = (
+                SELECT MAX(timestamp) 
+                FROM DeviceStats 
+                WHERE deviceID = ds.deviceID AND deviceStatus = 'active'
+            )
+        )
+
+        SELECT 
+            d.deviceName,
+            r.roomName,
+            r.houseID,
+            ls.deviceID, 
+            COALESCE(iu.totalInactiveUsage, 0) 
+            + COALESCE(la.latestActiveUsage, 0) AS totalUsage
+        FROM LastStatus ls
+        LEFT JOIN InactiveUsage iu ON ls.deviceID = iu.deviceID
+        LEFT JOIN LatestActive la ON ls.deviceID = la.deviceID
+        LEFT JOIN Devices d ON ls.deviceID = d.deviceID
+        LEFT JOIN Rooms r ON d.roomID = r.roomID
+        WHERE r.houseID = %s
+        ORDER BY totalUsage DESC
+        """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result
+
+def get_total_energy_consumed_in_last_24_hours(houseID):
+    result = get_last_24_hours_energy_consumption_per_device(houseID)
+    total_energy_consumed_in_last_24_hours = 0
+    for device in result:
+        total_energy_consumed_in_last_24_hours += device[4]
+    return total_energy_consumed_in_last_24_hours
+
 # Route to get dashboard data
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
-    house_id = request.args.get('house_id')
+    house_id = 1 #request.args.get('house_id')
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
 
     try:
-        energy_consumed = get_last_24_hours_energy_consumption(house_id)
-        energy_cost = get_last_24_hours_energy_cost(house_id)
-
-        last_24_hours = {
-            "energy_consumed": energy_consumed,
-            "energy_cost": energy_cost
-        }
-
-        result = get_last_24_hours_top_3_most_used_device(house_id)
-
-        most_energy_used_by = {
-            "device_1": result[0][0] if len(result) > 0 else None,
-            "device_2": result[1][0] if len(result) > 1 else None,
-            "device_3": result[2][0] if len(result) > 2 else None
-        }
-
-        consumption = {
-            "12am_to_6am": get_energy_consumption_by_interval(house_id, 0, 6),
-            "6am_to_12pm": get_energy_consumption_by_interval(house_id, 6, 12),
-            "12pm_to_4pm": get_energy_consumption_by_interval(house_id, 12, 16),
-            "4pm_to_8pm": get_energy_consumption_by_interval(house_id, 16, 20),
-            "8pm_to_12am": get_energy_consumption_by_interval(house_id, 20, 24)
-        }
-
-        response_data = {
-            "Last_24_Hours": last_24_hours,
-            "Most_Energy_Used_By": most_energy_used_by,
-            "Consumption": consumption
-        }
+        total_energy_consumed_in_last_24_hours = 
+        energy_consumption_by_device_type = get_last_24_hours_energy_consumption_per_device(house_id)
 
         return jsonify(response_data)
 
@@ -369,13 +346,13 @@ def get_all_devices(house_id):
         JOIN Rooms ON Devices.roomID = Rooms.roomID
         WHERE Rooms.houseID = %s;
     """
-    result = functions.database_execute.execute_SQL(query, (house_id,))
+    result = database_execute.execute_SQL(query, (house_id,))
     return result if result else []
 
 # Route to get all devices for a house
 @app.route('/devices', methods=['GET'])
 def get_devices():
-    house_id = request.args.get('house_id')
+    house_id = 1 #request.args.get('house_id')
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -404,7 +381,7 @@ def add_device():
 
     try:
         params = (device_name, device_type, room_id, user_id, energy_consumption, energy_generation, 'inactive', 0)
-        rows_affected = functions.device_management.add_device(params)
+        rows_affected = device_management.add_device(params)
 
         if rows_affected:
             return jsonify({"message": "Device added successfully"}), 201
@@ -424,7 +401,7 @@ def remove_device():
         return jsonify({"error": "Device not found"}), 400
 
     try:
-        rows_affected = functions.device_management.remove_device(device_ID)
+        rows_affected = device_management.remove_device(device_ID)
 
         if rows_affected:
             return jsonify({"message": "Device removed successfully"}), 201
@@ -445,7 +422,7 @@ def change_device_name():
         return jsonify({"error": "Device ID and new device name are required"}), 400
 
     try:
-        rows_affected = functions.device_management.change_name(device_ID, new_device_name)
+        rows_affected = device_management.change_name(device_ID, new_device_name)
 
         if rows_affected:
             return jsonify({"message": "Device name changed successfully"}), 200
@@ -466,7 +443,7 @@ def update_device_status():
 
     try:
         query = "SELECT deviceStatus FROM Devices WHERE deviceID = %s"
-        result = functions.database_execute.execute_SQL(query, (device_id,))
+        result = database_execute.execute_SQL(query, (device_id,))
 
         if not result:
             return jsonify({"error": "Device not found"}), 404
@@ -475,9 +452,9 @@ def update_device_status():
         new_status = "active" if current_status == "inactive" else "inactive"
 
         if new_status == "active":
-            rows_affected = functions.device_management.device_activate(device_id)
+            rows_affected = device_management.device_activate(device_id)
         else:
-            rows_affected = functions.device_management.device_deactivate(device_id)
+            rows_affected = device_management.device_deactivate(device_id)
 
         if rows_affected:
             return jsonify({"message": f"Device status updated to {new_status}"}), 200

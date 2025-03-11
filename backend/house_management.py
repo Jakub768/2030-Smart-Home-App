@@ -1,8 +1,8 @@
-import functions.database_execute
+import database_execute
 
 def add_house(postcode, street, city, userID):
     # Check if the house already exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM House WHERE postcode = %s
     """, (postcode,))
     
@@ -10,7 +10,7 @@ def add_house(postcode, street, city, userID):
         data = (postcode, street, city, userID)
         
         # Insert the new house into the database
-        rows_affected = functions.database_execute.execute_SQL("""
+        rows_affected = database_execute.execute_SQL("""
             INSERT INTO House (postcode, street, city, userID) 
             VALUES (%s, %s, %s, %s)
         """, data)
@@ -24,13 +24,13 @@ def add_house(postcode, street, city, userID):
 
 def remove_house(postcode):
     # Check if the house exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM House WHERE postcode = %s
     """, (postcode,))
 
     if result:
         # Delete the house from the database
-        rows_deleted = functions.database_execute.execute_SQL("""
+        rows_deleted = database_execute.execute_SQL("""
             DELETE FROM House WHERE postcode = %s;
         """, (postcode,))
 
@@ -44,7 +44,7 @@ def remove_house(postcode):
 def change_house_data(userID, postcode, street, city):
     """ Updates house details if the house exists. """
     # Check if the house exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT houseID FROM House 
         WHERE userID = %s AND postcode = %s AND street = %s AND city = %s
     """, (userID, postcode, street, city))
@@ -54,7 +54,7 @@ def change_house_data(userID, postcode, street, city):
         data = (userID, postcode, street, city, house_id)
 
         # Update the house details in the database
-        rows_updated = functions.database_execute.execute_SQL("""
+        rows_updated = database_execute.execute_SQL("""
             UPDATE House
             SET userID = %s, postcode = %s, street = %s, city = %s
             WHERE houseID = %s;

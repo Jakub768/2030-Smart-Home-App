@@ -1,8 +1,8 @@
-import functions.database_execute
+import database_execute
 
 def add_room(roomName, userID, houseID):
     # Check if the room already exists for the user
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomName = %s AND userID = %s
     """, (roomName, userID))
 
@@ -10,7 +10,7 @@ def add_room(roomName, userID, houseID):
         data = (roomName, userID, houseID, "Free")
 
         # Insert the new room into the database
-        rows_affected = functions.database_execute.execute_SQL("""
+        rows_affected = database_execute.execute_SQL("""
             INSERT INTO Rooms (roomName, userID, houseID, occupation) 
             VALUES (%s, %s, %s, %s)
         """, data)
@@ -24,13 +24,13 @@ def add_room(roomName, userID, houseID):
 
 def remove_room(roomID):
     # Check if the room exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomID = %s
     """, (roomID,))
 
     if result:
         # Delete the room from the database
-        rows_deleted = functions.database_execute.execute_SQL("""
+        rows_deleted = database_execute.execute_SQL("""
             DELETE FROM Rooms WHERE roomID = %s;
         """, (roomID,))
 
@@ -43,13 +43,13 @@ def remove_room(roomID):
 
 def change_room_name(roomID, newRoomName):
     # Check if the room exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomID = %s
     """, (roomID,))
 
     if result:
         # Update the room name in the database
-        rows_updated = functions.database_execute.execute_SQL("""
+        rows_updated = database_execute.execute_SQL("""
             UPDATE Rooms
             SET roomName = %s
             WHERE roomID = %s;
@@ -69,13 +69,13 @@ def change_room_status(roomID, newOccupation):
         return
 
     # Check if the room exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM Rooms WHERE roomID = %s
     """, (roomID,))
 
     if result:
         # Update the room occupation status in the database
-        rows_updated = functions.database_execute.execute_SQL("""
+        rows_updated = database_execute.execute_SQL("""
             UPDATE Rooms
             SET occupation = %s
             WHERE roomID = %s;

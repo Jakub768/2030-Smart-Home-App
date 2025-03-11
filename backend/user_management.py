@@ -1,8 +1,8 @@
-import functions.database_execute
+import database_execute
 
 def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth):
     # Check if the username already exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM Users WHERE username = %s
     """, (username,))
 
@@ -10,7 +10,7 @@ def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth)
         data = (username, password, eMailAddress, firstName, lastName, dateOfBirth)
         
         # Insert the new user into the database
-        rows_affected = functions.database_execute.execute_SQL("""
+        rows_affected = database_execute.execute_SQL("""
             INSERT INTO Users (username, password, eMailAddress, firstName, lastName, dateOfBirth) 
             VALUES (%s, %s, %s, %s, %s, %s)
         """, data)
@@ -24,13 +24,13 @@ def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth)
 
 def remove_user(username):
     # Check if the user exists
-    result = functions.database_execute.execute_SQL("""
+    result = database_execute.execute_SQL("""
         SELECT * FROM Users WHERE username = %s
     """, (username,))
 
     if result:
         # Delete the user from the database
-        rows_deleted = functions.database_execute.execute_SQL("""
+        rows_deleted = database_execute.execute_SQL("""
             DELETE FROM Users WHERE username = %s
         """, (username,))
 

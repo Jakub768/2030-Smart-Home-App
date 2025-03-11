@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+import datetime
 
 def execute_SQL(query, params=None):
     try:
@@ -27,7 +28,8 @@ def execute_SQL(query, params=None):
         
         # Commit the transaction for non-SELECT statements
         mydb.commit()
-        print("Commit successful!")
+        timestamp = datetime.datetime.now()
+        print(f"Commit successful! {timestamp}")
         return cursor.rowcount
 
     except Error as e:
