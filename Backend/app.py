@@ -75,77 +75,6 @@ def register():
 # User Management Functions
 # -------------------------
 
-# Function to get all users
-def get_all_users():
-    query = """
-        SELECT userID, username, eMailAddress, firstName, lastName, roles
-        FROM Users;
-    """
-    result = database_execute.execute_SQL(query)
-    return result if result else []
-
-# Route to get all users
-@app.route('/users', methods=['GET'])
-def get_users():
-    try:
-        users = get_all_users()
-        return jsonify({"users": users}), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Route to update the role of a user
-@app.route('/update_user_role', methods=['POST'])
-def update_user_role():
-    data = request.get_json()
-
-    user_id = data.get('user_id')
-    new_role = data.get('new_role')
-    requester_id = data.get('requester_id')
-
-    if not all([user_id, new_role, requester_id]):
-        return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400
-
-    try:
-        # Check if the requester has permission to update the user role
-        if not permissions_management.has_permission(requester_id, user_id):
-            return jsonify({"error": "Requester does not have permission to update this user"}), 403
-
-        # Update the user role
-        rows_affected = permissions_management.set_role(user_id, new_role)
-
-        if rows_affected:
-            return jsonify({"message": "User role updated successfully"}), 200
-        else:
-            return jsonify({"error": "Failed to update user role"}), 500
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/update_permissionos', methods=['POST'])
-def update_permissions():
-    data = request.get_json()
-
-    user_id = data.get('user_id')
-    device_management = data.get('device_management')
-    stat_view = data.get('stat_view')
-
-    if not all([user_id, device_management, stat_view]):
-        return jsonify({"error": "user_id, device_management, and stat_view are required"}), 400
-
-    try:
-        # Update the user permissions
-        permissions_management.allow_device_management(user_id, device_management)
-        permissions_management.allow_statView(user_id, stat_view)
-
-        return jsonify({"message": "User permissions updated successfully"}), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-# Home and Dashboard Data Functions
-# ---------------------------------
-
-# Function to get the count of active devices in a house
 def get_active_devices_count(house_id):
     query = """
         SELECT COUNT(*) 
@@ -201,7 +130,7 @@ def get_latest_weather(house_id):
 # Function to get the bill status for a house
 def get_bill_status(house_id):
     query = """
-        SELECT amount, paidStatus, timestamp, nextBillDue
+        SELECT amount, paidStatus, nextBillDue
         FROM BillStats
         WHERE houseID = %s
         ORDER BY timestamp DESC
@@ -209,9 +138,9 @@ def get_bill_status(house_id):
     """
     result = database_execute.execute_SQL(query, (house_id,))
     if result:
-        amount, paid_status, timestamp, next_due_date = result[0]
+        amount, paid_status, next_due_date = result[0]
         paid_status = "Paid" if paid_status == 1 else "Unpaid"
-        return amount, paid_status, timestamp, next_due_date
+        return amount, paid_status, next_due_date
     return None, None, None, None
 
 # Route to get home data
@@ -228,7 +157,7 @@ def get_home():
         last_payment_date = get_last_payment_date(house_id)
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
         weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)
-        past_bill_amount, paid_status, timestamp, next_due_date = get_bill_status(house_id)
+        past_bill_amount, paid_status, next_due_date = get_bill_status(house_id)
         current_amount = energy_cost_total
 
         inside_the_residence = {
@@ -246,7 +175,6 @@ def get_home():
         energy_bill = {
             "Bill_Paid_Status": paid_status,
             "Past_Bill_Amount": past_bill_amount,
-            "Last_Paid_Date": timestamp,
             "Next_Due_Date": next_due_date,
             "Current_Amount": current_amount
         }
@@ -261,62 +189,113 @@ def get_home():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+    
 # Function to get the past 24-hour energy consumption sorted by device type
 def get_last_24_hours_energy_consumption_per_device(house_id):
     query = """
-        WITH LastStatus AS (
-            SELECT ds.deviceID, ds.deviceStatus, ds.deviceUsage
-            FROM DeviceStats ds
-            WHERE ds.timestamp = (
-                SELECT MAX(timestamp) 
-                FROM DeviceStats 
-                WHERE deviceID = ds.deviceID
-                AND timestamp >= NOW() - INTERVAL 24 HOUR
-            )
-        ),
-        InactiveUsage AS (
-            SELECT deviceID, SUM(deviceUsage) AS totalInactiveUsage
-            FROM DeviceStats
-            WHERE deviceStatus = 'inactive'
-            AND timestamp >= NOW() - INTERVAL 24 HOUR
-            GROUP BY deviceID
-        ),
-        LatestActive AS (
-            SELECT ds.deviceID, ds.deviceUsage AS latestActiveUsage
-            FROM DeviceStats ds
-            WHERE ds.deviceStatus = 'active'
-            AND timestamp = (
-                SELECT MAX(timestamp) 
-                FROM DeviceStats 
-                WHERE deviceID = ds.deviceID AND deviceStatus = 'active'
-            )
-        )
-
         SELECT 
-            d.deviceName,
+            ds.deviceID, 
+            d.deviceName, 
             r.roomName,
-            r.houseID,
-            ls.deviceID, 
-            COALESCE(iu.totalInactiveUsage, 0) 
-            + COALESCE(la.latestActiveUsage, 0) AS totalUsage
-        FROM LastStatus ls
-        LEFT JOIN InactiveUsage iu ON ls.deviceID = iu.deviceID
-        LEFT JOIN LatestActive la ON ls.deviceID = la.deviceID
-        LEFT JOIN Devices d ON ls.deviceID = d.deviceID
-        LEFT JOIN Rooms r ON d.roomID = r.roomID
-        WHERE r.houseID = %s
-        ORDER BY totalUsage DESC
-        """
+            SUM(ds.energyConsumption)
+        FROM 
+            DeviceStats ds
+        JOIN 
+            Devices d ON ds.deviceID = d.deviceID
+        JOIN
+            Rooms r ON d.roomID = r.roomID
+        WHERE
+            ds.timestamp BETWEEN NOW() - INTERVAL 1 DAY AND NOW() 
+            AND ds.deviceStatus = 'conclusion'
+            AND r.houseID = %s
+        GROUP BY 
+            ds.deviceID, d.deviceName, r.roomName
+        ORDER BY 
+            ds.deviceID DESC
+    """
     result = database_execute.execute_SQL(query, (house_id,))
     return result
 
-def get_total_energy_consumed_in_last_24_hours(houseID):
-    result = get_last_24_hours_energy_consumption_per_device(houseID)
-    total_energy_consumed_in_last_24_hours = 0
-    for device in result:
-        total_energy_consumed_in_last_24_hours += device[4]
-    return total_energy_consumed_in_last_24_hours
+def get_total_energy_consumed_in_last_24_hours(house_id):
+    query = """
+        SELECT 
+        SUM(ds.energyConsumption)
+        FROM 
+        DeviceStats ds
+        JOIN 
+        Devices d ON ds.deviceID = d.deviceID
+        JOIN
+        Rooms r ON d.roomID = r.roomID
+        WHERE
+        timestamp BETWEEN NOW() - INTERVAL 1 DAY AND NOW() 
+        AND ds.deviceStatus = 'conclusion'
+        AND houseID = %s
+        ORDER BY 
+        ds.deviceID DESC
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result
+
+def get_total_costs_of_energy_in_last_24_hours(house_id):
+    query = """
+        SELECT 
+        SUM(ds.costsOfEnergy)
+        FROM 
+        DeviceStats ds
+        JOIN 
+        Devices d ON ds.deviceID = d.deviceID
+        JOIN
+        Rooms r ON d.roomID = r.roomID
+        WHERE
+        timestamp BETWEEN NOW() - INTERVAL 1 DAY AND NOW() 
+        AND ds.deviceStatus = 'conclusion'
+        AND houseID = %s
+        ORDER BY 
+        ds.deviceID DESC
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result
+
+def get_energy_consumption_by_time_interval(house_id, time1, time2):
+    query = """
+        SELECT 
+        COALESCE(SUM(ds.energyConsumption), 0)
+        FROM 
+        DeviceStats ds
+        JOIN 
+        Devices d ON ds.deviceID = d.deviceID
+        JOIN
+        Rooms r ON d.roomID = r.roomID
+        WHERE 
+        timestamp BETWEEN NOW() - INTERVAL 1 DAY AND NOW()
+        AND ds.deviceStatus = 'conclusion'
+        AND TIME(ds.timestamp) BETWEEN %s AND %s
+        AND r.houseID = %s
+        ORDER BY 
+        ds.deviceID DESC
+    """
+    result = database_execute.execute_SQL(query, (time1, time2, house_id))
+    return result
+
+def get_last_completed_jobs(house_id):
+    query = """
+        SELECT 
+        ds.timestamp, d.deviceType, ds.energyConsumption
+        FROM 
+        DeviceStats ds
+        JOIN 
+        Devices d ON ds.deviceID = d.deviceID
+        JOIN
+        Rooms r ON d.roomID = r.roomID
+        WHERE 
+        timestamp BETWEEN NOW() - INTERVAL 1 DAY AND NOW()
+        AND ds.deviceStatus = 'conclusion'
+        AND r.houseID = %s
+        ORDER BY 
+        ds.deviceID DESC
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result
 
 # Route to get dashboard data
 @app.route('/dashboard', methods=['GET'])
@@ -327,21 +306,72 @@ def get_dashboard():
         return jsonify({"error": "house_id is required"}), 400
 
     try:
-        total_energy_consumed_in_last_24_hours = 
-        energy_consumption_by_device_type = get_last_24_hours_energy_consumption_per_device(house_id)
+        total_energy_consumed_in_last_24_hours = get_total_energy_consumed_in_last_24_hours(house_id)
+        total_costs_of_energy_in_last_24_hours = get_total_costs_of_energy_in_last_24_hours(house_id)
+        last_24_hours_energy_consumption_per_device = get_last_24_hours_energy_consumption_per_device(house_id)
+
+        device_list = last_24_hours_energy_consumption_per_device
+
+        Last_24_hours = {
+            "total_energy_consumed": total_energy_consumed_in_last_24_hours[0][0],
+            "total_costs_of_energy": total_costs_of_energy_in_last_24_hours[0][0]
+        }
+
+        Most_energy_used_by = {}
+
+        if len(device_list) > 0:
+            Most_energy_used_by["device 1"] = {
+                "device_id": device_list[0][0],
+                "device_name": device_list[0][1],  # Fixed typo from 'device_mame' to 'device_name'
+                "room_name": device_list[0][2],
+                "energy_consumed": device_list[0][3],
+            }
+
+        if len(device_list) > 1:
+            Most_energy_used_by["device 2"] = {
+                "device_id": device_list[1][0],
+                "device_name": device_list[1][1],
+                "room_name": device_list[1][2],
+                "energy_consumed": device_list[1][3],
+            }
+
+        if len(device_list) > 2:
+            Most_energy_used_by["device 3"] = {
+                "device_id": device_list[2][0],
+                "device_name": device_list[2][1],
+                "room_name": device_list[2][2],
+                "energy_consumed": device_list[2][3],
+            }
+
+
+        Consumption = {
+            "12am to 6am": get_energy_consumption_by_time_interval(house_id, '00:00:00', '06:00:00'),
+            "6am to 12pm": get_energy_consumption_by_time_interval(house_id, '06:00:00', '12:00:00'),
+            "12pm to 4pm": get_energy_consumption_by_time_interval(house_id, '12:00:00', '16:00:00'),
+            "4pm to 8pm": get_energy_consumption_by_time_interval(house_id, '16:00:00', '20:00:00'),
+            "8pm to 12am": get_energy_consumption_by_time_interval(house_id, '20:00:00', '00:00:00')
+        }
+
+        pie_chart = {
+            "devices": get_last_completed_jobs(house_id)
+        }
+
+        response_data = {
+        "Last_24_hours": Last_24_hours,
+        "Most_energy_used_by": Most_energy_used_by,
+        "Consumption": Consumption,
+        "pie_chart": pie_chart
+    }
+
 
         return jsonify(response_data)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# Device Management Functions
-# ---------------------------
-
-# Function to get all devices for a house
+    
 def get_all_devices(house_id):
     query = """
-        SELECT Devices.deviceID, Devices.deviceName, Devices.deviceType, Devices.deviceStatus, Devices.energyConsumption, Devices.energyGeneration, Devices.deviceUsage
+        SELECT Devices.deviceID, Devices.deviceName, Devices.deviceType, Devices.deviceStatus
         FROM Devices
         JOIN Rooms ON Devices.roomID = Rooms.roomID
         WHERE Rooms.houseID = %s;
@@ -360,6 +390,89 @@ def get_devices():
     try:
         devices = get_all_devices(house_id)
         return jsonify({"devices": devices}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# Function to get all users
+def get_all_users():
+    query = """
+        SELECT username, roles
+        FROM Users;
+    """
+    result = database_execute.execute_SQL(query)
+    return result if result else []
+
+# Route to get all users
+@app.route('/users', methods=['GET'])
+def get_users():
+    try:
+        users = get_all_users()
+        return jsonify({"users": users}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+def get_past_7_days_to_now_data():
+    
+
+def get_past_14_days_to_7_days_data():
+
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    try:
+        past_7_days_to_now_data = get_past_7_days_to_now_data
+        past_14_days_to_7_days_data = get_past_14_days_to_7_days_data()
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Route to update the role of a user
+@app.route('/update_user_role', methods=['POST'])
+def update_user_role():
+    data = request.get_json()
+
+    user_id = data.get('user_id')
+    new_role = data.get('new_role')
+    requester_id = data.get('requester_id')
+
+    if not all([user_id, new_role, requester_id]):
+        return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400
+
+    try:
+        # Check if the requester has permission to update the user role
+        if not permissions_management.has_permission(requester_id, user_id):
+            return jsonify({"error": "Requester does not have permission to update this user"}), 403
+
+        # Update the user role
+        rows_affected = permissions_management.set_role(user_id, new_role)
+
+        if rows_affected:
+            return jsonify({"message": "User role updated successfully"}), 200
+        else:
+            return jsonify({"error": "Failed to update user role"}), 500
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/update_permissionos', methods=['POST'])
+def update_permissions():
+    data = request.get_json()
+
+    user_id = data.get('user_id')
+    device_management = data.get('device_management')
+    stat_view = data.get('stat_view')
+
+    if not all([user_id, device_management, stat_view]):
+        return jsonify({"error": "user_id, device_management, and stat_view are required"}), 400
+
+    try:
+        # Update the user permissions
+        permissions_management.allow_device_management(user_id, device_management)
+        permissions_management.allow_statView(user_id, stat_view)
+
+        return jsonify({"message": "User permissions updated successfully"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
