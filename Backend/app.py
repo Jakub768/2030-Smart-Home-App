@@ -393,8 +393,69 @@ def get_devices():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+def get_past_7_days_to_now_data(house_id):
+    query = """
+        SELECT 
+            SUM(energyConsumption),
+            SUM(energyGeneration),
+            SUM(costsOfEnergy),
+            SUM(deviceUsage)
+        FROM 
+            DeviceStats
+        JOIN 
+            Devices ON DeviceStats.deviceID = Devices.deviceID
+        JOIN
+            Rooms ON Devices.roomID = Rooms.roomID
+        WHERE 
+            Rooms.houseID = %s
+            AND timestamp >= NOW() - INTERVAL 7 DAY
+            AND DeviceStats.deviceStatus = 'conclusion'
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result if result else []
+    
 
+def get_past_14_days_to_7_days_data(house_id):
+    query = """
+        SELECT 
+            SUM(energyConsumption),
+            SUM(energyGeneration),
+            SUM(costsOfEnergy),
+            SUM(deviceUsage)
+        FROM 
+            DeviceStats
+        JOIN 
+            Devices ON DeviceStats.deviceID = Devices.deviceID
+        JOIN
+            Rooms ON Devices.roomID = Rooms.roomID
+        WHERE 
+            Rooms.houseID = %s
+            AND timestamp >= NOW() - INTERVAL 14 DAY
+            AND timestamp < NOW() - INTERVAL 7 DAY
+            AND DeviceStats.deviceStatus = 'conclusion'
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result if result else []
 
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    house_id = 1 #request.args.get('house_id')
+    
+    try:
+        past_7_days_to_now_data = get_past_7_days_to_now_data(house_id)
+        past_14_days_to_7_days_data = get_past_14_days_to_7_days_data(house_id)
+
+        response_data = {
+            "past_7_days_to_now_data": past_7_days_to_now_data,
+            "past_14_days_to_7_days_data": past_14_days_to_7_days_data
+        }
+
+        return jsonify(response_data), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # Function to get all users
 def get_all_users():
     query = """
@@ -414,16 +475,57 @@ def get_users():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-def get_past_7_days_to_now_data():
+def get_user_info(user_id):
+    query = """
+        SELECT firstName, lastName, userName, eMailAddress, password 
+        FROM Users 
+        WHERE userID = %s
+    """
+    result = database_execute.execute_SQL(query, (user_id,))
+    return result
+
+def get_house_address(house_id):
+    query = """
+        SELECT postcode, street, city
+        FROM House 
+        WHERE userID = %s
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result
     
-
-def get_past_14_days_to_7_days_data():
-
-@app.route('/stats', methods=['GET'])
-def get_stats():
+@app.route('/my_profiles', methods=['GET'])
+def get_my_profiles():
+    user_id = 1 # request.args.get('user_id')
+    house_id = 1 # request.args.get('house_id')
     try:
-        past_7_days_to_now_data = get_past_7_days_to_now_data
-        past_14_days_to_7_days_data = get_past_14_days_to_7_days_data()
+        profile = get_user_info(user_id)
+        first_name = profile[0][0]
+        last_name = profile[0][1]
+        username = profile[0][2]
+        e_mail = profile[0][3]
+        password = profile[0][4].encode('utf-8')
+
+        nick_name = first_name + "'s House"
+        address_info = get_house_address(house_id)
+        address = address_info[0][2] + " " + address_info[0][0]
+
+        user_info = {
+            "first name": first_name,
+            "last name": last_name,
+            "username": username,
+            "e_mail": e_mail,
+            "password": password
+        }
+
+        residence = {
+            "nick name": nick_name,
+            "address": address
+        }
+
+        my_profile = {
+            user_info
+        }
+        return jsonify({"my_profile": my_profile}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -456,7 +558,7 @@ def update_user_role():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/update_permissionos', methods=['POST'])
+@app.route('/update_permissions', methods=['POST'])
 def update_permissions():
     data = request.get_json()
 
@@ -468,7 +570,6 @@ def update_permissions():
         return jsonify({"error": "user_id, device_management, and stat_view are required"}), 400
 
     try:
-        # Update the user permissions
         permissions_management.allow_device_management(user_id, device_management)
         permissions_management.allow_statView(user_id, stat_view)
 
