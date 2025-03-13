@@ -190,6 +190,38 @@ def get_home():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+def get_last_30_days_energy_consumption_per_device(house_id):
+    query = """
+        SELECT r.roomName, d.deviceName, d.deviceType, SUM(ds.energyConsumption) AS totalEnergy
+        FROM DeviceStats ds
+        JOIN Devices d ON ds.deviceID = d.deviceID
+        JOIN Rooms r on d.roomID = r.roomID
+        WHERE ds.deviceStatus = 'conclusion'
+        AND r.houseID = %s
+        AND ds.timestamp BETWEEN NOW() - INTERVAL 30 DAY AND NOW() 
+        GROUP BY r.roomName, d.deviceName, d.deviceType
+        ORDER BY totalEnergy
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result
+
+@app.route('/rooms', methods=['GET'])
+def get_rooms():
+    house_id = 1 #request.args.get('house_id')
+
+    if not house_id:
+        return jsonify({"error": "house_id is required"}), 400
+
+    try:
+        rooms = get_last_30_days_energy_consumption_per_device(house_id)
+        response_data = {
+            rooms
+        }
+        return jsonify(response_data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # Function to get the past 24-hour energy consumption sorted by device type
 def get_last_24_hours_energy_consumption_per_device(house_id):
     query = """
