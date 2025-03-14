@@ -53,36 +53,115 @@
 
 .searchInput {
   width: 100%;
-  padding: 8px;
+  padding: 20px;
+  font-size: 20px;
   margin-bottom: 16px;
-  background-color: #3a3a3a;
+  background-color: rgba(35, 35, 35, 0.5); /* block colour */
   color: white;
-  border-radius: 5px;
+  border-radius: 50px;
   border: none;
+  box-shadow:inset 0px 0px 4px rgba(0, 0, 0, 0.5);
+  outline: none; /* Removes the outline */
+  height: 40px
+}
+
+.searchInput::placeholder {
+  color: rgb(180, 180, 180); /* Set the placeholder text color */
 }
 
 .usersList {
-  background-color: #1e1e1e;
-  padding: 16px;
-  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(85vh - 195px); /* Ensure it doesn't exceed available space in .mainUsers */
+  overflow-y: auto; /* Enable scrolling for long lists */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(35, 35, 35, 0.5) transparent;
 }
 
 .userItem {
+  background-color: rgba(35, 35, 35, 0.5);
+  padding: 8px;
+  padding-left: 20px;
+  font-size: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #444;
+  height: 100%; /* Adjust the height of each block */
+  width: 100%;
+  margin-bottom: 2px;
 }
+
+/* Rounded corners for the first block */
+.topBlockUser {
+  border-radius: 10px 10px 0 0;
+}
+
+/* Rounded corners for the last block */
+.bottomBlockUser {
+  border-radius: 0 0 10px 10px;
+}
+
 
 .username {
   padding-right: 400px;
 }
 
+.roleSelectWrapper {
+  position: relative;
+  width: 150px;
+  cursor: pointer;
+}
+
+/* The role select box */
 .roleSelect {
-  background-color: #3a3a3a;
-  color: white;
+  background-color: rgba(40, 40, 40, 0.5); /* Background color */
+  color: white; /* Text color */
+  padding: 10px; /* Padding inside */
+  border-radius: 5px; /* Rounded corners */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 16px;
+}
+
+/* Arrow for dropdown */
+.arrow {
+  font-size: 16px;
+}
+
+/* The custom dropdown menu */
+.customDropdown {
+  background-color: rgb(40, 40, 40); /* Background of dropdown */
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto; /* Enables scrolling for long lists */
   border-radius: 5px;
-  padding: 5px;
-  border: none;
+  margin-top: 5px;
+  z-index: 10;
+}
+
+/* Each option in the dropdown */
+.dropdownOption {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Line between options */
+}
+
+/* Last option without border */
+.dropdownOption:last-child {
+  border-bottom: none;
+}
+
+/* Hover effect for each option */
+.dropdownOption:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+}
+
+.separatorLine {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* Light border for separation */
+  margin-bottom: 16px; /* Space below the line */
 }

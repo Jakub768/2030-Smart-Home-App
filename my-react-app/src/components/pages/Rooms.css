@@ -48,7 +48,8 @@
 .sectionRooms {
   display: flex; /* Set up a flexible layout in the section */
   gap: 2px; /* Gap between the blocks */
-  margin-top: 20px; /* Margin at the top of the section */
+  margin-top: 15px; /* Margin at the top of the section */
+  margin-bottom: 15px; /* Margin at the top of the section */
   overflow-x: auto; /* Enable horizontal scrolling */
   width: 100%; /* Ensure it takes full width */
   position: relative; /* Position for the buttons */

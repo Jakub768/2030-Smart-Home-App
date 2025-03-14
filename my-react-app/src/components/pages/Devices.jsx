@@ -76,14 +76,18 @@ const Devices = () => {
         <div className="DevicesHeader">
           <div className="leftHeader">
           <button className="navButtonDevices" onClick={() => navigate(-1)}>{"<"}</button>
-          <button className="addDevice">Add Device</button>
+          <button className="addDevice" onClick={() => navigate("/add_device")}>Add Device</button>
           </div>
+          <div className="centreHeader">
           <h1>Devices</h1>
+          </div>
+          <div className="rigthHeader">
           <button className="navButtonDashboard" onClick={() => navigate("/profile")}>
             <img src={userIcon} alt="User Icon" />
           </button>
+          </div>
         </div>
-        <div style={{ height: '68vh', overflowY: 'scroll' }}>
+        <div>
             <h2 className="headingsDevices">Lights</h2>
             <div className="sectionDevices">
             <div className="toggle-container">

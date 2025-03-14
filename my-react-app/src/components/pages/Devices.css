@@ -35,7 +35,6 @@
 
   .contentDevices {
     height: 100vh;
-    overflow-y: scroll;
   }
 
   .sectionDevices {
@@ -76,6 +75,7 @@
     border-radius: 10px;
     margin-bottom: 0;
     margin-bottom: -10px;
+    border: none
   }
   
   .no-gap2 {
@@ -154,11 +154,25 @@
     align-items: center;
     width: 115px;
     text-align: center;
+    border: none
   }
 
   .leftHeader {
     display: flex; /* set up a flexible layout in the header */
-    justify-content: space-between; /* even spacing between elements */
+    justify-content: left; /* even spacing between elements */
     margin-bottom: 10px; /* margin at the bottom of the header */
     gap: 10px; /* gap between the blocks */
+    width: 33%;
+  }
+
+  .centreHeader {
+    width: 33%;
+    display: flex; /* Set up a flexible layout in the header */
+    justify-content: center; /* even spacing between elements */
+  }
+
+  .rigthHeader {
+    width: 33%;
+    display: flex; /* Set up a flexible layout in the header */
+    justify-content: right; /* even spacing between elements */
   }

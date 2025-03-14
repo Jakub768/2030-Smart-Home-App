@@ -43,3 +43,38 @@
     width: 100%;
     height: 100%;
   }
+
+  .contentRoom {
+    margin-top: 20px;
+    flex-grow: 1; /* Takes remaining space */
+    overflow-y: auto; /* Enables scrolling */
+    height: 550px; /* Ensures it fits within .mainRoom */
+    scrollbar-width: thin; /* Makes scrollbar thinner */
+    scrollbar-color: rgba(35, 35, 35, 0.5) transparent; /* Thumb color, then track color */
+  }
+  
+  /* Make the section scrollable horizontally */
+  .sectionRoom {
+    display: flex; /* Set up a flexible layout in the section */
+    flex-wrap: wrap;
+    justify-content: flex-start;  /* Align items to the start of the row */
+    gap: 2px;
+    width: 100%; /* Ensure it takes full width */
+  }
+
+  .blockRoom {
+    background-color: rgba(35, 35, 35, 0.5); /* Block color */
+    width: 24.84%; /* Width of each block */
+    height: 80px; /* Height of each block */
+    display: grid; /* Set up a grid layout inside the box */
+    place-items: center; /* Put the content inside the block in the center */
+  }
+
+  .sectionRoom:first-of-type .blockRoom:nth-child(4) {
+    border-top-right-radius: 15px; /* Rounds the top right corner of the fourth block */
+  }
+  
+  /* For the last row */
+  .sectionRoom:last-of-type .blockRoom:first-child {
+    border-top-left-radius: 15px; /* Curves the top-left corner of the first block in the last row */
+  }
