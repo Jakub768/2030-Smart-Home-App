@@ -535,7 +535,7 @@ def get_my_profiles():
         last_name = profile[0][1]
         username = profile[0][2]
         e_mail = profile[0][3]
-        password = profile[0][4].encode('utf-8')
+        password = profile[0][4]
 
         nick_name = first_name + "'s House"
         address_info = get_house_address(house_id)
@@ -555,7 +555,8 @@ def get_my_profiles():
         }
 
         my_profile = {
-            user_info
+            "user_info": user_info,
+            "residence": residence
         }
         return jsonify({"my_profile": my_profile}), 200
 
