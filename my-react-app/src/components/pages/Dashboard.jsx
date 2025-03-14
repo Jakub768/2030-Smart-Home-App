@@ -18,6 +18,37 @@ export const Dashboard = () => {
     "Message 8"
   ]);
 
+  // State to store the data
+    const [data, setData] = useState(null);
+  
+    // State to handle loading and errors
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+  
+    // Fetch data when component mounts
+    useEffect(() => {
+      // Fetch the data from the Flask API
+      fetch('http://127.0.0.1:5000/dashboard')
+        .then((response) => response.json())  // Parse the JSON response
+        .then((data) => {
+          setData(data);  // Set data to state
+          setLoading(false);  // Set loading to false after data is fetched
+        })
+        .catch((err) => {
+          setError('Failed to fetch data');
+          setLoading(false);
+        });
+    }, []);
+  
+    // Render the component
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+  
+    if (error) {
+      return <div>{error}</div>;
+    }
+
   return (
       <main className="mainDashboard">
         {/* Top section containing Back button, Title, and Right-side div */}
@@ -41,16 +72,16 @@ export const Dashboard = () => {
             <div>
               <h2 className="headingsDashboard">Last 24 Hours</h2>
               <div className="blockColumnDashboard">
-                <div className="blockDashboard topBlockDashboard">Block 1</div>
-                <div className="blockDashboard bottomBlockDashboard">Block 2</div>
+                <div className="blockDashboard topBlockDashboard"><p>Energy Consumed</p><p>{data.Last_24_hours.total_energy_consumed}</p></div>
+                <div className="blockDashboard bottomBlockDashboard"><p>Energy Cost</p><p>{data.Last_24_hours.total_costs_of_energy}</p></div>
               </div>
             </div>
             <div style={{ marginTop: "10px", marginBottom: "10px" }}>
               <h2 className="headingsDashboard">Most energy consumed by</h2>
               <div className="blockColumnDashboard">
-                <div className="blockDashboard topBlockDashboard">Block 1</div>
-                <div className="blockDashboard">Block 2</div>
-                <div className="blockDashboard bottomBlockDashboard">Block 3</div>
+                <div className="blockDashboard topBlockDashboard"><p>1</p><p></p></div>
+                <div className="blockDashboard"><p>2</p><p></p></div>
+                <div className="blockDashboard bottomBlockDashboard"><p>3</p><p></p></div>
               </div>
             </div>
           </div>
