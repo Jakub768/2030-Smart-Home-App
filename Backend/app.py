@@ -351,28 +351,35 @@ def get_dashboard():
 
         Most_energy_used_by = {}
 
-        if len(device_list) > 0:
-            Most_energy_used_by["device 1"] = {
-                "device_id": device_list[0][0],
-                "device_name": device_list[0][1],  # Fixed typo from 'device_mame' to 'device_name'
-                "room_name": device_list[0][2],
-                "energy_consumed": device_list[0][3],
-            }
+        if device_list:
+            if len(device_list) > 0:
+                Most_energy_used_by["device 1"] = {
+                    "device_id": device_list[0][0],
+                    "device_name": device_list[0][1],
+                    "room_name": device_list[0][2],
+                    "energy_consumed": device_list[0][3],
+                }
 
-        if len(device_list) > 1:
-            Most_energy_used_by["device 2"] = {
-                "device_id": device_list[1][0],
-                "device_name": device_list[1][1],
-                "room_name": device_list[1][2],
-                "energy_consumed": device_list[1][3],
-            }
+            if len(device_list) > 1:
+                Most_energy_used_by["device 2"] = {
+                    "device_id": device_list[1][0],
+                    "device_name": device_list[1][1],
+                    "room_name": device_list[1][2],
+                    "energy_consumed": device_list[1][3],
+                }
 
-        if len(device_list) > 2:
-            Most_energy_used_by["device 3"] = {
-                "device_id": device_list[2][0],
-                "device_name": device_list[2][1],
-                "room_name": device_list[2][2],
-                "energy_consumed": device_list[2][3],
+            if len(device_list) > 2:
+                Most_energy_used_by["device 3"] = {
+                    "device_id": device_list[2][0],
+                    "device_name": device_list[2][1],
+                    "room_name": device_list[2][2],
+                    "energy_consumed": device_list[2][3],
+                }
+        else:
+            Most_energy_used_by = {"device_id": "None",
+            "device_name": "None",
+            "room_name": "None",
+            "energy_consumed": "None"
             }
 
 
