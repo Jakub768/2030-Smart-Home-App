@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request, session
 from flask_session import Session
 import database_execute, permissions_management, device_management, bcrypt
 from datetime import timedelta
+import device_stats_auto_update
+import weather_auto_update
+import bill_stats_auto_update
 
 # Initialize Flask app
 app = Flask(__name__)
