@@ -3,9 +3,10 @@ import flask_cors
 import flask_session
 import database_execute, permissions_management, device_management, bcrypt
 from datetime import timedelta
-import device_stats_auto_update
-import weather_auto_update
-import bill_stats_auto_update
+import decimal
+# import device_stats_auto_update
+# import weather_auto_update
+# import bill_stats_auto_update
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -172,7 +173,7 @@ def get_home():
 
         outside_the_residence = {
             "Weather_Description": weather_type,
-            "Temperature": temperature,
+            "Temperature": int(temperature / decimal.Decimal('0.5')) * 0.5,
             "Humidity": humidity,
             "Wind_Speed": wind_speed
         }
