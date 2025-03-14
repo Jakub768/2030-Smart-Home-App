@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, session
 import flask_cors
 import flask_session
 import database_execute, permissions_management, device_management, bcrypt
-from datetime import timedelta
+import datetime
 import decimal
 # import device_stats_auto_update
 # import weather_auto_update
@@ -12,7 +12,7 @@ import decimal
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(minutes=30)
 flask_session.Session(app)
 flask_cors.CORS(app)
 
@@ -181,7 +181,7 @@ def get_home():
         energy_bill = {
             "Bill_Paid_Status": paid_status,
             "Past_Bill_Amount": past_bill_amount,
-            "Next_Due_Date": next_due_date,
+            "Next_Due_Date": next_due_date.strftime("%d/%m/%Y"),
             "Current_Amount": current_amount
         }
 
