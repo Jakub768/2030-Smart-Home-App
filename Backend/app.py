@@ -214,9 +214,15 @@ def get_rooms():
 
     try:
         rooms = get_last_30_days_energy_consumption_per_device(house_id)
-        response_data = {
-            "rooms": rooms
-        }
+
+        if rooms:
+            response_data = {
+                "rooms": rooms
+            }
+        else:
+            response_data = {
+                "rooms": "None"
+            }
         return jsonify(response_data)
 
     except Exception as e:
