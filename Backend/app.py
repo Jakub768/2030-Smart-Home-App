@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
-flask_session.Sesson(app)
+flask_session.Session(app)
 flask_cors.CORS(app)
 
 # User Authentication Functions
