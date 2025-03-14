@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, session
-from flask_session import Session
+import flask_cors
+import flask_session
 import database_execute, permissions_management, device_management, bcrypt
 from datetime import timedelta
 import device_stats_auto_update
@@ -11,7 +12,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
-Session(app)
+flask_session.Sesson(app)
+flask_cors.CORS(app)
 
 # User Authentication Functions
 # -----------------------------
