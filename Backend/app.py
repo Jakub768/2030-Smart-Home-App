@@ -215,7 +215,7 @@ def get_rooms():
     try:
         rooms = get_last_30_days_energy_consumption_per_device(house_id)
         response_data = {
-            rooms
+            "rooms": rooms
         }
         return jsonify(response_data)
 
