@@ -65,8 +65,9 @@
   width: 450px; /* Block width */
   height: 50px; /* Block height */
   display: flex; /* Flex layout for blocks */
-  justify-content: center; /* Center content horizontally */
+  justify-content: space-between; /* Center content horizontally */
   align-items: center; /* Center content vertically */
+  padding: 20px;
 }
 
 /* Top block with rounded top corners */
