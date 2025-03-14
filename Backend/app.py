@@ -219,19 +219,32 @@ def get_rooms():
         return jsonify({"error": "house_id is required"}), 400
 
     try:
-        rooms = get_last_30_days_energy_consumption_per_device(house_id)
-        if rooms:
-            response_data = {
-            "rooms": rooms
+        rooms_data_list = get_last_30_days_energy_consumption_per_device(house_id)
+        visited_room = {}
+
+        for rooms_data in rooms_data_list:
+            roomName = rooms_data[0]  # Ensure roomName is assigned first
+
+            if roomName not in visited_room:
+                visited_room[roomName] = []  # Initialize an empty list for the room
+
+            new_device_info = {
+                "device_name": rooms_data[1],
+                "device_type": rooms_data[2],
+                "total_energy": rooms_data[3]
             }
-        else:
-            response_data = {
-                "rooms": "None"
-            }
-        return jsonify(response_data)
+
+            visited_room[roomName].append(new_device_info)  # Use append instead of insert
+
+        result = {
+            "rooms": visited_room
+        }
+
+        return jsonify(result)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
     
 # Function to get the past 24-hour energy consumption sorted by device type
 def get_last_24_hours_energy_consumption_per_device(house_id):
