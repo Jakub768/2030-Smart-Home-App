@@ -37,6 +37,24 @@ const Rooms = () => {
     return <div>{error}</div>;
   }
 
+  // Group the devices by room
+  const groupedRooms = data.rooms.reduce((acc, roomData) => {
+    const roomName = roomData[0];
+    const device = {
+      name: roomData[1],
+      type: roomData[2],
+      energyUsage: roomData[3],
+    };
+
+    // If the room already exists in the accumulator, add the device to that room's array
+    if (!acc[roomName]) {
+      acc[roomName] = [];
+    }
+    acc[roomName].push(device);
+
+    return acc;
+  }, {});
+
   return (
     <main className="mainRooms">
       <div className="roomsHeader">
@@ -47,19 +65,19 @@ const Rooms = () => {
         </button>
       </div>
       <div className="contentRooms">
-        {/* Use the fetched data */}
-        {data && data.rooms.map((roomData, roomIndex) => {
-          const roomName = roomData[0];  // The first element is the room name
-          const devices = roomData.slice(1);  // The rest are the device details (name, type, kWh)
+        {/* Map through the grouped rooms */}
+        {Object.keys(groupedRooms).map((roomName) => {
+          const devices = groupedRooms[roomName];
 
           return (
-            <div key={roomIndex}>
+            <div>
               <h2>{roomName}</h2>
               <div className="sectionRooms">
-                {/* Map through devices */}
+                {/* Map through devices in each room and display device name and energy usage */}
                 {devices.map((device, deviceIndex) => (
-                  <div className={`blockRooms ${deviceIndex === 0 ? 'firstBlockRooms' : ''}`} key={deviceIndex}>
-                    {device} {/* Here you may need to adjust based on how you want to display the data */}
+                  <div className={`blockRooms ${deviceIndex === 0 ? 'firstBlockRooms' : ''}`}>
+                    <div>{device.name}</div>
+                    <div>{device.energyUsage} kWh</div>
                   </div>
                 ))}
                 <button className="actionButtonRooms" onClick={() => navigate(`/room/${roomName}`)}>

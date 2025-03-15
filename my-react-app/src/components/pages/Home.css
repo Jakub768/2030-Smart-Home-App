@@ -81,7 +81,7 @@
   }
 
   .blockHome button:hover {
-    background-color: rgba(70, 70, 70, 0.5); /* hover effect */
+    background-color: rgba(40, 40, 40, 0.5); /* hover effect */
   }
 
   .firstBlockHome {
