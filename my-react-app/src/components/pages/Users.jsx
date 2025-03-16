@@ -1,51 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Users.css'; 
 import userIcon from '../images/User.png';
 import { useNavigate } from 'react-router-dom';
 
-const initialUsers = [
-  { id: 1, username: 'username1', role: 'Homeowner' },
-  { id: 2, username: 'username2', role: 'Admin' },
-  { id: 3, username: 'username3', role: 'User' },
-  { id: 4, username: 'username4', role: 'User' },
-  { id: 5, username: 'username5', role: 'User' },
-  { id: 6, username: 'username6', role: 'User' },
-  { id: 7, username: 'username7', role: 'User' },
-  { id: 8, username: 'username8', role: 'User' },
-  { id: 9, username: 'username9', role: 'User' },
-  { id: 10, username: 'username10', role: 'User' },
-  { id: 11, username: 'username11', role: 'User' },
-  { id: 12, username: 'username12', role: 'User' },
-  { id: 13, username: 'username13', role: 'User' },
-];
-
 const Users = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState(initialUsers);
   const [searchTerm, setSearchTerm] = useState('');
   const [openDropdownId, setOpenDropdownId] = useState(null); // Track open dropdown by user ID
   const [roleSelectArrow, setRoleSelectArrow] = useState({}); // Track individual arrow states
 
-  const updateUserRole = (id, newRole) => {
-    setUsers(users.map(user => user.id === id ? { ...user, role: newRole } : user));
-  };
+  // State to store the data
+  const [data, setData] = useState(null);
 
-  const filteredUsers = users.filter(user =>
+  // State to handle loading and errors
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch data when component mounts
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/users')
+      .then((response) => response.json())  // Parse the JSON response
+      .then((data) => {
+        setData(data);  // Set data to state
+        setLoading(false);  // Set loading to false after data is fetched
+      })
+      .catch((err) => {
+        setError('Failed to fetch data');
+        setLoading(false);
+      });
+  }, []);
+
+  // Render the component
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  // Flatten the userList into an array of users
+  const usersArray = data.users.map(usersData => {
+    return {
+      username: usersData[0],  // Assuming the username is at index 0
+      role: usersData[1],      // Assuming the role is at index 1
+    };
+  });
+
+  // Filter users based on search term
+  const filteredUsers = usersArray.filter(user =>
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle option selection for the custom dropdown
-  const handleOptionClick = (role, userId) => {
-    updateUserRole(userId, role);
-    setOpenDropdownId(null); // Close dropdown after selection
-    setRoleSelectArrow(prev => ({ ...prev, [userId]: false })); // Reset arrow state after selection
+  const updateUserRole = (username, newRole) => {
+    setData(prevData => {
+      const updatedRooms = prevData.users.map((usersData) => {
+        if (usersData[0] === username) { // Use username to identify the user
+          return [usersData[0], newRole]; // Update role
+        }
+        return usersData;
+      });
+      return { ...prevData, users: updatedRooms }; // Return updated data object
+    });
   };
 
-  const toggleArrow = (userId) => {
+  // Handle option selection for the custom dropdown
+  const handleOptionClick = (role, username) => {
+    updateUserRole(username, role);
+    setOpenDropdownId(null); // Close dropdown after selection
+    setRoleSelectArrow(prev => ({ ...prev, [username]: false })); // Reset arrow state after selection
+  };
+
+  const toggleArrow = (username) => {
+    // Close previously opened dropdown and reset the arrow for it
+    if (openDropdownId && openDropdownId !== username) {
+      setRoleSelectArrow(prev => ({ ...prev, [openDropdownId]: false }));
+    }
+    
     setRoleSelectArrow(prev => ({
       ...prev,
-      [userId]: !prev[userId], // Toggle the arrow state for the specific user
+      [username]: !prev[username], // Toggle the arrow state for the specific user
     }));
+    
+    setOpenDropdownId(prevOpen => (prevOpen === username ? null : username)); // Toggle open/close of dropdown
   };
 
   return (
@@ -66,9 +103,10 @@ const Users = () => {
       />
       <div className="separatorLine"></div>
       <div className="usersList">
+        {/* Map through the filtered users */}
         {filteredUsers.map((user, index) => (
           <div
-            key={user.id}
+            key={user.username} // Unique key for each user
             className={`userItem ${index === 0 ? 'topBlockUser' : ''} ${index === filteredUsers.length - 1 ? 'bottomBlockUser' : ''}`}
           >
             <span className="username">{user.username}</span>
@@ -78,22 +116,21 @@ const Users = () => {
               <div
                 className="roleSelect"
                 onClick={() => {
-                  setOpenDropdownId(openDropdownId === user.id ? null : user.id);
-                  toggleArrow(user.id); // Toggle arrow for this user
+                  toggleArrow(user.username); // Toggle arrow for this user
                 }}
               >
-                <span>{user.role}</span>
+                <span>{user.role}</span> {/* Display the role */}
                 <span className="arrow">
-                  {roleSelectArrow[user.id] ? '▼' : '►'}
+                  {roleSelectArrow[user.username] ? '▼' : '►'} {/* Arrow based on the state of the dropdown */}
                 </span>
               </div>
 
-              {openDropdownId === user.id && (
+              {openDropdownId === user.username && (
                 <ul className="customDropdown">
                   {['Homeowner', 'Admin', 'User'].map((role) => (
                     <li
                       key={role}
-                      onClick={() => handleOptionClick(role, user.id)}
+                      onClick={() => handleOptionClick(role, user.username)} // Pass username to handle role change
                       className="dropdownOption"
                     >
                       {role}

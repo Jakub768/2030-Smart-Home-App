@@ -1,42 +1,42 @@
 .mainUsers {
-  position: fixed; /* Keep the page content in place */
-  background-color: rgba(105, 105, 105, 0.5); /* Color of the main element */
-  border-bottom-right-radius: 25px; /* Add radius to the bottom and top right corners */
+  position: fixed;
+  background-color: rgba(105, 105, 105, 0.5);
+  border-bottom-right-radius: 25px;
   border-top-right-radius: 25px;
-  padding: 40px; /* Padding inside the main element */
-  margin-top: 3vw; /* Margin on the top and left of the main element */
+  padding: 40px;
+  margin-top: 3vw;
   margin-left: 26vw;
-  color: rgb(255, 255, 255); /* Text color */
-  border-top: 2px solid rgba(240, 240, 240, 0.5); /* Border on the top, bottom, and right of the main element */
+  color: rgb(255, 255, 255);
+  border-top: 2px solid rgba(240, 240, 240, 0.5);
   border-bottom: 2px solid rgba(240, 240, 240, 0.5);
   border-right: 2px solid rgba(240, 240, 240, 0.5);
-  width: 71vw; /* Width of the main element */
-  height: 85vh; /* Height of the main element */
+  width: 71vw;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Header section - back button, title, profile button */
 .headerUsers {
-  display: flex; /* Flex layout for header */
-  justify-content: space-between; /* Evenly space the items */
-  margin-bottom: 10px; /* Space below the header */
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
-/* Navigation button style */
 .navButtonUsers {
-  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
-  color: white; /* Text color */
-  border: none; /* No border */
-  border-radius: 10px; /* Rounded corners */
-  cursor: pointer; /* Pointer cursor on hover */
-  width: 40px; /* Button width */
-  height: 40px; /* Button height */
-  display: flex; /* Flex layout */
-  align-items: center; /* Center content vertically */
-  justify-content: center; /* Center content horizontally */
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navButtonUsers:hover {
-  background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .navButtonUsers img {
@@ -56,24 +56,25 @@
   padding: 20px;
   font-size: 20px;
   margin-bottom: 16px;
-  background-color: rgba(35, 35, 35, 0.5); /* block colour */
+  background-color: rgba(35, 35, 35, 0.5);
   color: white;
   border-radius: 50px;
   border: none;
-  box-shadow:inset 0px 0px 4px rgba(0, 0, 0, 0.5);
-  outline: none; /* Removes the outline */
-  height: 40px
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.5);
+  outline: none;
+  height: 40px;
 }
 
 .searchInput::placeholder {
-  color: rgb(180, 180, 180); /* Set the placeholder text color */
+  color: rgb(180, 180, 180);
 }
 
+/* Updated to make usersList flexible */
 .usersList {
   display: flex;
   flex-direction: column;
-  max-height: calc(85vh - 195px); /* Ensure it doesn't exceed available space in .mainUsers */
-  overflow-y: auto; /* Enable scrolling for long lists */
+  flex-grow: 1; /* Makes the user list take up the remaining space */
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(35, 35, 35, 0.5) transparent;
 }
@@ -86,21 +87,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100%; /* Adjust the height of each block */
+  height: 50px; /* Fixed height for each user item */
   width: 100%;
   margin-bottom: 2px;
 }
 
-/* Rounded corners for the first block */
 .topBlockUser {
   border-radius: 10px 10px 0 0;
 }
 
-/* Rounded corners for the last block */
 .bottomBlockUser {
   border-radius: 0 0 10px 10px;
 }
-
 
 .username {
   padding-right: 400px;
@@ -112,12 +110,11 @@
   cursor: pointer;
 }
 
-/* The role select box */
 .roleSelect {
-  background-color: rgba(40, 40, 40, 0.5); /* Background color */
-  color: white; /* Text color */
-  padding: 10px; /* Padding inside */
-  border-radius: 5px; /* Rounded corners */
+  background-color: rgba(40, 40, 40, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -125,43 +122,38 @@
   font-size: 16px;
 }
 
-/* Arrow for dropdown */
 .arrow {
   font-size: 16px;
 }
 
-/* The custom dropdown menu */
 .customDropdown {
-  background-color: rgb(40, 40, 40); /* Background of dropdown */
+  background-color: rgb(40, 40, 40);
   position: absolute;
   top: 100%;
   width: 100%;
   max-height: 200px;
-  overflow-y: auto; /* Enables scrolling for long lists */
+  overflow-y: auto;
   border-radius: 5px;
   margin-top: 5px;
   z-index: 10;
 }
 
-/* Each option in the dropdown */
 .dropdownOption {
   padding: 10px;
   font-size: 16px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Line between options */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Last option without border */
 .dropdownOption:last-child {
   border-bottom: none;
 }
 
-/* Hover effect for each option */
 .dropdownOption:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Light hover effect */
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .separatorLine {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* Light border for separation */
-  margin-bottom: 16px; /* Space below the line */
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 16px;
 }

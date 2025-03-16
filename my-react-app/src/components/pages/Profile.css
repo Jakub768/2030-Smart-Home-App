@@ -54,7 +54,10 @@
     justify-content: center; /* centre the content in the button */
     align-items: center; 
   }
-  
+
+  .actionButtonProfile:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* background colour of buttons at the bottom */
+  }  
   .blockPro {
     background-color: rgba(35, 35, 35, 0.5); /* colour of blocks */
     width: 100%; /* width of blocks */
@@ -94,3 +97,67 @@
   .userDetails {
     color: rgb(200, 200, 200);
   }
+
+  /* popUp Overlay (Background) */
+.popUpOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Dark background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* popUp Content */
+.popUpContent {
+  border: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
+  background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+}
+
+/* popUp Input */
+.popUpInput {
+  width: 100%;
+  height: 35px;
+  padding-left: 20px;
+  margin: 10px 0;
+  background-color: rgba(35, 35, 35, 0.5);
+  color: white;
+  border-radius: 50px;
+  border: none;
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.5);
+  outline: none;
+  font-size: 16px;
+}
+
+/* popUp Buttons */
+.popUpButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.popUpButton {
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 48%;
+  height: 35px;
+  border: none;
+  background-color: rgba(35, 35, 35, 0.5); /* background colour of buttons at the bottom */
+  border-radius: 10px;
+}
+
+.popUpButton:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* background colour of buttons at the bottom */
+  cursor: pointer;
+}
+
+.popUpPara {
+  margin-top: 10px;
+}
