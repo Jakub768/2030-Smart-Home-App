@@ -1,0 +1,88 @@
+.container {
+  width: 600px;
+  display: flex;
+  margin: auto;
+  background-color: rgba(105, 105, 105, 0.5);
+  border-radius: 25px;
+  max-height: 88vh;
+  border: 2px solid rgba(240, 240, 240, 0.5);
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.header{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap:9px;
+  width:200px;
+  margin-top: 30px;
+}
+
+.signupHeader{
+  color:white;
+  font-size: 48px;
+  font-weight:bold;
+  padding-bottom: 20px;
+}
+
+.inputs{
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.input{
+  display: flex;
+  align-items: center;
+  margin:auto;
+  width:480px;
+  height: 60px;
+  padding: 20px;
+  background-color: rgba(35, 35, 35, 0.5);
+  color: white;
+  border-radius: 50px;
+  border: none;
+  box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.5);
+  outline: none;
+}
+
+.input input {
+  height: 50px;
+  width: 400px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 19px;
+  padding-left: 10px;
+}
+
+.input input::placeholder {
+  color: rgb(180, 180, 180);
+}
+
+.submitContainer{
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  justify-content: space-between;
+}
+
+.submit{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 220px;
+  height: 59px;
+  color: white;
+  background-color: rgba(35, 35, 35, 0.5); /* Block color */
+  border-radius: 10px;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}

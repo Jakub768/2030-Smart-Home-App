@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom"; // Import useLocation
 import "./App.css";
 import { Navbar } from "./components/Navbar";
 import { About, Signin, Home, Services, Settings } from "./components/pages";
@@ -12,11 +12,17 @@ import Users from "./components/pages/Users";
 import Faqs from "./components/pages/Faqs";
 import AddDevice from "./components/pages/AddDevice";
 import Room from "./components/pages/Room";
+import Signup from "./components/pages/Signup";
+import Login from "./components/pages/Login";
 
 function App() {
   const [roomsData, setRoomsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const location = useLocation(); // Get current location
+
+  
 
   useEffect(() => {
     // Fetch the rooms data from your API or JSON file
@@ -41,14 +47,17 @@ function App() {
     return <div>{error}</div>;
   }
 
+  // Hide Navbar on Login and Signup page
+  const showNavbar = !['/', '/signup'].includes(location.pathname);
+
   return (
     <div className="App">
-      {location.pathname !== "/" && <Navbar />}
+      {/* Conditionally render Navbar based on current route */}
+      {showNavbar && <Navbar />}
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/" element={<Signin />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
@@ -59,6 +68,8 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/faqs" element={<Faqs />} />
         <Route path="/add_device" element={<AddDevice />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         {/* Pass roomsData to the Room component */}
         <Route path="/room/:roomName" element={<Room rooms={roomsData} />} />
       </Routes>

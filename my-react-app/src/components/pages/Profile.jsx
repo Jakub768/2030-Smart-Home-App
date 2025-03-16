@@ -67,39 +67,103 @@ const Profile = () => {
 
   // Handle saving the updated value
   const handleSave = () => {
-    if (editing == 'password') {
-      // Check if new password matches the confirm new password
+    // Case where we are updating password
+    if (editing === 'password') {
+      // Password validation logic
       if (newPassword !== confirmNewPassword) {
         alert("New passwords do not match.");
         return;
       }
-
-      // Proceed to save the new password
-      const updatedData = { ...data };
-      updatedData.my_profile.user_info.password = newPassword;
-      setData(updatedData); // Update the state with the new data
+  
+      // Correctly structure updated_info with field name as the key (password is the field name here)
+      const formattedData = `{ 
+        "username": "${data.my_profile.user_info.username}",
+        "updated_info": { 
+            "${editing}": "${newPassword}"
+        }
+    }`; 
+      
+      // Log the data with quotes added manually
+      console.log(formattedData);
+  
+      // Send password update to backend using POST
+      fetch('http://127.0.0.1:5000/update_profile', {
+        method: 'POST',  // POST method
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: formattedData
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message === 'Profile updated successfully') {
+            alert('Password updated successfully');
+            const updatedData = { ...data };
+            updatedData.my_profile.user_info.password = newPassword;
+            setData(updatedData);  // Update the state with the new password
+          } else {
+            alert('Failed to update password');
+          }
+        })
+        .catch((error) => {
+          console.error('Error updating password:', error);
+          alert('Failed to update password');
+        });
     } else {
-      const updatedData = { ...data };
-
-      // Update the specific field with the new value
-      if (editSection == 'user_info') {
-        updatedData.my_profile.user_info[editing] = newValue;
-      } else if (editSection === 'residence') {
-        updatedData.my_profile.residence[editing] = newValue;
-      }
-
-      setData(updatedData); // Update the state with the new data
+      // For other fields (e.g., first name, last name)
+      // Dynamically set the field name using "editing" as the field name
+      const formattedData = `{ 
+        "username": "${data.my_profile.user_info.username}",
+        "updated_info": { 
+            "${editing}": "${newValue}"
+        }
+    }`;  
+      
+      // Log the data with quotes added manually
+      console.log(formattedData);
+  
+      // Send the updated field to the backend using POST
+      fetch('http://127.0.0.1:5000/update_profile', {
+        method: 'POST',  // POST method
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: formattedData
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message === 'Profile updated successfully') {
+            console.log("yeye");
+            alert(`${fieldLabels[editing]} updated successfully`);
+            const updatedData = { ...data };
+            if (editSection === 'user_info') {
+              updatedData.my_profile.user_info[editing] = newValue;
+            } else if (editSection === 'residence') {
+              updatedData.my_profile.residence[editing] = newValue;
+            }
+            setData(updatedData);  // Update the state with the new data
+          } else {
+            alert(`Failed to update ${fieldLabels[editing]}`);
+          }
+        })
+        .catch((error) => {
+          console.error(`Error updating ${fieldLabels[editing]}:`, error);
+          alert(`Failed to update ${fieldLabels[editing]}`);
+        });
     }
-
-    setisPopUpOpen(false); // Close the popUp
-    setEditing(null); // Reset editing state
-    setEditSection(''); // Reset section state
+  
+    // Close the popup and reset states
+    setisPopUpOpen(false);
+    setEditing(null);
+    setEditSection('');
     setOldPassword('');
     setNewPassword('');
     setConfirmNewPassword('');
-    setIsOldPasswordValid(false); // Reset old password validity
-    setIsOldPasswordChecked(false); // Reset old password checked state
+    setIsOldPasswordValid(false);
+    setIsOldPasswordChecked(false);
   };
+  
+  
 
   // Handle closing the popUp without saving
   const handleClosepopUp = () => {
@@ -137,6 +201,11 @@ const Profile = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
+  const handleSignOut = () => {
+    localStorage.clear(); // Clear all items in localStorage
+    navigate("/");
+  };
 
   return (
     <main className="mainProfile">
@@ -197,7 +266,7 @@ const Profile = () => {
 
       {/* Bottom Section with Two Buttons */}
       <div className="bottomSectionProfile">
-        <button className="actionButtonProfile">Sign Out</button>
+        <button className="actionButtonProfile" onClick={handleSignOut}>Sign Out</button>
         <button className="actionButtonProfile">Change User</button>
       </div>
 
