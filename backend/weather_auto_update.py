@@ -6,7 +6,7 @@ import threading
 
 last_updated_time = datetime.datetime.now()
 
-schedule_update_time = (0, 0, 15, 0) # Schedule update time: (days, hours, minutes, seconds)
+schedule_update_time = (0, 0, 0, 30) # Schedule update time: (days, hours, minutes, seconds)
 schedule_update_time_in_seconds = schedule_update_time[0] * 24 * 60 * 60 + schedule_update_time[1] * 60 * 60 + schedule_update_time[2] * 60 + schedule_update_time[3]
 print(f"Scheduled weather update time: {schedule_update_time[0]} days {schedule_update_time[1]} hours {schedule_update_time[2]} minutes {schedule_update_time[3]} seconds, ")
 
