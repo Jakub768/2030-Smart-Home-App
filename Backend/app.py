@@ -238,28 +238,17 @@ def get_home():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
-    print(house_id)  # Or use logging to output the result
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
 
     try:
         active_devices_count = get_active_devices_count(house_id)
-        print(active_devices_count)  
         occupied_rooms_count = get_occupied_rooms_count(house_id)
-        print(occupied_rooms_count)  
-
         last_payment_date = get_last_payment_date(house_id)
-        print(last_payment_date)  
-
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
-        print(energy_cost_total)  
-
         weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)# Or use logging to output the result
-        print(weather_type, temperature, humidity, wind_speed)  
-
         past_bill_amount, paid_status, next_due_date = get_bill_status(house_id)
-        print(past_bill_amount, paid_status, next_due_date)  
         current_amount = energy_cost_total
 
         inside_the_residence = {
@@ -684,7 +673,7 @@ def get_house_address(house_id):
     query = """
         SELECT postcode, street, city
         FROM House 
-        WHERE userID = %s
+        WHERE houseID = %s
     """
     result = database_execute.execute_SQL(query, (house_id,))
     return result
@@ -693,7 +682,7 @@ def get_user_id_by_username(username):
     query = """
         SELECT userID
         FROM Users
-        WHERE u.username = %s
+        WHERE username = %s
     """
     result = database_execute.execute_SQL(query, (username,))
     return result
@@ -701,19 +690,28 @@ def get_user_id_by_username(username):
 @app.route('/my_profiles', methods=['GET'])
 def get_my_profiles():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
-    user_id = get_user_id_by_username('username')
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
+    user_id_list = get_user_id_by_username(username)
+    user_id = user_id_list[0][0]
+    print(house_id)  # Or use logging to output the result
+    print(user_id)  # Or use logging to output the result
+
     try:
-        profile = get_user_info(user_id)
-        first_name = profile[0][0]
-        last_name = profile[0][1]
-        username = profile[0][2]
-        e_mail = profile[0][3]
-        password = profile[0][4]
+        profile_list = get_user_info(user_id)
+        profile = profile_list[0]
+        first_name = profile[0]
+        last_name = profile[1]
+        username = profile[2]
+        e_mail = profile[3]
+        password = profile[4]
 
         nick_name = first_name + "'s House"
-        address_info = get_house_address(house_id)
-        address = address_info[0][2] + " " + address_info[0][0]
+        print(nick_name)
+        address_info_list = get_house_address(house_id)
+        print(address_info_list)
+        address_info = address_info_list[0]
+        address = address_info[0] + " " + address_info[1]
 
         user_info = {
             "first name": first_name,
