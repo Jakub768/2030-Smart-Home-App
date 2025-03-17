@@ -35,3 +35,8 @@
     align-items: center; /* centre the content in the button */
     justify-content: center;
   }
+  
+  .navButtonAbout img {
+    width: 100%;
+    height: 100%;
+  }

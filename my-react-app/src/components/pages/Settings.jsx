@@ -77,8 +77,8 @@ export const Settings = () => {
           </div>
 
           <div className="settings-right">
-            <button className="no-gap1" onClick={() => navigate("/about")}>About<span className="arrow">&gt;</span></button>
-            <button className="no-gap1" onClick={() => navigate("/update")}>Software Update<span className="arrow">&gt;</span></button>
+            <button className="no-gap1">About<span className="arrow">&gt;</span></button>
+            <button className="no-gap2">Software Update<span className="arrow">&gt;</span></button>
 
             <h2>Accessibility</h2>
             <button className="no-gap1">Background<span className="arrow">&gt;</span></button>
