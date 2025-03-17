@@ -9,11 +9,12 @@ import Rooms from "./components/pages/Rooms";
 import Stats from "./components/pages/Stats";
 import Devices from "./components/pages/Devices";
 import Users from "./components/pages/Users";
-import Faqs from "./components/pages/Faqs";
+import Faqs from "./components/pages/faqs";
 import AddDevice from "./components/pages/AddDevice";
 import Room from "./components/pages/Room";
 import Signup from "./components/pages/Signup";
 import Login from "./components/pages/Login";
+import softwareUpdate from "./components/pages/softwareUpdate";
 
 function App() {
   const location = useLocation(); // Get current location
@@ -38,6 +39,7 @@ function App() {
         <Route path="/devices" element={<Devices />} />
         <Route path="/users" element={<Users />} />
         <Route path="/faqs" element={<Faqs />} />
+        <Route path="/softwareUpdate" element={<softwareUpdate />} />
         <Route path="/add_device" element={<AddDevice />} />
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
