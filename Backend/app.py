@@ -238,28 +238,17 @@ def get_home():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
-    print(house_id)  # Or use logging to output the result
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
 
     try:
         active_devices_count = get_active_devices_count(house_id)
-        print(active_devices_count)  
         occupied_rooms_count = get_occupied_rooms_count(house_id)
-        print(occupied_rooms_count)  
-
         last_payment_date = get_last_payment_date(house_id)
-        print(last_payment_date)  
-
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
-        print(energy_cost_total)  
-
         weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)# Or use logging to output the result
-        print(weather_type, temperature, humidity, wind_speed)  
-
         past_bill_amount, paid_status, next_due_date = get_bill_status(house_id)
-        print(past_bill_amount, paid_status, next_due_date)  
         current_amount = energy_cost_total
 
         inside_the_residence = {
@@ -294,7 +283,7 @@ def get_home():
     
 def get_last_30_days_energy_consumption_per_device(house_id):
     query = """
-        SELECT r.roomName, d.deviceName, d.deviceType, SUM(ds.energyConsumption) AS totalEnergy
+        SELECT r.roomName, d.deviceName, SUM(ds.energyConsumption) AS totalEnergy
         FROM DeviceStats ds
         JOIN Devices d ON ds.deviceID = d.deviceID
         JOIN Rooms r on d.roomID = r.roomID
@@ -321,60 +310,49 @@ def get_devices_per_room_using_house(house_ID):
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
 
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
 
     try:
+        result = {}
         rooms_data_list = get_last_30_days_energy_consumption_per_device(house_id)
         visited_room = {}
-
-        for rooms_data in rooms_data_list:
-            roomName = rooms_data[0]  # Ensure roomName is assigned first
-
-            if roomName not in visited_room:
-                visited_room[roomName] = []  # Initialize an empty list for the room
-
-            new_device_info = {
-                "device_name": rooms_data[1],
-                "device_type": rooms_data[2],
-                "total_energy": rooms_data[3]
-            }
-
-            visited_room[roomName].append(new_device_info)  # Use append instead of insert
-
-        result = {
-            "rooms": visited_room
-        }
-
-        return jsonify(result)
-
-    except Exception as e:
-        try:
-            rooms_data_list = get_devices_per_room_using_house(house_id)
-            visited_room = {}
-
+        device_checked = {}
+        if rooms_data_list:
             for rooms_data in rooms_data_list:
-                roomName = rooms_data[0]  # Ensure roomName is assigned first
-
+                roomName = rooms_data[0]
                 if roomName not in visited_room:
-                    visited_room[roomName] = []  # Initialize an empty list for the room
-
+                    visited_room[roomName] = []
                 new_device_info = {
                     "device_name": rooms_data[1],
+                    "total_energy": rooms_data[2]
                 }
+                visited_room[roomName].append(new_device_info)
+                device_checked[rooms_data[1]] = 1
+        rooms_data_list = get_devices_per_room_using_house(house_id)
+        visited_room = {}
 
-                visited_room[roomName].append(new_device_info)  # Use append instead of insert
-
+        if rooms_data_list:
+            for rooms_data in rooms_data_list:
+                roomName = rooms_data[0]
+                if roomName not in visited_room:
+                    visited_room[roomName] = []
+                if rooms_data[1] not in device_checked:
+                    new_device_info = {
+                        "device_name": rooms_data[1],
+                    }
+                    visited_room[roomName].append(new_device_info)
             result = {
                 "rooms": visited_room
             }
+        return jsonify(result)
 
-            return jsonify(result)
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
     
 # Function to get the past 24-hour energy consumption sorted by device type
@@ -488,7 +466,8 @@ def get_last_completed_jobs(house_id):
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -578,7 +557,8 @@ def get_all_devices(house_id):
 @app.route('/devices', methods=['GET'])
 def get_devices():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -636,7 +616,9 @@ def get_past_14_days_to_7_days_data(house_id):
 
 @app.route('/stats', methods=['GET'])
 def get_stats():
-    house_id = request.args.get('house_id')
+    username = request.args.get('username')
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
     
     try:
         past_7_days_to_now_data = get_past_7_days_to_now_data(house_id)
@@ -653,19 +635,24 @@ def get_stats():
         return jsonify({"error": str(e)}), 500
     
 # Function to get all users
-def get_all_users():
+def get_all_users(house_id):
     query = """
-        SELECT username, roles
-        FROM Users;
+        SELECT u.username, u.roles
+        FROM Users u
+        JOIN House h ON u.userID = h.userID
+        WHERE houseID = %s
     """
-    result = database_execute.execute_SQL(query)
+    result = database_execute.execute_SQL(query, (house_id,))
     return result if result else []
 
 # Route to get all users
 @app.route('/users', methods=['GET'])
 def get_users():
+    username = request.args.get('username')
+    house_id_list = get_house_id_by_username(username)
+    house_id = 1 #house_id_list[0][0]
     try:
-        users = get_all_users()
+        users = get_all_users(house_id)
         return jsonify({"users": users}), 200
 
     except Exception as e:
@@ -684,7 +671,7 @@ def get_house_address(house_id):
     query = """
         SELECT postcode, street, city
         FROM House 
-        WHERE userID = %s
+        WHERE houseID = %s
     """
     result = database_execute.execute_SQL(query, (house_id,))
     return result
@@ -693,7 +680,7 @@ def get_user_id_by_username(username):
     query = """
         SELECT userID
         FROM Users
-        WHERE u.username = %s
+        WHERE username = %s
     """
     result = database_execute.execute_SQL(query, (username,))
     return result
@@ -701,19 +688,23 @@ def get_user_id_by_username(username):
 @app.route('/my_profiles', methods=['GET'])
 def get_my_profiles():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
-    user_id = get_user_id_by_username('username')
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
+    user_id_list = get_user_id_by_username('username')
+    user_id = user_id_list[0][0]
     try:
-        profile = get_user_info(user_id)
-        first_name = profile[0][0]
-        last_name = profile[0][1]
-        username = profile[0][2]
-        e_mail = profile[0][3]
-        password = profile[0][4]
+        profile_list = get_user_info(user_id)
+        profile = profile_list[0]
+        first_name = profile[0]
+        last_name = profile[1]
+        username = profile[2]
+        e_mail = profile[3]
+        password = profile[4]
 
         nick_name = first_name + "'s House"
-        address_info = get_house_address(house_id)
-        address = address_info[0][2] + " " + address_info[0][0]
+        address_info_list = get_house_address(house_id)
+        address_info = address_info_list[0]
+        address = address_info[0] + " " + address_info[1]
 
         user_info = {
             "first name": first_name,

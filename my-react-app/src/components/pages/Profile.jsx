@@ -39,18 +39,26 @@ const Profile = () => {
   };
 
   // Fetch data when component mounts
-  useEffect(() => {
-    fetch('http://127.0.0.1:5000/my_profiles')
-      .then((response) => response.json()) // Parse the JSON response
-      .then((data) => {
-        setData(data); // Set data to state
-        setLoading(false); // Set loading to false after data is fetched
-      })
-      .catch((err) => {
-        setError('Failed to fetch data');
+    useEffect(() => {
+      const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
+      console.log(username);
+
+      if (username) {
+        fetch(`http://127.0.0.1:5000/my_profiles?username=${username}`)
+          .then((response) => response.json())
+          .then((data) => {
+            setData(data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError('Failed to fetch data');
+            setLoading(false);
+          });
+      } else {
+        setError('No username found');
         setLoading(false);
-      });
-  }, []);
+      }
+    }, []);
 
   // Handle clicking on a block to start editing
   const editClick = (field, section) => {
@@ -133,15 +141,26 @@ const Profile = () => {
   };
   
   const fetchProfileData = () => {
-    fetch('http://127.0.0.1:5000/my_profiles')
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);  // Update the state with the new profile data
-      })
-      .catch((err) => {
-        setError('Failed to fetch updated profile data');
-        console.error(err);
-      });
+    useEffect(() => {
+      const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
+      console.log(username);
+
+      if (username) {
+        fetch(`http://127.0.0.1:5000/my_profiles?username=${username}`)
+          .then((response) => response.json())
+          .then((data) => {
+            setData(data);
+            setLoading(false);
+          })
+          .catch((err) => {
+            setError('Failed to fetch data');
+            setLoading(false);
+          });
+      } else {
+        setError('No username found');
+        setLoading(false);
+      }
+    }, []);
   };
   
   // Handle closing the popUp without saving
