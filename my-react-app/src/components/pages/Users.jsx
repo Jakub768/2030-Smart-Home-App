@@ -18,16 +18,23 @@ const Users = () => {
 
   // Fetch data when component mounts
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/users')
-      .then((response) => response.json())  // Parse the JSON response
-      .then((data) => {
-        setData(data);  // Set data to state
-        setLoading(false);  // Set loading to false after data is fetched
-      })
-      .catch((err) => {
-        setError('Failed to fetch data');
-        setLoading(false);
-      });
+    const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
+
+    if (username) {
+      fetch(`http://127.0.0.1:5000/users?username=${username}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError('Failed to fetch data');
+          setLoading(false);
+        });
+    } else {
+      setError('No username found');
+      setLoading(false);
+    }
   }, []);
 
   // Render the component
@@ -116,8 +123,8 @@ const Users = () => {
         {filteredUsers.map((user, index) => (
           <div
             key={user.username} // Unique key for each user
-            className={`userItem ${index === 0 ? 'topBlockUser' : ''} ${index === filteredUsers.length - 1 ? 'bottomBlockUser' : ''}`}
-          >
+            className={`userItem ${index == 0 ? 'topBlockUser' : ''} ${filteredUsers.length > 1 && index == filteredUsers.length - 1 ? 'bottomBlockUser' : ''}`}
+            >
             <span className="username">{user.username}</span>
 
             {/* Custom dropdown */}

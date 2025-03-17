@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import './About.css'; // Import the CSS file
+import userIcon from '../images/User.png';
 
 export const About = () => {
     const navigate = useNavigate();
