@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request, session
 import flask_cors
 import flask_session
-import database_execute, permissions_management, device_management, bcrypt
+import database_execute, permissions_management, device_management, user_management
 import datetime
 import decimal
+import bcrypt
 # import device_stats_auto_update
 # import weather_auto_update
 # import bill_stats_auto_update
@@ -74,10 +75,9 @@ def update_profile():
 
 def get_house_id_by_username(username):
     query = """
-        SELECT h.houseID 
-        FROM House h
-        JOIN Users u on u.userID = h.userID
-        WHERE u.username = %s
+        SELECT houseID 
+        FROM Users
+        WHERE username = %s
     """
     result = database_execute.execute_SQL(query, (username,))
     return result
@@ -637,10 +637,9 @@ def get_stats():
 # Function to get all users
 def get_all_users(house_id):
     query = """
-        SELECT u.username, u.roles
-        FROM Users u
-        JOIN House h ON u.userID = h.userID
-        WHERE houseID = %s
+    SELECT username, roles
+    FROM Users
+    WHERE houseID = %s
     """
     result = database_execute.execute_SQL(query, (house_id,))
     return result if result else []
@@ -872,6 +871,32 @@ def update_device_status():
             return jsonify({"message": f"Device status updated to {new_status}"}), 200
         else:
             return jsonify({"error": "Failed to update device status"}), 500
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/delete_users', methods=['POST'])
+def delete_users():
+    data = request.get_json()
+
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Incorrect username or password"}), 400
+    try:
+        user = database_execute.execute_SQL("""
+            SELECT userID, password FROM Users WHERE username = %s
+        """, (username,))
+
+        if user:
+            stored_hashed_password = user[0][1].encode('utf-8')
+            if bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password):
+                rows_affected = user_management.remove_user(username)
+                if rows_affected:
+                    return jsonify({"message": "User deleted successfully"}), 200
+                else:
+                    return jsonify({"error": "Failed to delete user"}), 500
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
