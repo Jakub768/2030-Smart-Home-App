@@ -11,9 +11,11 @@ const ToggleButton = ({ isOn, toggleSwitch }) => (
 
 export const Settings = () => {
   const [locationOn, setLocationOn] = useState(false);
+  const [bluetoothOn, setBluetoothOn] = useState(false);
+  const [wifiOn, setWifiOn] = useState(false);
   const [cameraOn, setCameraOn] = useState(false);
   const [microphoneOn, setMicrophoneOn] = useState(false);
-  const [phOn, setPhOn] = useState(false);
+  const [notificationsOn, setNotificationsOn] = useState(false);
   const navigate = useNavigate();
 
   const goToLogOut = () => navigate("/signin");
@@ -61,49 +63,32 @@ export const Settings = () => {
 
         <div className="settings-columns">
           <div className="settings-left">
-            <button className="no-gap1">My Profile<span className="arrow">&gt;</span></button>
-            <button className="no-gap">Wi-Fi<span className="arrow">&gt;</span></button>
-            <button className="no-gap2">Bluetooth<span className="arrow">&gt;</span></button>
-
+            <button className="no-gap1" onClick={() => navigate("/profile")} >My Profile<span className="arrow">&gt;</span></button>
+            <button className="no-gap1" onClick={() => navigate("/faqs")}>FAQ<span className="arrow">&gt;</span></button>
             <h2>Permissions</h2>
-            <div className="toggle-container">
+              <button className="no-gap1">Wi-Fi<ToggleButton isOn={wifiOn} toggleSwitch={() => setWifiOn(!wifiOn)} /></button>
+              <button className="no-gap1">Bluetooth<ToggleButton isOn={bluetoothOn} toggleSwitch={() => setBluetoothOn(!bluetoothOn)} /></button>
               <button className="no-gap1">Location<ToggleButton isOn={locationOn} toggleSwitch={() => setLocationOn(!locationOn)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap">Camera<ToggleButton isOn={cameraOn} toggleSwitch={() => setCameraOn(!cameraOn)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap">Microphone<ToggleButton isOn={microphoneOn} toggleSwitch={() => setMicrophoneOn(!microphoneOn)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap2">PH<ToggleButton isOn={phOn} toggleSwitch={() => setPhOn(!phOn)} /></button>
-            </div>
+              <button className="no-gap1">Camera<ToggleButton isOn={cameraOn} toggleSwitch={() => setCameraOn(!cameraOn)} /></button>
+              <button className="no-gap1">Microphone<ToggleButton isOn={microphoneOn} toggleSwitch={() => setMicrophoneOn(!microphoneOn)} /></button>
+              <button className="no-gap1">Notifications<ToggleButton isOn={notificationsOn} toggleSwitch={() => setNotificationsOn(!notificationsOn)} /></button>
 
-            <div className="individual-button help-button">
-              <button>Help<span className="arrow">&gt;</span></button>
-            </div>
-            <div className="individual-button sign-out-button">
-              <button  onClick={handleLogout}>Sign out</button>
-            </div>
+
           </div>
 
           <div className="settings-right">
-            <button className="no-gap1"  onClick={() => navigate("/about")}>About<span className="arrow">&gt;</span></button>
-            <button className="no-gap2">Software Update<span className="arrow">&gt;</span></button>
+            <button className="no-gap1" onClick={() => navigate("/about")}>About<span className="arrow">&gt;</span></button>
+            <button className="no-gap1" onClick={() => navigate("/update")}>Software Update<span className="arrow">&gt;</span></button>
 
-            <h2>Display</h2>
+            <h2>Accessibility</h2>
             <button className="no-gap1">Background<span className="arrow">&gt;</span></button>
-            <button className="no-gap2">Theme<span className="arrow">&gt;</span></button>
-
-            <h2>Other</h2>
-            <button className="no-gap1">Notifications<span className="arrow">&gt;</span></button>
-            <button className="no-gap">Sounds<span className="arrow">&gt;</span></button>
-            <button className="no-gap2">Accessibility<span className="arrow">&gt;</span></button>
-
-            <div className="individual-button change-user-button">
-              <button onClick={goToLogOut}>Change user</button>
-            </div>
+            <button className="no-gap1  ">Theme<span className="arrow">&gt;</span></button>
           </div>
+        </div>
+
+        <div className="settings-bottom">
+          <button className="left-button" onClick={handleLogout}>Log Out</button>
+          <button className="right-button" onClick={goToLogOut}>Change User</button>
         </div>
       </main>
   );

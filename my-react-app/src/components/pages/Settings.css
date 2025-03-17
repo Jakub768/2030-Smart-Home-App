@@ -19,7 +19,7 @@
 .settingsHeader {
   display: flex; /* Flex layout for header */
   justify-content: space-between; /* Evenly space the items */
-  margin-bottom: 10px; /* Space below the header */
+  margin-bottom: 30px; /* Space below the header */
 }
 
 /* Navigation button style */
@@ -76,8 +76,17 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 13px;
   width: 48%;
+}
+
+.settings-bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  margin-top: -115px;
 }
 
 /* Titles */
@@ -109,7 +118,7 @@ button {
   font-size: 1rem;
   background-color: rgba(35, 35, 35, 0.5);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  /* border: 1px solid rgba(255, 255, 255, 0.5); */
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.3s;
@@ -120,21 +129,17 @@ button .arrow {
 }
 
 button:hover {
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Button Spacing and Styling */
-.no-gap {
-  margin-bottom: -10px;
-  border-radius: 0;
-}
+
 
 .no-gap1 {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  margin-bottom: -10px;
+  margin-bottom: -30px;
 }
 
 .no-gap2 {
@@ -147,17 +152,20 @@ button:hover {
 
 .individual-button {
   width: 100%;
+  /* margin-top: 90px; */
 }
 
 .help-button button {
   margin-top: 18px;
 }
 
-.sign-out-button button {
+/* .sign-out-button button {
   display: block;
   text-align: center;
-  margin-top: 10px;
-}
+  position: absolute;
+  bottom: 40px;
+  width: 48%;
+} */
 
 .change-user-button button {
   display: block;
