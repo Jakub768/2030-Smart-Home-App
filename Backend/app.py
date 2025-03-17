@@ -649,7 +649,7 @@ def get_all_users(house_id):
 def get_users():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
-    house_id = house_id_list[0][0]
+    house_id = 1 #house_id_list[0][0]
     try:
         users = get_all_users(house_id)
         return jsonify({"users": users}), 200

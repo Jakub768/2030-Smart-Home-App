@@ -1,165 +1,248 @@
 /* Home.css */
 .mainHome {
-    position: fixed; /* keep the page content in place */
-    background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
-    border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
-    border-top-right-radius: 25px;
-    padding: 40px; /* padding inside the main element */
-    margin-top: 3vw; /* margin on the top and left of the main element */
-    margin-left: 26vw;
-    color: rgb(255, 255, 255); /* text colour */
-    border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
-    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
-    border-right: 2px solid rgba(240, 240, 240, 0.5);
-    width: 71vw; /* width of the main element */
-    height: 85vh; /* height of the main element */
+  position: fixed; /* Keep original fixed positioning */
+  background-color: rgba(105, 105, 105, 0.5);
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+  padding: 40px; /* Maintain original padding */
+  margin-top: 3vw; /* Keep original margins */
+  margin-left: 26vw;
+  color: rgb(255, 255, 255);
+  border-top: 2px solid rgba(240, 240, 240, 0.5);
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw; /* Keep original width */
+  height: 85vh; /* Keep original height */
+  overflow-y: auto; /* Add scrolling for small screens */
+  box-sizing: border-box; /* Ensure padding is included in dimensions */
+}
+
+.headerHome {
+  display: flex;
+  margin-bottom: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.contentBoxHome {
+  background-color: rgba(130, 130, 130, 0.5);
+  border-radius: 25px;
+  padding: 20px;
+  outline: 2px solid rgba(210, 210, 210, 0.5);
+}
+
+.sectionHome {
+  display: flex;
+  gap: 2px;
+  margin-top: 20px;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.blockHome {
+  background-color: rgba(35, 35, 35, 0.5);
+  width: calc(25% - 2px); /* Adjust width to account for gap */
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+  padding: 0;
+}
+
+.minus{
+  background-color: rgba(35, 35, 35, 0);
+  color: white;
+  font-size: 20px;
+  padding: 5px;
+  border: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.plus{
+  background-color: rgba(35, 35, 35, 0);
+  color: white;
+  font-size: 20px;
+  padding: 5px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.blockHome button:hover {
+  background-color: rgba(40, 40, 40, 0.5);
+}
+
+.firstBlockHome {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.lastBlockHome {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.energySectionHome {
+  margin-top: 20px;
+}
+
+.energyRowsHome {
+  margin-top: 20px;
+}
+
+.energyRowHome {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.topBlockHome {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  width: 48%;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.bottomBlockHome {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  width: 48%;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.paragraphsContainer1Home {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.paragraphsContainer2Home {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.paragraphHome {
+  width: 25%;
+  text-align: center;
+  font-weight: 400;
+}
+
+.energyTitleHome {
+  margin-left: 20px;
+}
+
+.bottomTextLeft {
+  font-size: 18px;
+  font-weight: 200;
+}
+
+.bottomTextRight {
+  font-size: 18px;
+  font-weight: 200;
+  color: rgb(220, 220, 220);
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 1200px) {
+  .mainHome {
+      /* Keep the exact same positioning but add scrolling */
+      overflow-y: auto;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mainHome {
+      /* Keep the position but adjust for smaller screens */
+      margin-left: 5vw;
+      width: 92vw;
+      padding: 25px;
+      border-bottom-left-radius: 25px;
+      border-top-left-radius: 25px;
+      border-left: 2px solid rgba(240, 240, 240, 0.5);
+      margin-top: 65px;
   }
   
   .headerHome {
-    display: flex; /* set up a flexible layout in the header */
-    margin-bottom: 20px; /* space below the header */
-    flex-direction: row; /* puts the elements inside the header on the same line */
-    justify-content: space-between; /* puts space between the elements in the header */
-    font-size: 20px;
-    font-weight: 700;
+      flex-wrap: wrap;
   }
+}
 
-  .contentBoxHome {
-    background-color: rgba(130, 130, 130, 0.5); /* colour of content box */
-    border-radius: 25px; /* corner radius on content box */
-    padding: 20px; /* padding inside the content box */
-    outline: 2px solid rgba(210, 210, 210, 0.5); /* add an outline and colour the outline */
+@media screen and (max-width: 480px) {
+  .mainHome {
+      /* For mobile, take up most of the screen */
+      margin-top: 1vh;
+      margin-left: 2vw;
+      width: 96vw;
+      padding: 15px;
+      border-bottom-left-radius: 25px;
+      border-top-left-radius: 25px;
+      border-left: 2px solid rgba(240, 240, 240, 0.5);
+      margin-top: 65px;
   }
   
-  .sectionHome {
-    display: flex; /* set up a flexible layout in the section */
-    gap: 2px; /* gap between the blocks */
-    margin-top: 20px; /* margin at the top of the section */
+  .headerHome {
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
   }
   
   .blockHome {
-    background-color: rgba(35, 35, 35, 0.5); /* block colour */
-    width: 25%; /* width of each block */
-    height: 80px; /* height of each block */
-    display: flex; /* set up a flexible layout inside the box */
-    align-items: center; /* vertically center the items */
-    justify-content: center; /* position items on opposite ends */
-    font-size: 30px;
-    font-weight: 700;
-    padding: 0; /* add horizontal padding to ensure spacing inside */
-  }
-
-  .minus{
-    background-color: rgba(35, 35, 35, 0); /* same color as block */
-    color: white;
-    font-size: 20px;
-    padding: 5px;
-    border: none;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* smooth background transition on hover */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%
-  }
-
-  .plus{
-    background-color: rgba(35, 35, 35, 0); /* same color as block */
-    color: white;
-    font-size: 20px;
-    padding: 5px;
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* smooth background transition on hover */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%
-  }
-
-  .blockHome button:hover {
-    background-color: rgba(40, 40, 40, 0.5); /* hover effect */
-  }
-
-  .firstBlockHome {
-    border-top-left-radius: 10px; /* round the top and bottom left corners of the first block */
-    border-bottom-left-radius: 10px;
+      width: 100%; /* Full width blocks on very small screens */
+      margin-bottom: 2px;
+      border-radius: 10px; /* Round all corners on small screens */
   }
   
-  .lastBlockHome {
-    border-top-right-radius: 10px; /* round the top and bottom right corners of the last block */
-    border-bottom-right-radius: 10px;
-  }
-  
-  .energySectionHome {
-    margin-top: 20px; /* margin at the top of the energy section */
-  }
-  
-  .energyRowsHome {
-    margin-top: 20px; /* margin at the top of the blocks in the energy section */
-  }
-  
-  .energyRowHome {
-    display: flex; /* set up a flexible layout in the rows of blocks in the energy section */
-    justify-content: space-between; /* puts space between the elements in each row of blocks */
-    margin-bottom: 2px; /* verticle gap between blocks in energy section */
-  }
-  
-  .topBlockHome {
-    border-top-left-radius: 10px; /* round the top corners of the top block */
-    border-top-right-radius: 10px;
-    width: 48%; /* width of the top blocks */
-    height: 40px; /* height of the top blocks */
-    display: flex; /* set up a flexible layout in the blocks */
-    justify-content: space-between; /* puts the blcoks content in the centre */
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .bottomBlockHome {
-    border-bottom-left-radius: 10px; /* round the bottom corners of the bottom block */
-    border-bottom-right-radius: 10px;
-    width: 48%; /* width of the top blocks */
-    height: 40px; /* height of the top blocks */
-    display: flex; /* set up a flexible layout in the blocks */
-    justify-content: space-between; /* puts the blcoks content in the centre */
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .paragraphsContainer1Home {
-    display: flex; /* set up a flexible layout in the first paragraph div */
-    justify-content: space-between; /* puts even space between each paragraph */
-    margin-top: 10px; /* margin at the top of the first paragraph group */
-    margin-bottom: 30px; /* margin at the bottom of the first paragraph group */
-  }
-  
+  .paragraphsContainer1Home,
   .paragraphsContainer2Home {
-    display: flex; /* set up a flexible layout in the second paragraph div */
-    justify-content: space-between; /* puts even space between each paragraph */
-    margin-top: 10px; /* margin at the top of the second paragraph group */
+      flex-direction: column;
+      align-items: center;
   }
   
   .paragraphHome {
-    width: 25%; /* width of each paragraph */
-    text-align: center; /* centre the text in the paragraph */
-    font-weight: 400;
+      width: 100%;
+      margin-bottom: 5px;
   }
   
-  .energyTitleHome {
-    margin-left: 20px; /* indent the energy bill heading */
+  .energyRowHome {
+      flex-direction: column;
   }
+  
+  .topBlockHome,
+  .bottomBlockHome {
+      width: 100%;
+      margin-bottom: 2px;
+  }
+}
 
-  .bottomTextLeft {
-    font-size: 18px;
-    font-weight: 200;
-  }
-
-  .bottomTextRight {
-    font-size: 18px;
-    font-weight: 200;
-    color: rgb(220, 220, 220)
-  }
+/* Spinner Styles */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+}

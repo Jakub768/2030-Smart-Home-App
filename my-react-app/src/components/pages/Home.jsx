@@ -26,6 +26,9 @@ export const Home = () => {
     const storedHum = localStorage.getItem("humidity");
     return storedHum ? parseFloat(storedHum) : 20; // Default to 20 if no stored temperature
   });
+  
+  // State for screen size for responsive UI
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     const updateDateTime = () => {
@@ -52,12 +55,23 @@ export const Home = () => {
       setLastMonth(lastMonthName);
     };
 
+    // Update window width when resizing
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
     updateDateTime();
     getLastMonth();
+    
+    // Add resize event listener
+    window.addEventListener('resize', handleResize);
 
     const interval = setInterval(updateDateTime, 60000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const increaseTemperature = () => {
@@ -135,7 +149,7 @@ export const Home = () => {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="mainHome">{error}</div>;
   }
 
   // Weather icon mapping
@@ -233,12 +247,30 @@ export const Home = () => {
     }
   };
   
+  // Render adaptive header based on screen size
+  const renderHeader = () => {
+    if (windowWidth <= 480) {
+      // Stack date and time on mobile
+      return (
+        <div className="headerHome">
+          <h1>{currentDate}</h1>
+          <h1>{currentTime}</h1>
+        </div>
+      );
+    } else {
+      // Side by side on larger screens
+      return (
+        <div className="headerHome">
+          <h1>{currentDate}</h1>
+          <h1>{currentTime}</h1>
+        </div>
+      );
+    }
+  };
+  
   return (
     <main className="mainHome">
-      <div className="headerHome">
-        <h1>{currentDate}</h1>
-        <h1>{currentTime}</h1>
-      </div>
+      {renderHeader()}
 
       <div className="contentBoxHome">
         <h2>Inside the residence</h2>
@@ -265,7 +297,9 @@ export const Home = () => {
 
         <h2>Outside the residence</h2>
         <div className="sectionHome">
-          <div className="blockHome firstBlockHome"><img src={weatherIcon} alt={data.Outside_The_Residence.Weather_Description}/></div>
+          <div className="blockHome firstBlockHome">
+            <img src={weatherIcon} alt={data.Outside_The_Residence.Weather_Description} style={{maxWidth: '100%', maxHeight: '60px'}}/>
+          </div>
           <div className="blockHome">{data.Outside_The_Residence.Temperature}°C</div>
           <div className="blockHome">{data.Outside_The_Residence.Humidity}%</div>
           <div className="blockHome lastBlockHome">{data.Outside_The_Residence.Wind_Speed} mph</div>
