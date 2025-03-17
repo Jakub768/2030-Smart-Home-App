@@ -9,6 +9,7 @@ import scatteredClouds from '../images/scatteredClouds.png';
 import showerRain from '../images/showerRain.png';
 import snow from '../images/snow.png';
 import thunderstorm from '../images/thunderstorm.png';
+import './Loading.css';
 
 
 export const Home = () => {
@@ -113,7 +114,16 @@ export const Home = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    const LoadingSpinner = () => {
+      return (
+        <main className="mainHome">
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+        </main>
+      );
+    };
+    return <LoadingSpinner />;
   }
 
   if (error) {
