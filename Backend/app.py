@@ -72,6 +72,15 @@ def update_profile():
         print(f"Error updating profile: {e}")
         return jsonify({"error": "An unexpected error occurred"}), 500
 
+def get_house_id_by_username(username):
+    query = """
+        SELECT h.houseID 
+        FROM House h
+        JOIN Users u on u.userID = h.userID
+        WHERE u.username = %s
+    """
+    result = database_execute.execute_SQL(query, (username,))
+    return result
 
 def get_user_by_username(username):
     query = """
@@ -226,7 +235,8 @@ def get_bill_status(house_id):
 # Route to get home data
 @app.route('/home', methods=['GET'])
 def get_home():
-    house_id = 2 #request.args.get('house_id')
+    username = request.args.get('username')
+    house_id = get_house_id_by_username(username)
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -285,9 +295,21 @@ def get_last_30_days_energy_consumption_per_device(house_id):
     result = database_execute.execute_SQL(query, (house_id,))
     return result
 
+def get_devices_per_room_using_house(house_ID):
+    query = """
+        SELECT r.roomName, d.deviceName 
+        FROM Devices d
+        JOIN Rooms r on r.roomID = d.roomID
+        WHERE r.houseID = %s
+        GROUP BY r.roomName, d.deviceName
+    """
+    result = database_execute.execute_SQL(query, (house_ID,))
+    return result
+
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
-    house_id = 2 #request.args.get('house_id')
+    username = request.args.get('username')
+    house_id = get_house_id_by_username(username)
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -317,7 +339,29 @@ def get_rooms():
         return jsonify(result)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        try:
+            rooms_data_list = get_devices_per_room_using_house(house_id)
+            visited_room = {}
+
+            for rooms_data in rooms_data_list:
+                roomName = rooms_data[0]  # Ensure roomName is assigned first
+
+                if roomName not in visited_room:
+                    visited_room[roomName] = []  # Initialize an empty list for the room
+
+                new_device_info = {
+                    "device_name": rooms_data[1],
+                }
+
+                visited_room[roomName].append(new_device_info)  # Use append instead of insert
+
+            result = {
+                "rooms": visited_room
+            }
+
+            return jsonify(result)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
     
 # Function to get the past 24-hour energy consumption sorted by device type
@@ -430,7 +474,8 @@ def get_last_completed_jobs(house_id):
 # Route to get dashboard data
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
-    house_id = 1 #request.args.get('house_id')
+    username = request.args.get('username')
+    house_id = get_house_id_by_username(username)
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -519,7 +564,8 @@ def get_all_devices(house_id):
 # Route to get all devices for a house
 @app.route('/devices', methods=['GET'])
 def get_devices():
-    house_id = 1 #request.args.get('house_id')
+    username = request.args.get('username')
+    house_id = get_house_id_by_username(username)
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -577,7 +623,7 @@ def get_past_14_days_to_7_days_data(house_id):
 
 @app.route('/stats', methods=['GET'])
 def get_stats():
-    house_id = 1 #request.args.get('house_id')
+    house_id = request.args.get('house_id')
     
     try:
         past_7_days_to_now_data = get_past_7_days_to_now_data(house_id)
@@ -629,11 +675,21 @@ def get_house_address(house_id):
     """
     result = database_execute.execute_SQL(query, (house_id,))
     return result
+
+def get_user_id_by_username(username):
+    query = """
+        SELECT userID
+        FROM Users
+        WHERE u.username = %s
+    """
+    result = database_execute.execute_SQL(query, (username,))
+    return result
     
 @app.route('/my_profiles', methods=['GET'])
 def get_my_profiles():
-    user_id = 14 # request.args.get('user_id')
-    house_id = 1 # request.args.get('house_id')
+    username = request.args.get('username')
+    house_id = get_house_id_by_username(username)
+    user_id = get_user_id_by_username('username')
     try:
         profile = get_user_info(user_id)
         first_name = profile[0][0]
