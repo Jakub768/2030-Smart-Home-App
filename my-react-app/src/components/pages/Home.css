@@ -4,7 +4,7 @@
   background-color: rgba(105, 105, 105, 0.5);
   border-bottom-right-radius: 25px;
   border-top-right-radius: 25px;
-  padding: 40px; /* Maintain original padding */
+  padding: 30px; /* Maintain original padding */
   margin-top: 3vw; /* Keep original margins */
   margin-left: 26vw;
   color: rgb(255, 255, 255);
@@ -13,7 +13,6 @@
   border-right: 2px solid rgba(240, 240, 240, 0.5);
   width: 71vw; /* Keep original width */
   height: 85vh; /* Keep original height */
-  overflow-y: auto; /* Add scrolling for small screens */
   box-sizing: border-box; /* Ensure padding is included in dimensions */
 }
 
