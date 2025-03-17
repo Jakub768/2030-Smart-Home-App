@@ -70,6 +70,16 @@
     cursor: pointer;
   }
 
+  .blockPro1 {
+    background-color: rgba(35, 35, 35, 0.5); /* colour of blocks */
+    width: 100%; /* width of blocks */
+    height: 45px; /* height of blocks */
+    display: flex; /* set up a flexible layout in the blocks */
+    justify-content: space-between; /* centre content in the blocks */
+    align-items: center;
+    padding: 20px;
+  }
+
   .blockPro:hover {
     background-color: rgba(0, 0, 0, 0.5); /* colour of blocks */
   }

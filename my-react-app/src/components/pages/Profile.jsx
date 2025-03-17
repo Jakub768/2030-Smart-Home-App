@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Profile.css'; // Import the CSS file
 import userIcon from '../images/User.png';
+import bcrypt from 'bcryptjs';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -51,11 +52,6 @@ const Profile = () => {
       });
   }, []);
 
-  // Mask the password with asterisks
-  const maskPassword = (password) => {
-    return '*'.repeat(password.length); // Repeat '*' for the length of the password
-  };
-
   // Handle clicking on a block to start editing
   const editClick = (field, section) => {
     setEditing(field);
@@ -67,92 +63,65 @@ const Profile = () => {
 
   // Handle saving the updated value
   const handleSave = () => {
-    // Case where we are updating password
-    if (editing === 'password') {
-      // Password validation logic
+    if (editing == 'password') {
       if (newPassword !== confirmNewPassword) {
         alert("New passwords do not match.");
         return;
       }
   
-      // Correctly structure updated_info with field name as the key (password is the field name here)
       const formattedData = `{ 
         "username": "${data.my_profile.user_info.username}",
         "updated_info": { 
-            "${editing}": "${newPassword}"
+          "${editing}": "${newPassword}"
         }
-    }`; 
-      
-      // Log the data with quotes added manually
+      }`;
+  
       console.log(formattedData);
   
-      // Send password update to backend using POST
       fetch('http://127.0.0.1:5000/update_profile', {
-        method: 'POST',  // POST method
+        method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
         },
         body: formattedData
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.message === 'Profile updated successfully') {
-            alert('Password updated successfully');
-            const updatedData = { ...data };
-            updatedData.my_profile.user_info.password = newPassword;
-            setData(updatedData);  // Update the state with the new password
-          } else {
-            alert('Failed to update password');
-          }
-        })
-        .catch((error) => {
-          console.error('Error updating password:', error);
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message == 'Profile updated successfully') {
+          alert('Password updated successfully');
+          fetchProfileData();
+        } else {
           alert('Failed to update password');
-        });
+        }
+      })
     } else {
-      // For other fields (e.g., first name, last name)
-      // Dynamically set the field name using "editing" as the field name
       const formattedData = `{ 
         "username": "${data.my_profile.user_info.username}",
         "updated_info": { 
-            "${editing}": "${newValue}"
+          "${editing}": "${newValue}"
         }
-    }`;  
-      
-      // Log the data with quotes added manually
+      }`;
+  
       console.log(formattedData);
   
-      // Send the updated field to the backend using POST
       fetch('http://127.0.0.1:5000/update_profile', {
-        method: 'POST',  // POST method
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: formattedData
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.message === 'Profile updated successfully') {
-            console.log("yeye");
-            alert(`${fieldLabels[editing]} updated successfully`);
-            const updatedData = { ...data };
-            if (editSection === 'user_info') {
-              updatedData.my_profile.user_info[editing] = newValue;
-            } else if (editSection === 'residence') {
-              updatedData.my_profile.residence[editing] = newValue;
-            }
-            setData(updatedData);  // Update the state with the new data
-          } else {
-            alert(`Failed to update ${fieldLabels[editing]}`);
-          }
-        })
-        .catch((error) => {
-          console.error(`Error updating ${fieldLabels[editing]}:`, error);
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message == 'Profile updated successfully') {
+          alert(`${fieldLabels[editing]} updated successfully`);
+          fetchProfileData();
+        } else {
           alert(`Failed to update ${fieldLabels[editing]}`);
-        });
+        }
+      })
     }
   
-    // Close the popup and reset states
     setisPopUpOpen(false);
     setEditing(null);
     setEditSection('');
@@ -163,8 +132,18 @@ const Profile = () => {
     setIsOldPasswordChecked(false);
   };
   
+  const fetchProfileData = () => {
+    fetch('http://127.0.0.1:5000/my_profiles')
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);  // Update the state with the new profile data
+      })
+      .catch((err) => {
+        setError('Failed to fetch updated profile data');
+        console.error(err);
+      });
+  };
   
-
   // Handle closing the popUp without saving
   const handleClosepopUp = () => {
     setisPopUpOpen(false); // Close the popUp
@@ -183,8 +162,13 @@ const Profile = () => {
   };
 
   // Handle the "Continue" button click for old password validation
-  const handleContinueClick = () => {
-    if (oldPassword == data.my_profile.user_info.password) {
+  const handleContinueClick = () => {    
+    // Check if the hashed old password matches the stored password
+    // Assuming `data.my_profile.user_info.password` is already hashed
+    const storedHashedPassword = data.my_profile.user_info.password;
+  
+    if (bcrypt.compareSync(oldPassword, storedHashedPassword)) {
+      // Proceed if the passwords match
       setIsOldPasswordValid(true); // Mark as valid if old password is correct
       setIsOldPasswordChecked(true); // Mark the old password check as done
     } else {
@@ -202,12 +186,36 @@ const Profile = () => {
     return <div>{error}</div>;
   }
 
-  const handleSignOut = () => {
-    localStorage.clear(); // Clear all items in localStorage
-    navigate("/");
-  };
+  const handleLogout = () => {
+  // Send a POST request to your Flask logout route
+  fetch('http://127.0.0.1:5000/logout', {
+    method: 'POST',  // POST method for logout
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.message == 'Logout successful') {
+        // Clear session and local storage
+        localStorage.removeItem('authToken');
+        sessionStorage.removeItem('authToken');
+        localStorage.clear();  // Clear all local storage
+        sessionStorage.clear(); // Clear all session storage
 
-  return (
+        // Redirect to the login or home page
+        navigate("/");
+      } else {
+        alert('Failed to log out');
+      }
+    })
+    .catch((error) => {
+      console.error('Error logging out:', error);
+      alert('Failed to log out');
+    });
+};
+
+return (
     <main className="mainProfile">
       {/* Top section with Back button, Title, and Profile button */}
       <div className="profileHeader">
@@ -229,9 +237,9 @@ const Profile = () => {
           <p className="userDetails">{data.my_profile.user_info["last name"]}&nbsp;&nbsp;&nbsp;&nbsp;{'>'}</p>
         </div>
 
-        <div className="blockPro" onClick={() => editClick('username', 'user_info')}>
+        <div className="blockPro1">
           <p>Username</p>
-          <p className="userDetails">{data.my_profile.user_info.username}&nbsp;&nbsp;&nbsp;&nbsp;{'>'}</p>
+          <p className="userDetails">{data.my_profile.user_info.username}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
         </div>
 
         <div className="blockPro" onClick={() => editClick('e_mail', 'user_info')}>
@@ -241,21 +249,21 @@ const Profile = () => {
 
         <div className="blockPro bottomBlockProfile" onClick={() => editClick('password', 'user_info')}>
           <p>Password</p>
-          <p className="userDetails">{maskPassword(data.my_profile.user_info.password)}&nbsp;&nbsp;&nbsp;&nbsp;{'>'}</p>
+          <p className="userDetails">********&nbsp;&nbsp;&nbsp;&nbsp;{'>'}</p>
         </div>
       </div>
 
       {/* Residence section */}
       <div className="profileColumns">
         <h2 className="headingsProfile">Residence</h2>
-        <div className="blockPro topBlockProfile" onClick={() => editClick('nick name', 'residence')}>
+        <div className="blockPro1 topBlockProfile">
           <p>Nickname</p>
-          <p className="userDetails">{data.my_profile.residence["nick name"]}&nbsp;&nbsp;&nbsp;&nbsp;{'>'}</p>
+          <p className="userDetails">{data.my_profile.residence["nick name"]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
         </div>
 
-        <div className="blockPro" onClick={() => editClick('address', 'residence')}>
+        <div className="blockPro1">
           <p>Address</p>
-          <p className="userDetails">{data.my_profile.residence.address}&nbsp;&nbsp;&nbsp;&nbsp;{'>'}</p>
+          <p className="userDetails">{data.my_profile.residence.address}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
         </div>
 
         <div className="blockPro bottomBlockProfile" onClick={() => navigate("/uploaded_docs")}>
@@ -266,7 +274,7 @@ const Profile = () => {
 
       {/* Bottom Section with Two Buttons */}
       <div className="bottomSectionProfile">
-        <button className="actionButtonProfile" onClick={handleSignOut}>Sign Out</button>
+        <button className="actionButtonProfile" onClick={handleLogout}>Sign Out</button>
         <button className="actionButtonProfile">Change User</button>
       </div>
 

@@ -19,6 +19,80 @@ flask_cors.CORS(app, origins="*")
 # User Authentication Functions
 # -----------------------------
 
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    try:
+        # Get JSON data from the request
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        # Extract username and updated_info from the request
+        username = data.get('username')
+        updated_info = data.get('updated_info')
+
+        if not username or not updated_info:
+            return jsonify({"error": "Username and updated information are required"}), 400
+
+        # Fetch the user from the database
+        user = get_user_by_username(username)
+
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        # Map frontend fields to backend database columns
+        field_mapping = {
+            "first name": "firstName",
+            "last name": "lastName",
+            "e_mail": "eMailAddress",
+            "password": "password",
+        }
+
+        # Update user fields from updated_info
+        for field, new_value in updated_info.items():
+            if field == "password":
+                # Hash the new password before saving it to the database
+                new_value = bcrypt.hashpw(new_value.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+            # Check if the field exists in the user data and update accordingly
+            if field in user:
+                user[field] = new_value
+                db_field = field_mapping.get(field)
+
+                if db_field:
+                    update_query = f"UPDATE Users SET {db_field} = %s WHERE userName = %s"
+                    database_execute.execute_SQL(update_query, (new_value, username))
+
+        # After updating, fetch the updated user from the database
+        updated_user = get_user_by_username(username)
+
+        return jsonify({"message": "Profile updated successfully", "user": updated_user})
+
+    except Exception as e:
+        print(f"Error updating profile: {e}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+
+def get_user_by_username(username):
+    query = """
+        SELECT firstName, lastName, userName, eMailAddress, password 
+        FROM Users 
+        WHERE userName = %s
+    """
+    result = database_execute.execute_SQL(query, (username,))
+    
+    # Assuming the result is a list of tuples, convert it to a dictionary
+    if result:
+        return {
+            "first name": result[0][0],
+            "last name": result[0][1],
+            "user name": result[0][2],
+            "e_mail": result[0][3],
+            "password": result[0][4]
+        }
+    return None
+
+
 # Route for user login
 @app.route('/login', methods=['POST'])
 def login():
@@ -152,7 +226,7 @@ def get_bill_status(house_id):
 # Route to get home data
 @app.route('/home', methods=['GET'])
 def get_home():
-    house_id = 1 #request.args.get('house_id')
+    house_id = 2 #request.args.get('house_id')
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -213,7 +287,7 @@ def get_last_30_days_energy_consumption_per_device(house_id):
 
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
-    house_id = 1 #request.args.get('house_id')
+    house_id = 2 #request.args.get('house_id')
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -558,7 +632,7 @@ def get_house_address(house_id):
     
 @app.route('/my_profiles', methods=['GET'])
 def get_my_profiles():
-    user_id = 1 # request.args.get('user_id')
+    user_id = 14 # request.args.get('user_id')
     house_id = 1 # request.args.get('house_id')
     try:
         profile = get_user_info(user_id)

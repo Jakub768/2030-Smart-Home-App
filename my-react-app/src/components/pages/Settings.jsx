@@ -19,6 +19,35 @@ export const Settings = () => {
   const goToLogOut = () => navigate("/signin");
   const goToMyProfile = () => navigate("/myProfile");
 
+  const handleLogout = () => {
+    // Send a POST request to your Flask logout route
+    fetch('http://127.0.0.1:5000/logout', {
+      method: 'POST',  // POST method for logout
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === 'Logout successful') {
+          // Clear session and local storage
+          localStorage.removeItem('authToken');
+          sessionStorage.removeItem('authToken');
+          localStorage.clear();  // Clear all local storage
+          sessionStorage.clear(); // Clear all session storage
+  
+          // Redirect to the login or home page
+          navigate("/");
+        } else {
+          alert('Failed to log out');
+        }
+      })
+      .catch((error) => {
+        console.error('Error logging out:', error);
+        alert('Failed to log out');
+      });
+  };
+
   return (
     
       <main className="mainSettings">
@@ -54,7 +83,7 @@ export const Settings = () => {
               <button>Help<span className="arrow">&gt;</span></button>
             </div>
             <div className="individual-button sign-out-button">
-              <button onClick={goToLogOut}>Sign out</button>
+              <button  onClick={handleLogout}>Sign out</button>
             </div>
           </div>
 
