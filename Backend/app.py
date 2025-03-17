@@ -191,7 +191,7 @@ def get_energy_cost_total(house_id, last_payment_date):
         FROM DeviceStats
         JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
         JOIN Rooms ON Devices.roomID = Rooms.roomID
-        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > %s AND deviceStatus = 'conclusion';
+        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > %s AND DeviceStats.deviceStatus = 'conclusion';
     """
     result = database_execute.execute_SQL(query, (house_id, last_payment_date))
     return result[0][0] if result and result[0][0] is not None else 0
@@ -242,7 +242,7 @@ def get_home():
         occupied_rooms_count = get_occupied_rooms_count(house_id)
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
         weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)
-        past_bill_amount, paid_status = get_bill_status(house_id)
+        past_bill_amount, paid_status,= get_bill_status(house_id)
         current_amount = energy_cost_total
 
         inside_the_residence = {

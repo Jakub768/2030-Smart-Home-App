@@ -1,16 +1,15 @@
 import database_execute
 
-def update_bill_stats(houseID, amount, next_bill_due, timestamp):
+def update_bill_stats(houseID, amount, timestamp):
     data = (
         houseID,
         amount,
-        next_bill_due,
         timestamp
     )
 
     database_execute.execute_SQL("""
-        INSERT INTO BillStats (houseID, amount, nextBillDue, timestamp) 
-        VALUES (%s, %s, %s, %s);
+        INSERT INTO BillStats (houseID, amount, timestamp) 
+        VALUES (%s, %s, %s);
     """, data)
 
 def update_paid_status(billID):
