@@ -294,7 +294,7 @@ def get_home():
     
 def get_last_30_days_energy_consumption_per_device(house_id):
     query = """
-        SELECT r.roomName, d.deviceName, d.deviceType, SUM(ds.energyConsumption) AS totalEnergy
+        SELECT r.roomName, d.deviceName, SUM(ds.energyConsumption) AS totalEnergy
         FROM DeviceStats ds
         JOIN Devices d ON ds.deviceID = d.deviceID
         JOIN Rooms r on d.roomID = r.roomID
@@ -321,60 +321,49 @@ def get_devices_per_room_using_house(house_ID):
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
+    house_id_list = get_house_id_by_username(username)
+    house_id = 1
 
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
 
     try:
+        result = {}
         rooms_data_list = get_last_30_days_energy_consumption_per_device(house_id)
         visited_room = {}
-
-        for rooms_data in rooms_data_list:
-            roomName = rooms_data[0]  # Ensure roomName is assigned first
-
-            if roomName not in visited_room:
-                visited_room[roomName] = []  # Initialize an empty list for the room
-
-            new_device_info = {
-                "device_name": rooms_data[1],
-                "device_type": rooms_data[2],
-                "total_energy": rooms_data[3]
-            }
-
-            visited_room[roomName].append(new_device_info)  # Use append instead of insert
-
-        result = {
-            "rooms": visited_room
-        }
-
-        return jsonify(result)
-
-    except Exception as e:
-        try:
-            rooms_data_list = get_devices_per_room_using_house(house_id)
-            visited_room = {}
-
+        device_checked = {}
+        if rooms_data_list:
             for rooms_data in rooms_data_list:
-                roomName = rooms_data[0]  # Ensure roomName is assigned first
-
+                roomName = rooms_data[0]
                 if roomName not in visited_room:
-                    visited_room[roomName] = []  # Initialize an empty list for the room
-
+                    visited_room[roomName] = []
                 new_device_info = {
                     "device_name": rooms_data[1],
+                    "total_energy": rooms_data[2]
                 }
+                visited_room[roomName].append(new_device_info)
+                device_checked[rooms_data[1]] = 1
+        rooms_data_list = get_devices_per_room_using_house(house_id)
+        visited_room = {}
 
-                visited_room[roomName].append(new_device_info)  # Use append instead of insert
-
+        if rooms_data_list:
+            for rooms_data in rooms_data_list:
+                roomName = rooms_data[0]
+                if roomName not in visited_room:
+                    visited_room[roomName] = []
+                if rooms_data[1] not in device_checked:
+                    new_device_info = {
+                        "device_name": rooms_data[1],
+                    }
+                    visited_room[roomName].append(new_device_info)
             result = {
                 "rooms": visited_room
             }
+        return jsonify(result)
 
-            return jsonify(result)
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
     
 # Function to get the past 24-hour energy consumption sorted by device type
