@@ -101,17 +101,29 @@ export const Home = () => {
 
   // Fetch data when component mounts
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/home')
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError('Failed to fetch data');
-        setLoading(false);
-      });
+    const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
+    const jsonUsername = `{ 
+      "username": "${username}",
+    }`;
+    console.log(jsonUsername);
+
+    if (jsonUsername) {
+      fetch(`http://127.0.0.1:5000/home?username=${jsonUsername}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError('Failed to fetch data');
+          setLoading(false);
+        });
+    } else {
+      setError('No username found');
+      setLoading(false);
+    }
   }, []);
+
 
   if (loading) {
     const LoadingSpinner = () => {

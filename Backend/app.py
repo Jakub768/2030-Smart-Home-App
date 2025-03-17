@@ -236,7 +236,9 @@ def get_bill_status(house_id):
 @app.route('/home', methods=['GET'])
 def get_home():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
+    print(house_id)  # Or use logging to output the result
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -246,8 +248,9 @@ def get_home():
         occupied_rooms_count = get_occupied_rooms_count(house_id)
         last_payment_date = get_last_payment_date(house_id)
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
-        weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)
+        weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)# Or use logging to output the result
         past_bill_amount, paid_status, next_due_date = get_bill_status(house_id)
+        print(past_bill_amount, paid_status, next_due_date)  
         current_amount = energy_cost_total
 
         inside_the_residence = {
@@ -309,7 +312,9 @@ def get_devices_per_room_using_house(house_ID):
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
     username = request.args.get('username')
-    house_id = get_house_id_by_username(username)
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
+
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400

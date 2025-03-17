@@ -36,8 +36,8 @@ const Login = () => {
 
       if (response.ok) {
         // If login is successful, navigate to the dashboard or another page
-        // You can store the session token here or handle it as needed
-        navigate('/dashboard'); // Change '/dashboard' to wherever you want to go
+        sessionStorage.setItem('username', username);
+        navigate('/home'); // Change '/dashboard' to wherever you want to go
       } else {
         // If login fails, show the error message
         setErrorMessage(data.error || 'An error occurred');
