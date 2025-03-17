@@ -27,6 +27,49 @@ export const Home = () => {
     return storedHum ? parseFloat(storedHum) : 20; // Default to 20 if no stored temperature
   });
   
+  const getFirstOfNextMonth = () => {
+    const today = new Date();
+    let nextMonth = today.getMonth() + 1; // Get the previous month (current month - 1)
+    const year = today.getFullYear();
+  
+    // If it's January, adjust the year to the previous year
+    if (nextMonth < 0) {
+      nextMonth = 11; // December
+    }
+  
+    // Create a new Date object for the first day of the last month
+    const firstOfNextMonth = new Date(year, nextMonth, 1);
+  
+    // Format the date to 'YYYY-MM-DD 00:00:00'
+    const formattedDate = `${firstOfNextMonth.getFullYear()}-${String(firstOfNextMonth.getMonth() + 1).padStart(2, '0')}-${String(firstOfNextMonth.getDate()).padStart(2, '0')}`;
+  
+    return formattedDate;
+  };
+
+  const getFirstOfLastMonth = () => {
+    const today = new Date();
+    let lastMonth = today.getMonth(); // Get the previous month (current month - 1)
+    const year = today.getFullYear();
+  
+    // If it's January, adjust the year to the previous year
+    if (lastMonth < 0) {
+      lastMonth = 11; // December
+    }
+  
+    // Create a new Date object for the first day of the last month
+    const firstOfLastMonth = new Date(year, lastMonth, 1);
+  
+    // Format the date to 'YYYY-MM-DD 00:00:00'
+    const formattedDate = `${firstOfLastMonth.getFullYear()}-${String(firstOfLastMonth.getMonth() + 1).padStart(2, '0')}-${String(firstOfLastMonth.getDate()).padStart(2, '0')} 00:00:00`;
+  
+    return formattedDate;
+  };
+  
+  console.log(getFirstOfLastMonth());
+  console.log(getFirstOfLastMonth());  // Example output: 2025-02-01 00:00:00
+
+  
+
   // State for screen size for responsive UI
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -118,8 +161,8 @@ export const Home = () => {
     const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
 
     if (username) {
-      fetch(`http://127.0.0.1:5000/home?username=${username}`)
-        .then((response) => response.json())
+      fetch(`http://127.0.0.1:5000/home?username=${username}&last_payment_date=${getFirstOfLastMonth()}`)
+      .then((response) => response.json())
         .then((data) => {
           setData(data);
           setLoading(false);
@@ -323,7 +366,7 @@ export const Home = () => {
 
             <div className="blockHome topBlockHome">
               <p className="bottomTextLeft">Next bill due</p>
-              <p className="bottomTextRight">{data.Energy_Bill.Next_Due_Date}</p>
+              <p className="bottomTextRight">{getFirstOfNextMonth()}</p>
             </div>
           </div>
           <div className="energyRowHome">

@@ -211,7 +211,7 @@ def get_latest_weather(house_id):
 # Function to get the bill status for a house
 def get_bill_status(house_id):
     query = """
-        SELECT amount, paidStatus, nextBillDue
+        SELECT amount, paidStatus
         FROM BillStats
         WHERE houseID = %s
         ORDER BY timestamp DESC
@@ -219,18 +219,20 @@ def get_bill_status(house_id):
     """
     result = database_execute.execute_SQL(query, (house_id,))
     if result:
-        amount, paid_status, next_due_date = result[0]
+        amount, paid_status = result[0]
         paid_status = "Paid" if paid_status == 1 else "Unpaid"
-        return amount, paid_status, next_due_date
+        return amount, paid_status
     return None, None, None, None
 
 # Route to get home data
 @app.route('/home', methods=['GET'])
 def get_home():
     username = request.args.get('username')
+    print(username)
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
     last_payment_date = request.args.get('last_payment_date')
+    print(last_payment_date)
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -240,7 +242,7 @@ def get_home():
         occupied_rooms_count = get_occupied_rooms_count(house_id)
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
         weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)
-        past_bill_amount, paid_status, next_due_date = get_bill_status(house_id)
+        past_bill_amount, paid_status = get_bill_status(house_id)
         current_amount = energy_cost_total
 
         inside_the_residence = {
@@ -258,7 +260,6 @@ def get_home():
         energy_bill = {
             "Bill_Paid_Status": paid_status,
             "Past_Bill_Amount": past_bill_amount,
-            "Next_Due_Date": next_due_date.strftime("%d/%m/%Y"),
             "Current_Amount": current_amount
         }
 
