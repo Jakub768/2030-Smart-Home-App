@@ -1,50 +1,112 @@
 .sidebar {
-    position: fixed; /* keeps the sidebar in place */
-    left: 3vw; /* small margin from left */
-    top: 3vw; /* small margin from top */
-    width: 23vw; /* width of the sidebar */
-    height: 85vh; /* height of the sidebar */
-    background-color: rgba(45, 45, 45, 0.5); /* Dark grey with transparency */
-    padding: 10px;
-    border-radius: 25px 0 0 25px; /* Rounded top-left & bottom-left corners */
-    
-    display: flex;
-    flex-direction: column; /* Stack items vertically */
-    
-    border-Top: 2px solid rgba(240, 240, 240, 0.5); /* add border the the top */
-    border-Bottom: 2px solid rgba(240, 240, 240, 0.5); /* add border to the bottom */
-    border-Left: 2px solid rgba(240, 240, 240, 0.5); /* add border to the left */
-  }
+  position: fixed; /* keeps the sidebar in place */
+  left: 3vw; /* small margin from left */
+  top: 3vw; /* small margin from top */
+  width: 23vw; /* width of the sidebar */
+  height: 85vh; /* height of the sidebar */
+  background-color: rgba(45, 45, 45, 0.5); /* Dark grey with transparency */
+  padding: 10px;
+  border-radius: 25px 0 0 25px; /* Rounded top-left & bottom-left corners */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* add border to the top */
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5); /* add border to the bottom */
+  border-left: 2px solid rgba(240, 240, 240, 0.5); /* add border to the left */
   
-  .sidebar-links {
-    list-style: none; /* remove any styles on the links */
-  }
-  
-  .sidebar-links li {
-    margin: 15px 0; /* add a verticle margin and a horixontal margin */
-  }
-  
-  .sidebar-links li a {
-    color: white; /* text colour white */
-    text-decoration: none; /* removing any decoration from the text */
-    padding: 10px; /* add a padding of 10px to every link in the sidebar */
-    display: block; /* link takes up width of the sidebar */
-    border-radius: 10px; /* border radius to the links */
-  }
-  
-  .sidebar-links li a:hover {
-    background: rgba(255, 255, 255, 0.3); /* background colour and opacity of the links when hovering over them */
-  }
-  
-  .sidebar-links li a.active {
-    background: rgba(255, 255, 255, 0.2); /* background colout and opacity of the active link */
-  }
-  
-  .sidebar-bottom {
-    margin-top: auto; /* pushes the bottom links to the bottom */
-  }
+  transition: all 0.3s ease; /* Smooth transition for size changes */
+}
 
-  .sidebar-top {
-    margin-top: 50px; /* margin at the top of the top links */
+.sidebar-links {
+  list-style: none; /* remove any styles on the links */
+  padding: 0;
+}
+
+.sidebar-links li {
+  margin: 15px 0; /* add a vertical margin and a horizontal margin */
+}
+
+.sidebar-links li a {
+  color: white; /* text colour white */
+  text-decoration: none; /* removing any decoration from the text */
+  padding: 10px; /* add a padding of 10px to every link in the sidebar */
+  display: block; /* link takes up width of the sidebar */
+  border-radius: 10px; /* border radius to the links */
+}
+
+.sidebar-links li a:hover {
+  background: rgba(255, 255, 255, 0.3); /* background colour and opacity of the links when hovering over them */
+}
+
+.sidebar-links li a.active {
+  background: rgba(255, 255, 255, 0.2); /* background colour and opacity of the active link */
+}
+
+.sidebar-bottom {
+  margin-top: auto; /* pushes the bottom links to the bottom */
+}
+
+.sidebar-top {
+  margin-top: 50px; /* margin at the top of the top links */
+}
+
+/* Mobile menu toggle button (hidden by default) */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  max-width: calc(100% - 20px); /* Ensure the button does not extend beyond 10px from the right side */
+  z-index: 1000;
+  background-color: rgba(45, 45, 45, 0.8); /* Dark grey with transparency */
+  color: white;
+  border: 2px solid rgba(240, 240, 240, 0.5); /* add border to the left */
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+
+/* Media query for mobile devices */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+    transform: translateY(-100%); /* Hide the sidebar above the viewport */
+    opacity: 0;
+    pointer-events: none; /* Disable interactions when hidden */
+    border: none;
+    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+    z-index: 1;
+    background-color: rgba(45, 45, 45); /* Dark grey with transparency */
+    border-radius: 0px 0px 25px 25px; /* Rounded top-left & bottom-left corners */
   }
   
+  .sidebar.open {
+    transform: translateY(0); /* Show the sidebar */
+    opacity: 1;
+    pointer-events: auto; /* Enable interactions when visible */
+  }
+  
+  .sidebar-top {
+    margin-top: 60px; /* Increase top margin to accommodate the toggle button */
+  }
+  
+  .mobile-toggle {
+    display: block; /* Show the toggle button on mobile */
+  }
+  
+  /* Stack the bottom links below the top links */
+  .sidebar-bottom {
+    margin-top: -15px;
+    margin-bottom: -20px;
+  }
+  
+  /* Make links more touchable on mobile */
+  .sidebar-links li a {
+    padding: 15px;
+    text-align: center;
+  }
+}
