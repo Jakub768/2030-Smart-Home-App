@@ -245,10 +245,19 @@ def get_home():
 
     try:
         active_devices_count = get_active_devices_count(house_id)
+        print(active_devices_count)  
         occupied_rooms_count = get_occupied_rooms_count(house_id)
+        print(occupied_rooms_count)  
+
         last_payment_date = get_last_payment_date(house_id)
+        print(last_payment_date)  
+
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
+        print(energy_cost_total)  
+
         weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)# Or use logging to output the result
+        print(weather_type, temperature, humidity, wind_speed)  
+
         past_bill_amount, paid_status, next_due_date = get_bill_status(house_id)
         print(past_bill_amount, paid_status, next_due_date)  
         current_amount = energy_cost_total
@@ -312,8 +321,7 @@ def get_devices_per_room_using_house(house_ID):
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
     username = request.args.get('username')
-    house_id_list = get_house_id_by_username(username)
-    house_id = house_id_list[0][0]
+    house_id = get_house_id_by_username(username)
 
 
     if not house_id:

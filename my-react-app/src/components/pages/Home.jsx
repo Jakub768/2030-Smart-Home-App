@@ -102,13 +102,9 @@ export const Home = () => {
   // Fetch data when component mounts
   useEffect(() => {
     const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
-    const jsonUsername = `{ 
-      "username": "${username}",
-    }`;
-    console.log(jsonUsername);
 
-    if (jsonUsername) {
-      fetch(`http://127.0.0.1:5000/home?username=${jsonUsername}`)
+    if (username) {
+      fetch(`http://127.0.0.1:5000/home?username=${username}`)
         .then((response) => response.json())
         .then((data) => {
           setData(data);
@@ -153,6 +149,7 @@ export const Home = () => {
     showerain: showerRain,
     snow: snow,
     thunderstorm: thunderstorm,
+    overcastclouds: fewClouds,
   };
 
   // Get weather description
