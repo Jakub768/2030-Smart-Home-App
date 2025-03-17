@@ -184,14 +184,6 @@ def get_occupied_rooms_count(house_id):
     result = database_execute.execute_SQL(query, (house_id,))
     return result[0][0] if result else 0
 
-# Function to get the last payment date for a house
-def get_last_payment_date(house_id):
-    query = """
-        SELECT timestamp FROM BillStats WHERE houseID = %s ORDER BY timestamp DESC LIMIT 1;
-    """
-    result = database_execute.execute_SQL(query, (house_id,))
-    return result[0][0] if result else None
-
 # Function to get the total energy cost since the last payment date for a house
 def get_energy_cost_total(house_id, last_payment_date):
     query = """
@@ -199,7 +191,7 @@ def get_energy_cost_total(house_id, last_payment_date):
         FROM DeviceStats
         JOIN Devices ON DeviceStats.deviceID = Devices.deviceID
         JOIN Rooms ON Devices.roomID = Rooms.roomID
-        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > %s;
+        WHERE Rooms.houseID = %s AND DeviceStats.timestamp > %s AND deviceStatus = 'conclusion';
     """
     result = database_execute.execute_SQL(query, (house_id, last_payment_date))
     return result[0][0] if result and result[0][0] is not None else 0
@@ -238,6 +230,7 @@ def get_home():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
+    last_payment_date = request.args.get('last_payment_date')
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -245,9 +238,8 @@ def get_home():
     try:
         active_devices_count = get_active_devices_count(house_id)
         occupied_rooms_count = get_occupied_rooms_count(house_id)
-        last_payment_date = get_last_payment_date(house_id)
         energy_cost_total = get_energy_cost_total(house_id, last_payment_date)
-        weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)# Or use logging to output the result
+        weather_type, temperature, humidity, wind_speed = get_latest_weather(house_id)
         past_bill_amount, paid_status, next_due_date = get_bill_status(house_id)
         current_amount = energy_cost_total
 
@@ -689,6 +681,7 @@ def get_my_profiles():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
+    print(house_id)
     user_id_list = get_user_id_by_username(username)
     user_id = user_id_list[0][0]
     try:
