@@ -690,7 +690,7 @@ def get_my_profiles():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
-    user_id_list = get_user_id_by_username('username')
+    user_id_list = get_user_id_by_username(username)
     user_id = user_id_list[0][0]
     try:
         profile_list = get_user_info(user_id)

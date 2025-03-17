@@ -97,7 +97,7 @@ const Profile = () => {
       .then((data) => {
         if (data.message == 'Profile updated successfully') {
           alert('Password updated successfully');
-          fetchProfileData();
+          fetchProfileData(username);
         } else {
           alert('Failed to update password');
         }
@@ -123,7 +123,7 @@ const Profile = () => {
       .then((data) => {
         if (data.message == 'Profile updated successfully') {
           alert(`${fieldLabels[editing]} updated successfully`);
-          fetchProfileData();
+          fetchProfileData(username);
         } else {
           alert(`Failed to update ${fieldLabels[editing]}`);
         }
@@ -140,27 +140,28 @@ const Profile = () => {
     setIsOldPasswordChecked(false);
   };
   
-  const fetchProfileData = () => {
-    useEffect(() => {
-      const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
-      console.log(username);
+  useEffect(() => {
+    const username = sessionStorage.getItem('username');
+    if (username) {
+      fetchProfileData(username);
+    } else {
+      setError('No username found');
+      setLoading(false);
+    }
+  }, []);
 
-      if (username) {
-        fetch(`http://127.0.0.1:5000/my_profiles?username=${username}`)
-          .then((response) => response.json())
-          .then((data) => {
-            setData(data);
-            setLoading(false);
-          })
-          .catch((err) => {
-            setError('Failed to fetch data');
-            setLoading(false);
-          });
-      } else {
-        setError('No username found');
+  // Fetch the profile data from the server
+  const fetchProfileData = (username) => {
+    fetch(`http://127.0.0.1:5000/my_profiles?username=${username}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
         setLoading(false);
-      }
-    }, []);
+      })
+      .catch((err) => {
+        setError('Failed to fetch data');
+        setLoading(false);
+      });
   };
   
   // Handle closing the popUp without saving

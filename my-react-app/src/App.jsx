@@ -16,36 +16,7 @@ import Signup from "./components/pages/Signup";
 import Login from "./components/pages/Login";
 
 function App() {
-  const [roomsData, setRoomsData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const location = useLocation(); // Get current location
-
-  
-
-  useEffect(() => {
-    // Fetch the rooms data from your API or JSON file
-    fetch('http://127.0.0.1:5000/rooms') // Example URL for the API
-      .then((response) => response.json())
-      .then((data) => {
-        setRoomsData(data.rooms); // Assume the response has a "rooms" key
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError('Failed to fetch room data');
-        setLoading(false);
-      });
-  }, []);
-
-  // Handle loading and errors
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   // Hide Navbar on Login and Signup page
   const showNavbar = !['/', '/signup'].includes(location.pathname);
@@ -62,7 +33,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         {/* Pass roomsData as prop to Rooms component */}
-        <Route path="/rooms" element={<Rooms rooms={roomsData} />} />
+        <Route path="/rooms" element={<Rooms />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/devices" element={<Devices />} />
         <Route path="/users" element={<Users />} />
@@ -71,7 +42,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         {/* Pass roomsData to the Room component */}
-        <Route path="/room/:roomName" element={<Room rooms={roomsData} />} />
+        <Route path="/room/:roomName" element={<Room />} />
       </Routes>
     </div>
   );
