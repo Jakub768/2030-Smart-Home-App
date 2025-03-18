@@ -368,7 +368,7 @@ def get_last_24_hours_energy_consumption_per_device(house_id):
         GROUP BY 
             ds.deviceID, d.deviceName, r.roomName
         ORDER BY 
-            ds.deviceID DESC
+            SUM(ds.energyConsumption) DESC
     """
     result = database_execute.execute_SQL(query, (house_id,))
     return result
@@ -437,7 +437,7 @@ def get_energy_consumption_by_time_interval(house_id, time1, time2):
 def get_last_completed_jobs(house_id):
     query = """
         SELECT 
-        ds.timestamp, d.deviceType, ds.energyConsumption
+        ds.timestamp, d.deviceName, ds.energyConsumption
         FROM 
         DeviceStats ds
         JOIN 
