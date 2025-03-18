@@ -1,4 +1,4 @@
-.mainAbout {
+.mainSoftware {
     position: fixed; /* keeps the page fixed in place */
     background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
     border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
@@ -17,13 +17,13 @@
     gap: 10px; /* gap between sections in the main */
   }
   
-  .aboutHeader {
+  .softwareHeader {
     display: flex; /* set up a flexible layout in the header */
     justify-content: space-between; /* even spacing between elements */
     margin-bottom: 10px; /* margin at the bottom of the header */
   }
   
-  .navButtonAbout {
+  .navButtonSoftware {
     background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
     color: white; /* colour of the text in the button */
     border: none; /* remove the border on the button */
@@ -36,17 +36,32 @@
     justify-content: center;
   }
   
-  .navButtonAbout img {
+  .navButtonSoftware img {
     width: 100%;
     height: 100%;
   }
-  .aboutText {
-    text-align: center;
-    font-size: 11px;
+
+  .blockSoftware {
+    background-color: rgba(35, 35, 35, 0.5); /* colour of blocks */
+    width: 100%; /* width of blocks */
+    height: 55px; /* height of blocks */
+    display: flex; /* set up a flexible layout in the blocks */
+    justify-content: center; /* centre content in the blocks */
+    align-items: center;
+    padding: 20px;
   }
-  
-  .bottomAboutText {
-    font-size: 12px;
-    text-align: center;
-    font-weight: bold;
+
+  .softwareColumn {
+    display: grid; /* set up a grid layout in the columns of blocks */
+    gap: 2px; /* gap between blocks vertically */
+    margin-bottom: 20px; /* margin below each column of blocks */
+  }
+
+  .question {
+    border-top-left-radius: 10px; /* round top corners of the top blocks */
+    border-top-right-radius: 10px;
+  }
+
+  .centeredText {
+    text-align: center; /* Center text horizontally */
   }
