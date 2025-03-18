@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Dashboard.css'; // Import the CSS file
 import userIcon from '../images/User.png';
+import PieChart from "./PieChart"; // Import PieChart component
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -27,7 +28,8 @@ export const Dashboard = () => {
   
     // Fetch data when component mounts
 useEffect(() => {
-    const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
+    const username = sessionStorage.getItem('username');
+    console.log(username)  // Retrieve username from sessionStorage
 
     if (username) {
       fetch(`http://127.0.0.1:5000/dashboard?username=${username}`)
@@ -94,9 +96,30 @@ useEffect(() => {
             <div style={{ marginTop: "10px", marginBottom: "10px" }}>
               <h2 className="headingsDashboard">Most energy consumed by</h2>
               <div className="blockColumnDashboard">
-                <div className="blockDashboard topBlockDashboard"><p>1</p><p></p></div>
-                <div className="blockDashboard"><p>2</p><p></p></div>
-                <div className="blockDashboard bottomBlockDashboard"><p>3</p><p></p></div>
+                <div className="blockDashboard topBlockDashboard">
+                  <p>1&nbsp;&nbsp;{data?.Most_energy_used_by?.["device 1"]?.device_name || "N/A"}</p>
+                  <p>
+                    {data?.Most_energy_used_by?.["device 1"]?.energy_consumed 
+                    ? `${data?.Most_energy_used_by?.["device 1"]?.energy_consumed} kWh`
+                    : "N/A"}
+                  </p>
+                </div>
+                <div className="blockDashboard">
+                  <p>2&nbsp;&nbsp;{data?.Most_energy_used_by?.["device 2"]?.device_name || "N/A"}</p>
+                  <p>
+                    {data?.Most_energy_used_by?.["device 2"]?.energy_consumed 
+                    ? `${data?.Most_energy_used_by?.["device 2"]?.energy_consumed} kWh`
+                    : "N/A"}
+                  </p>
+                </div>
+                <div className="blockDashboard bottomBlockDashboard">
+                  <p>3&nbsp;&nbsp;{data?.Most_energy_used_by?.["device 3"]?.device_name || "N/A"}</p>
+                  <p>
+                    {data?.Most_energy_used_by?.["device 3"]?.energy_consumed 
+                    ? `${data?.Most_energy_used_by?.["device 3"]?.energy_consumed} kWh`
+                    : "N/A"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -127,7 +150,7 @@ useEffect(() => {
             </div>
           </div>
           <div className="circularBlockWrapperDashboard">
-            <div className="circularBlockDashboard">Pie Chart</div>
+            <div className="circularBlockDashboard">{data?.pie_chart && <PieChart pieData={data.pie_chart} />}</div>
           </div>
         </div>
       </main>
