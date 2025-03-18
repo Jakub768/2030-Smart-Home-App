@@ -562,66 +562,96 @@ def get_devices():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-def get_past_7_days_to_now_data(house_id):
-    query = """
-        SELECT 
-            SUM(energyConsumption),
-            SUM(energyGeneration),
-            SUM(costsOfEnergy),
-            SUM(deviceUsage)
-        FROM 
-            DeviceStats
-        JOIN 
-            Devices ON DeviceStats.deviceID = Devices.deviceID
-        JOIN
-            Rooms ON Devices.roomID = Rooms.roomID
-        WHERE 
-            Rooms.houseID = %s
-            AND timestamp >= NOW() - INTERVAL 7 DAY
-            AND DeviceStats.deviceStatus = 'conclusion'
-    """
-    result = database_execute.execute_SQL(query, (house_id,))
-    return result if result else []
-    
+def get_energy_data(house_id, start_interval=None, 
+                    end_interval=None):
+    interval_condition = ""
 
-def get_past_14_days_to_7_days_data(house_id):
-    query = """
-        SELECT 
-            SUM(energyConsumption),
-            SUM(energyGeneration),
-            SUM(costsOfEnergy),
-            SUM(deviceUsage)
-        FROM 
-            DeviceStats
-        JOIN 
-            Devices ON DeviceStats.deviceID = Devices.deviceID
-        JOIN
-            Rooms ON Devices.roomID = Rooms.roomID
-        WHERE 
-            Rooms.houseID = %s
-            AND timestamp >= NOW() - INTERVAL 14 DAY
-            AND timestamp < NOW() - INTERVAL 7 DAY
-            AND DeviceStats.deviceStatus = 'conclusion'
+    if start_interval is not None:
+        if end_interval is not None:
+            interval_condition = f"AND timestamp >= NOW() - INTERVAL {start_interval} DAY AND timestamp < NOW() - INTERVAL {end_interval} DAY"
+        else:
+            interval_condition = f"AND timestamp >= NOW() - INTERVAL {start_interval} DAY"
+
+    query = f"""
+        SELECT d.deviceName, 
+               SUM(energyConsumption), 
+               SUM(energyGeneration), 
+               SUM(deviceUsage), 
+               d.deviceStatus,
+               SUM(costsOfEnergy), 
+               r.roomName
+        FROM DeviceStats ds
+        JOIN Devices d ON ds.deviceID = d.deviceID
+        JOIN Rooms r ON r.roomID = d.roomID
+        WHERE r.houseID = %s
+        {interval_condition}
+        AND ds.deviceStatus = 'conclusion'
+        GROUP BY r.roomName, d.deviceName, d.deviceStatus
     """
+
     result = database_execute.execute_SQL(query, (house_id,))
     return result if result else []
+
+def process_energy_data(house_id, start_days, end_days=None):
+    data1 = {}
+    data2 = {}
+
+    # Fetch energy data
+    data_list_1 = get_energy_data(house_id, start_days)
+    data_list_2 = get_energy_data(house_id, end_days, start_days) if end_days else []
+
+    # Process primary data
+    for data in data_list_1:
+        device_name = data[0]
+        entry = {
+            "device_name": device_name,
+            "energy_consumption": data[1],
+            "energy_generation": data[2],
+            "device_usage": data[3],
+            "device_status": data[4],
+            "costs_of_energy": data[5],
+            "room_name": data[6]
+        }
+        data1.setdefault(device_name, []).append(entry)
+
+    # Process comparison data
+    for data in data_list_2:
+        device_name = data[0]
+        entry = {
+            "device_name": device_name,
+            "energy_consumption": data[1],
+            "energy_generation": data[2],
+            "device_usage": data[3],
+            "device_status": data[4],
+            "costs_of_energy": data[5],
+            "room_name": data[6]
+        }
+        data2.setdefault(device_name, []).append(entry)
+
+    return {"data_1": data1, "data_2": data2}
 
 @app.route('/stats', methods=['GET'])
 def get_stats():
     username = request.args.get('username')
-    print(username)
+    intervals = request.args.get('intervals')
     house_id_list = get_house_id_by_username(username)
-    print(house_id_list)
-    house_id = house_id_list[0][0]
+    house_id = 1 #house_id_list[0][0]
+
+    data1 = {}
+    data2 = {}
     
     try:
-        past_7_days_to_now_data = get_past_7_days_to_now_data(house_id)
-        past_14_days_to_7_days_data = get_past_14_days_to_7_days_data(house_id)
+        if intervals == "Day":
+            response_data = process_energy_data(house_id, 1, 2)
 
-        response_data = {
-            "past_7_days_to_now_data": past_7_days_to_now_data,
-            "past_14_days_to_7_days_data": past_14_days_to_7_days_data
-        }
+        elif intervals == "Week":
+            response_data = process_energy_data(house_id, 7, 14)
+
+        elif intervals == "Month":
+            response_data = process_energy_data(house_id, 30, 60)
+
+        elif intervals == "Year":
+            response_data = process_energy_data(house_id, 365, 730)    
 
         return jsonify(response_data), 200
 
