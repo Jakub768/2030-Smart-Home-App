@@ -70,3 +70,63 @@
   .searchInput::placeholder {
     color: rgb(180, 180, 180); /* Set the placeholder text color */
   }
+
+  .dropdown {
+    position: relative;
+    width: 150px;
+    cursor: pointer;
+  }
+  
+  .dropdown-toggle {
+    background-color: rgba(40, 40, 40, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    font-size: 16px;
+  }
+  
+  .dropdown-list {
+    background-color: rgb(40, 40, 40);
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+    margin-top: 5px;
+    z-index: 10;
+  }
+  
+  .dropdown-item {
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .dropdown-item:last-child {
+    border-bottom: none;
+  }
+  
+  .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .arrow {
+    font-size: 16px;
+  }
+
+  .bottomSectionStats{
+    display: flex;
+    justify-content: left;
+    margin-top: 20px;
+    align-items: center;
+  }
+
+  .bottomSectionStats p{
+    font-size: 20px;
+  }

@@ -49,6 +49,8 @@ const Stats = () => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("week"); // Default to "week"
+  const [dropdownOpen, setDropdownOpen] = useState(false); // Track if the dropdown is open
 
   // Function to sort the devices
   const sortedDevices = useMemo(() => {
@@ -83,6 +85,14 @@ const Stats = () => {
       device.roomName.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [sortedDevices, searchQuery]);
+
+  // Handle time period change from custom dropdown
+  const handleTimePeriodChange = (period) => {
+    setSelectedTimePeriod(period); // Update the selected time period
+    setDropdownOpen(false); // Close the dropdown after selecting
+    console.log(`Selected Time Period: ${period}`);
+    // You can add additional logic here to handle data changes based on selected time period
+  };
 
   return (
     <main className="mainStats">
@@ -132,6 +142,36 @@ const Stats = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Custom Dropdown */}
+      <div className="bottomSectionStats">
+        <p>Compare stats from the current&nbsp;</p>
+        
+        <div className="dropdown">
+          {/* Toggle Button for Dropdown */}
+          <div className="dropdown-toggle" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)} {/* Capitalize first letter */}
+            <span className="arrow">{dropdownOpen ? '▼' : '►'}</span>
+          </div>
+
+          {/* Dropdown List */}
+          {dropdownOpen && (
+            <div className="dropdown-list">
+              {['day', 'week', 'month', 'year'].map((period) => (
+                <div
+                  key={period}
+                  className="dropdown-item"
+                  onClick={() => handleTimePeriodChange(period)} // Corrected: Pass period directly
+                >
+                  {period.charAt(0).toUpperCase() + period.slice(1)} {/* Capitalize first letter */}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <p>&nbsp;with the previous {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)}:</p>
+
       </div>
     </main>
   );

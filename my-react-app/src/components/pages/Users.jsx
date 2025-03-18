@@ -141,7 +141,7 @@ const Users = () => {
                 </span>
               </div>
 
-              {openDropdownId === user.username && (
+              {openDropdownId == user.username && (
                 <ul className="customDropdown">
                   {['Homeowner', 'Admin', 'User'].map((role) => (
                     <li

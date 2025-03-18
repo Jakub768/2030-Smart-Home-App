@@ -228,7 +228,6 @@ def get_bill_status(house_id):
 @app.route('/home', methods=['GET'])
 def get_home():
     username = request.args.get('username')
-    print(username)
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
     last_payment_date = request.args.get('last_payment_date')
@@ -610,7 +609,9 @@ def get_past_14_days_to_7_days_data(house_id):
 @app.route('/stats', methods=['GET'])
 def get_stats():
     username = request.args.get('username')
+    print(username)
     house_id_list = get_house_id_by_username(username)
+    print(house_id_list)
     house_id = house_id_list[0][0]
     
     try:
@@ -724,11 +725,11 @@ def get_my_profiles():
 # Route to update the role of a user
 @app.route('/update_user_role', methods=['POST'])
 def update_user_role():
-    data = request.get_json()
-
-    user_id = data.get('user_id')
-    new_role = data.get('new_role')
-    requester_id = data.get('requester_id')
+    username = request.args.get('username')
+    changedUsername = request.args.get('changedUsername')
+    user_id = get_user_id_by_username(changedUsername)
+    new_role = request.args.get('role')
+    requester_id = get_user_id_by_username(username)
 
     if not all([user_id, new_role, requester_id]):
         return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400
