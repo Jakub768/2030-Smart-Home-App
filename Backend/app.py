@@ -795,11 +795,8 @@ def update_user_role():
         return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400
 
     try:
-        # Check if the requester has permission to update the user role
         if not permissions_management.has_permission(requester_id, user_id):
             return jsonify({"error": "Requester does not have permission to update this user"}), 403
-
-        # Update the user role
         rows_affected = permissions_management.set_role(user_id, new_role)
 
         if rows_affected:

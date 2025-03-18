@@ -9,20 +9,17 @@ USER_ROLES = {
 
 def get_user_role(user_id):
     query = """
-        SELECT role FROM Permissions WHERE userID = %s
+        SELECT roles FROM Users WHERE userID = %s
     """
     result = database_execute.execute_SQL(query, (user_id,))
     return result[0][0] if result else None
 
 def has_permission(requester_id, target_user_id):
-    """
-    Check if the requester has permission to modify the target user.
-    """
     requester_role = get_user_role(requester_id)
     target_user_role = get_user_role(target_user_id)
 
     if requester_role and target_user_role:
-        return USER_ROLES[target_user_role] > USER_ROLES[requester_role]
+        return USER_ROLES[requester_role] > USER_ROLES[target_user_role]
     return False
 
 def can_modify_user(requester_id, target_user_id):
