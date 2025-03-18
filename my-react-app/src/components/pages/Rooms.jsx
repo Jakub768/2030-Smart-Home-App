@@ -1,68 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './Rooms.css'; // Import the CSS file
-import userIcon from '../images/User.png';
+import "./Rooms.css";
+import userIcon from "../images/User.png";
 
 const Rooms = () => {
   const navigate = useNavigate();
-
-  // State to store the data
   const [data, setData] = useState(null);
-
-  // State to handle loading and errors
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Fetch data when component mounts
   useEffect(() => {
-    // Fetch the data from the Flask API
-    fetch('http://127.0.0.1:5000/rooms')
-      .then((response) => response.json())  // Parse the JSON response
-      .then((data) => {
-        setData(data);  // Set data to state
-        setLoading(false);  // Set loading to false after data is fetched
-      })
-      .catch((err) => {
-        setError('Failed to fetch data');
+    const fetchRooms = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/rooms");
+        if (!response.ok) throw new Error("Failed to fetch data");
+        const jsonData = await response.json();
+        setData(jsonData.rooms); // Directly set rooms object
+      } catch (err) {
+        setError(err.message);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchRooms();
   }, []);
 
-  // Render the component
+  // Show loading spinner
   if (loading) {
-    const LoadingSpinner = () => {
-      return (
-        <main className="mainHome">
+    return (
+      <main className="mainHome">
         <div className="spinner-container">
           <div className="spinner"></div>
         </div>
-        </main>
-      );
-    };
-    return <LoadingSpinner />;
+      </main>
+    );
   }
 
+  // Show error message
   if (error) {
-    return <div>{error}</div>;
+    return <div className="error">{error}</div>;
   }
 
-  // Group the devices by room
-  const groupedRooms = data.rooms.reduce((acc, roomData) => {
-    const roomName = roomData[0];
-    const device = {
-      name: roomData[1],
-      type: roomData[2],
-      energyUsage: roomData[3],
-    };
-
-    // If the room already exists in the accumulator, add the device to that room's array
-    if (!acc[roomName]) {
-      acc[roomName] = [];
-    }
-    acc[roomName].push(device);
-
-    return acc;
-  }, {});
+  // Ensure data exists before rendering
+  if (!data || Object.keys(data).length === 0) {
+    return <div className="error">No data available.</div>;
+  }
 
   return (
     <main className="mainRooms">
@@ -73,25 +57,31 @@ const Rooms = () => {
           <img src={userIcon} alt="User Icon" />
         </button>
       </div>
+
       <div className="contentRooms">
-        {/* Map through the grouped rooms */}
-        {Object.keys(groupedRooms).map((roomName) => {
-          const devices = groupedRooms[roomName];
+        {Object.entries(data).map(([roomName, devices]) => {
+          const displayedDevices = devices.slice(0, 3); // Show only the first 3 devices
+          const hasMoreDevices = devices.length > 3; // Check if more than 3 devices exist
 
           return (
-            <div>
+            <div key={roomName}>
               <h2>{roomName}</h2>
               <div className="sectionRooms">
-                {/* Map through devices in each room and display device name and energy usage */}
-                {devices.map((device, deviceIndex) => (
-                  <div className={`blockRooms ${deviceIndex === 0 ? 'firstBlockRooms' : ''}`}>
-                    <div>{device.name}</div>
-                    <div>{device.energyUsage} kWh</div>
+                {displayedDevices.map((device, index) => (
+                  <div 
+                    key={`${roomName}-${index}`} 
+                    className={`blockRooms ${index === 0 ? "firstBlockRooms" : ""}`}
+                  >
+                    <div>{device.device_name} ({device.device_status})</div>
                   </div>
                 ))}
-                <button className="actionButtonRooms" onClick={() => navigate(`/room/${roomName}`)}>
-                  More...
-                </button>
+
+                {/* Show "More..." button only if there are more than 3 devices */}
+                {hasMoreDevices && (
+                  <button className="actionButtonRooms" onClick={() => navigate(`/room/${roomName}`)}>
+                    More...
+                  </button>
+                )}
               </div>
             </div>
           );
