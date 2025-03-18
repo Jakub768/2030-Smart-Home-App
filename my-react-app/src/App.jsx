@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom"; // Import useLocation
 import "./App.css";
 import { Navbar } from "./components/Navbar";
-import { About, Signin, Home, Services, Settings } from "./components/pages";
+import { About, Home, Services, Settings } from "./components/pages";
 import Dashboard from "./components/pages/Dashboard";
 import Profile from "./components/pages/Profile";
 import Rooms from "./components/pages/Rooms";
@@ -14,7 +14,7 @@ import AddDevice from "./components/pages/AddDevice";
 import Room from "./components/pages/Room";
 import Signup from "./components/pages/Signup";
 import Login from "./components/pages/Login";
-import softwareUpdate from "./components/pages/softwareUpdate";
+import SoftwareUpdate from "./components/pages/softwareUpdate";
 
 function App() {
   const location = useLocation(); // Get current location
@@ -39,7 +39,7 @@ function App() {
         <Route path="/devices" element={<Devices />} />
         <Route path="/users" element={<Users />} />
         <Route path="/faqs" element={<Faqs />} />
-        <Route path="/softwareUpdate" element={<softwareUpdate />} />
+        <Route path="/SoftwareUpdate" element={<SoftwareUpdate />} />
         <Route path="/add_device" element={<AddDevice />} />
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
