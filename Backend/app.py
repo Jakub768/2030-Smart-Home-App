@@ -273,75 +273,47 @@ def get_home():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-def get_last_30_days_energy_consumption_per_device(house_id):
+def get_all_rooms(house_id):
     query = """
-        SELECT r.roomName, d.deviceName, SUM(ds.energyConsumption) AS totalEnergy
-        FROM DeviceStats ds
-        JOIN Devices d ON ds.deviceID = d.deviceID
-        JOIN Rooms r on d.roomID = r.roomID
-        WHERE ds.deviceStatus = 'conclusion'
-        AND r.houseID = %s
-        AND ds.timestamp BETWEEN NOW() - INTERVAL 30 DAY AND NOW() 
-        GROUP BY r.roomName, d.deviceName, d.deviceType
-        ORDER BY totalEnergy
+        SELECT r.roomID, r.roomName FROM Rooms r WHERE r.houseID = %s
     """
-    result = database_execute.execute_SQL(query, (house_id,))
-    return result
+    return database_execute.execute_SQL(query, (house_id,))
 
-def get_devices_per_room_using_house(house_ID):
+def get_all_devices_in_this_room(room_id):
     query = """
-        SELECT r.roomName, d.deviceName 
-        FROM Devices d
-        JOIN Rooms r on r.roomID = d.roomID
-        WHERE r.houseID = %s
-        GROUP BY r.roomName, d.deviceName
+        SELECT d.deviceName, d.deviceStatus FROM Devices d WHERE d.roomID = %s
     """
-    result = database_execute.execute_SQL(query, (house_ID,))
-    return result
+    return database_execute.execute_SQL(query, (room_id,))
 
 @app.route('/rooms', methods=['GET'])
 def get_rooms():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
-    house_id = house_id_list[0][0]
+    house_id = 1 #house_id_list[0][0]
 
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
 
     try:
-        result = {}
-        rooms_data_list = get_last_30_days_energy_consumption_per_device(house_id)
-        visited_room = {}
-        device_checked = {}
-        if rooms_data_list:
-            for rooms_data in rooms_data_list:
-                roomName = rooms_data[0]
-                if roomName not in visited_room:
-                    visited_room[roomName] = []
-                new_device_info = {
-                    "device_name": rooms_data[1],
-                    "total_energy": rooms_data[2]
+        rooms = get_all_rooms(house_id)
+        device_list_in_this_room = {}
+        for room in rooms:
+            room_id = room[0]
+            room_name = room[1]
+            device_list = get_all_devices_in_this_room(room_id)
+            if room_name not in device_list_in_this_room:
+                device_list_in_this_room[room_name] = []
+            for device in device_list:
+                device_name = device[0]
+                device_status = device[1]
+                data = {
+                    "device_name": device_name,
+                    "device_status": device_status
                 }
-                visited_room[roomName].append(new_device_info)
-                device_checked[rooms_data[1]] = 1
-        rooms_data_list = get_devices_per_room_using_house(house_id)
-        visited_room = {}
-
-        if rooms_data_list:
-            for rooms_data in rooms_data_list:
-                roomName = rooms_data[0]
-                if roomName not in visited_room:
-                    visited_room[roomName] = []
-                if rooms_data[1] not in device_checked:
-                    new_device_info = {
-                        "device_name": rooms_data[1],
-                    }
-                    visited_room[roomName].append(new_device_info)
-            result = {
-                "rooms": visited_room
-            }
-        return jsonify(result)
+                device_list_in_this_room[room_name].append(data)
+        
+        return jsonify(device_list_in_this_room)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -630,30 +602,85 @@ def process_energy_data(house_id, start_days, end_days=None):
 
     return {"data_1": data1, "data_2": data2}
 
+def get_total_energy_data(house_id, start_interval=None, 
+                    end_interval=None):
+    interval_condition = ""
+
+    if start_interval is not None:
+        if end_interval is not None:
+            interval_condition = f"AND timestamp >= NOW() - INTERVAL {start_interval} DAY AND timestamp < NOW() - INTERVAL {end_interval} DAY"
+        else:
+            interval_condition = f"AND timestamp >= NOW() - INTERVAL {start_interval} DAY"
+
+    query = f"""
+        SELECT sum(ds.energyConsumption), sum(ds.energyGeneration), sum(ds.deviceUsage), sum(ds.costsOfEnergy)
+        FROM DeviceStats ds
+        JOIN Devices d ON d.deviceID = ds.deviceID
+        JOIN Rooms r ON r.roomID = d.roomID
+        WHERE r.houseID = %s
+        {interval_condition}
+    """
+
+    result= database_execute.execute_SQL(query, (house_id,))
+    return result if result else []
+
+def process_total_energy_data(house_id, start_days, end_days=None):
+    data1 = {}
+    data2 = {}
+
+    # Fetch energy data
+    data_list_1 = get_total_energy_data(house_id, start_days)
+    data_list_2 = get_total_energy_data(house_id, end_days, start_days) if end_days else []
+
+    # Process primary data
+    for data in data_list_1:
+        result1 = {
+            "total_energy_consumption": data[0],
+            "total_energy_generation": data[1],
+            "total_device_usage": data[2],
+            "total_cost": data[3]
+        }
+
+    # Process comparison data
+    for data in data_list_2:
+        result2 = {
+            "total_energy_consumption": data[0],
+            "total_energy_generation": data[1],
+            "total_device_usage": data[2],
+            "total_cost": data[3]
+        }
+
+    return {"result_1": result1, "result_2": result2}
+
 @app.route('/stats', methods=['GET'])
 def get_stats():
     username = request.args.get('username')
-    intervals = request.args.get('intervals')
+    intervals = 'Day' #request.args.get('intervals')
     house_id_list = get_house_id_by_username(username)
     house_id = 1 #house_id_list[0][0]
-
-    data1 = {}
-    data2 = {}
     
     try:
+        top_data = {}
+        bottom_data = {}
+
         if intervals == "Day":
-            response_data = process_energy_data(house_id, 1, 2)
-
+            top_data = process_energy_data(house_id, 1, 2)
+            bottom_data = process_total_energy_data(house_id, 1, 2)
         elif intervals == "Week":
-            response_data = process_energy_data(house_id, 7, 14)
-
+            top_data = process_energy_data(house_id, 7, 14)
+            bottom_data = process_total_energy_data(house_id, 7, 14)
         elif intervals == "Month":
-            response_data = process_energy_data(house_id, 30, 60)
-
+            top_data = process_energy_data(house_id, 30, 60)
+            bottom_data = process_total_energy_data(house_id, 30, 60)
         elif intervals == "Year":
-            response_data = process_energy_data(house_id, 365, 730)    
+            top_data = process_energy_data(house_id, 365, 730)
+            bottom_data = process_total_energy_data(house_id, 365, 730)
+        result = {
+            "top_data": top_data,
+            "bottom_data": bottom_data
+        }
 
-        return jsonify(response_data), 200
+        return jsonify(result), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -673,7 +700,7 @@ def get_all_users(house_id):
 def get_users():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
-    house_id = 1 #house_id_list[0][0]
+    house_id = house_id_list[0][0]
     try:
         users = get_all_users(house_id)
         return jsonify({"users": users}), 200
