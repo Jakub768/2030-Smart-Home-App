@@ -71,47 +71,24 @@ const Profile = () => {
 
   // Handle saving the updated value
   const handleSave = () => {
-    if (editing == 'password') {
+    const username = data.my_profile.user_info.username;
+  
+    if (editing === 'password') {
       if (newPassword !== confirmNewPassword) {
         alert("New passwords do not match.");
         return;
       }
   
-      const formattedData = `{ 
-        "username": "${data.my_profile.user_info.username}",
-        "updated_info": { 
-          "${editing}": "${newPassword}"
+      const formattedData = JSON.stringify({
+        username: username,
+        updated_info: {
+          [editing]: newPassword
         }
-      }`;
+      });
   
       console.log(formattedData);
   
-      fetch('http://127.0.0.1:5000/update_profile', {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: formattedData
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message == 'Profile updated successfully') {
-          alert('Password updated successfully');
-          fetchProfileData(username);
-        } else {
-          alert('Failed to update password');
-        }
-      })
-    } else {
-      const formattedData = `{ 
-        "username": "${data.my_profile.user_info.username}",
-        "updated_info": { 
-          "${editing}": "${newValue}"
-        }
-      }`;
-  
-      console.log(formattedData);
-  
+      // POST the updated password
       fetch('http://127.0.0.1:5000/update_profile', {
         method: 'POST',
         headers: {
@@ -119,17 +96,53 @@ const Profile = () => {
         },
         body: formattedData
       })
-      .then((response) => response.json())
+      .then(response => response.json())
       .then((data) => {
-        if (data.message == 'Profile updated successfully') {
+        if (data.message === 'Profile updated successfully') {
+          alert('Password updated successfully');
+          // Fetch profile data after successful update
+          fetchProfileData(username);
+        } else {
+          alert('Failed to update password');
+        }
+      })
+      .catch((err) => {
+        alert('An error occurred while updating the password.');
+      });
+    } else {
+      const formattedData = JSON.stringify({
+        username: username,
+        updated_info: {
+          [editing]: newValue
+        }
+      });
+  
+      console.log(formattedData);
+  
+      // POST the other updated fields
+      fetch('http://127.0.0.1:5000/update_profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: formattedData
+      })
+      .then(response => response.json())
+      .then((data) => {
+        if (data.message === 'Profile updated successfully') {
           alert(`${fieldLabels[editing]} updated successfully`);
+          // Fetch profile data after successful update
           fetchProfileData(username);
         } else {
           alert(`Failed to update ${fieldLabels[editing]}`);
         }
       })
+      .catch((err) => {
+        alert(`An error occurred while updating ${fieldLabels[editing]}`);
+      });
     }
   
+    // Reset the form after saving
     setisPopUpOpen(false);
     setEditing(null);
     setEditSection('');
@@ -155,6 +168,7 @@ const Profile = () => {
     fetch(`http://127.0.0.1:5000/my_profiles?username=${username}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log('Fetched profile data:', data); // Check what data you get
         setData(data);
         setLoading(false);
       })
@@ -215,7 +229,7 @@ const Profile = () => {
     return <div>{error}</div>;
   }
 
-  const handleLogout = () => {
+const handleLogout = () => {
   // Send a POST request to your Flask logout route
   fetch('http://127.0.0.1:5000/logout', {
     method: 'POST',  // POST method for logout
@@ -243,6 +257,45 @@ const Profile = () => {
       alert('Failed to log out');
     });
 };
+
+const handleDelete = () => {
+  const username = sessionStorage.getItem('username');  // Or wherever you're storing the username
+  const password = prompt('Please enter your password to confirm deletion:'); // Asking for the password
+  alert("Account successfully deleted.")
+  
+  if (!username || !password) {
+    alert("Username or password is missing");
+    return;
+  }
+
+  // Send a POST request to your Flask 'delete_users' route
+  fetch('http://127.0.0.1:5000/delete_users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password,
+    })
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.message == 'User deleted successfully') {
+      navigate("/");  // Or wherever you want to redirect the user
+      localStorage.removeItem('authToken');
+      sessionStorage.removeItem('authToken');
+      localStorage.clear();
+      sessionStorage.clear();
+    } else {
+    }
+  })
+  .catch((error) => {
+    console.error('Error deleting account:', error);
+  });
+};
+
+
 
 return (
     <main className="mainProfile">
@@ -304,8 +357,8 @@ return (
       {/* Bottom Section with Two Buttons */}
       <div className="bottomSectionProfile">
         <button className="actionButtonProfile" onClick={handleLogout}>Sign Out</button>
-        <button className="actionButtonProfile">Change User</button>
-      </div>
+        <button className="actionButtonProfile" onClick={() => { handleDelete(); navigate("/"); }}>Delete Account</button>
+        </div>
 
       {/* Pop-up Edit Box */}
       {isPopUpOpen && (

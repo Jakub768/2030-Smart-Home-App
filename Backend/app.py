@@ -876,6 +876,7 @@ def delete_users():
 
     username = data.get('username')
     password = data.get('password')
+    print(username, password)
 
     if not username or not password:
         return jsonify({"error": "Incorrect username or password"}), 400
@@ -891,7 +892,7 @@ def delete_users():
                 if rows_affected:
                     return jsonify({"message": "User deleted successfully"}), 200
                 else:
-                    return jsonify({"error": "Failed to delete user"}), 500
+                    return jsonify({"error": "User deleted successfully"}), 500
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -54,6 +54,7 @@ const Signup = () => {
       if (response.ok) {
         // If registration is successful, display success message
         setSuccessMessage(data.message);
+        navigate('/');
       } else {
         // If there's an error, display the error message
         setErrorMessage(data.error);
@@ -127,7 +128,7 @@ const Signup = () => {
           Sign Up
         </div>
         <div className="submit" onClick={() => navigate("/")}>
-          Login
+          Cancel
         </div>
       </div>
     </div>
