@@ -658,6 +658,7 @@ def get_stats():
     intervals = 'Day' #request.args.get('intervals')
     house_id_list = get_house_id_by_username(username)
     house_id = 1 #house_id_list[0][0]
+
     
     try:
         top_data = {}
@@ -784,9 +785,11 @@ def get_my_profiles():
 def update_user_role():
     username = request.args.get('username')
     changedUsername = request.args.get('changedUsername')
-    user_id = get_user_id_by_username(changedUsername)
+    user_id_list = get_user_id_by_username(username)
+    user_id = user_id_list[0][0]
     new_role = request.args.get('role')
-    requester_id = get_user_id_by_username(username)
+    requester_id_list = get_user_id_by_username(changedUsername)
+    requester_id = requester_id_list[0][0]
 
     if not all([user_id, new_role, requester_id]):
         return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400
@@ -933,6 +936,7 @@ def delete_users():
 
     username = data.get('username')
     password = data.get('password')
+    print(username, password)
 
     if not username or not password:
         return jsonify({"error": "Incorrect username or password"}), 400
@@ -948,7 +952,7 @@ def delete_users():
                 if rows_affected:
                     return jsonify({"message": "User deleted successfully"}), 200
                 else:
-                    return jsonify({"error": "Failed to delete user"}), 500
+                    return jsonify({"error": "User deleted successfully"}), 500
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

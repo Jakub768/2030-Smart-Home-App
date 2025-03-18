@@ -32,15 +32,12 @@ export const Home = () => {
     let nextMonth = today.getMonth() + 1; // Get the previous month (current month - 1)
     const year = today.getFullYear();
   
-    // If it's January, adjust the year to the previous year
     if (nextMonth < 0) {
       nextMonth = 11; // December
     }
   
-    // Create a new Date object for the first day of the last month
     const firstOfNextMonth = new Date(year, nextMonth, 1);
   
-    // Format the date to 'YYYY-MM-DD 00:00:00'
     const formattedDate = `${firstOfNextMonth.getFullYear()}-${String(firstOfNextMonth.getMonth() + 1).padStart(2, '0')}-${String(firstOfNextMonth.getDate()).padStart(2, '0')}`;
   
     return formattedDate;
@@ -64,11 +61,6 @@ export const Home = () => {
   
     return formattedDate;
   };
-  
-  console.log(getFirstOfLastMonth());
-  console.log(getFirstOfLastMonth());  // Example output: 2025-02-01 00:00:00
-
-  
 
   // State for screen size for responsive UI
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);

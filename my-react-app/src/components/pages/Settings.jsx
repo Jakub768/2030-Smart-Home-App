@@ -50,6 +50,44 @@ export const Settings = () => {
       });
   };
 
+  const handleDelete = () => {
+    const username = sessionStorage.getItem('username');  // Or wherever you're storing the username
+    const password = prompt('Please enter your password to confirm deletion:'); // Asking for the password
+    alert("Account successfully deleted.")
+    
+    if (!username || !password) {
+      alert("Username or password is missing");
+      return;
+    }
+  
+    // Send a POST request to your Flask 'delete_users' route
+    fetch('http://127.0.0.1:5000/delete_users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.message == 'User deleted successfully') {
+        navigate("/");  // Or wherever you want to redirect the user
+        localStorage.removeItem('authToken');
+        sessionStorage.removeItem('authToken');
+        localStorage.clear();
+        sessionStorage.clear();
+      } else {
+      }
+    })
+    .catch((error) => {
+      console.error('Error deleting account:', error);
+    });
+  };
+  
+
   return (
     
       <main className="mainSettings">
@@ -88,7 +126,7 @@ export const Settings = () => {
 
         <div className="settings-bottom">
           <button className="bottom-button" onClick={handleLogout}>Log Out</button>
-          <button className="bottom-button" onClick={goToLogOut}>Change User</button>
+          <button className="bottom-button" onClick={() => { handleDelete(); navigate("/"); }}>Delete Account</button>
         </div>
       </main>
   );
