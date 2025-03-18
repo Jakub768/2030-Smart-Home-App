@@ -26,19 +26,25 @@ export const Dashboard = () => {
     const [error, setError] = useState(null);
   
     // Fetch data when component mounts
-    useEffect(() => {
-      // Fetch the data from the Flask API
-      fetch('http://127.0.0.1:5000/dashboard')
-        .then((response) => response.json())  // Parse the JSON response
+useEffect(() => {
+    const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
+
+    if (username) {
+      fetch(`http://127.0.0.1:5000/dashboard?username=${username}`)
+      .then((response) => response.json())
         .then((data) => {
-          setData(data);  // Set data to state
-          setLoading(false);  // Set loading to false after data is fetched
+          setData(data);
+          setLoading(false);
         })
         .catch((err) => {
           setError('Failed to fetch data');
           setLoading(false);
         });
-    }, []);
+    } else {
+      setError('No username found');
+      setLoading(false);
+    }
+  }, []);
   
     // Render the component
     if (loading) {
@@ -81,8 +87,8 @@ export const Dashboard = () => {
             <div>
               <h2 className="headingsDashboard">Last 24 Hours</h2>
               <div className="blockColumnDashboard">
-                <div className="blockDashboard topBlockDashboard"><p>Energy Consumed</p><p>{data.Last_24_hours.total_energy_consumed}</p></div>
-                <div className="blockDashboard bottomBlockDashboard"><p>Energy Cost</p><p>{data.Last_24_hours.total_costs_of_energy}</p></div>
+                <div className="blockDashboard topBlockDashboard"><p>Energy Consumed</p><p>{data.Last_24_hours.total_energy_consumed}&nbsp;kWh</p></div>
+                <div className="blockDashboard bottomBlockDashboard"><p>Energy Cost</p><p>£{data.Last_24_hours.total_costs_of_energy}</p></div>
               </div>
             </div>
             <div style={{ marginTop: "10px", marginBottom: "10px" }}>

@@ -634,8 +634,9 @@ def process_energy_data(house_id, start_days, end_days=None):
 def get_stats():
     username = request.args.get('username')
     intervals = request.args.get('intervals')
+    print(intervals)
     house_id_list = get_house_id_by_username(username)
-    house_id = 1 #house_id_list[0][0]
+    house_id = house_id_list[0][0]
 
     data1 = {}
     data2 = {}
@@ -757,9 +758,11 @@ def get_my_profiles():
 def update_user_role():
     username = request.args.get('username')
     changedUsername = request.args.get('changedUsername')
-    user_id = get_user_id_by_username(changedUsername)
+    user_id_list = get_user_id_by_username(username)
+    user_id = user_id_list[0][0]
     new_role = request.args.get('role')
-    requester_id = get_user_id_by_username(username)
+    requester_id_list = get_user_id_by_username(changedUsername)
+    requester_id = requester_id_list[0][0]
 
     if not all([user_id, new_role, requester_id]):
         return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400

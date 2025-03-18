@@ -1,10 +1,14 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect  } from "react";
 import { useNavigate } from "react-router-dom";
 import './Stats.css'; // Import the CSS file
 import userIcon from '../images/User.png';
 
 const Stats = () => {
   const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
 
   const deviceStats = [
     {
@@ -44,6 +48,30 @@ const Stats = () => {
       roomName: "Living Room"
     }
   ];
+
+  useEffect(() => {
+    const username = sessionStorage.getItem('username'); 
+    console.log(username); // Retrieve username from sessionStorage
+    const interval = 'Week';
+    console.log(interval);
+  
+    if (username) {
+      fetch(`http://127.0.0.1:5000/stats?username=${username}&intervals=${interval}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data); // Set the fetched data to the state
+          setLoading(false); // Set loading to false once data is fetched
+        })
+        .catch((err) => {
+          setError('Failed to fetch data'); // Handle error
+          setLoading(false);
+        });
+    } else {
+      setError('No username found'); // Handle case where no username is found
+      setLoading(false);
+    }
+  }, []);
+  
 
   // State for sorting
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -170,8 +198,17 @@ const Stats = () => {
             </div>
           )}
         </div>
-        <p>&nbsp;with the previous {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)}:</p>
+        <p>&nbsp;with the previous {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)}</p>
 
+      </div>
+      <div>
+        <div>
+          {data ? (
+            <h2>{data.data_1 ? data.data_1.costs_of_energy : 'No data available'}</h2>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
       </div>
     </main>
   );

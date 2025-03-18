@@ -22,7 +22,7 @@ def has_permission(requester_id, target_user_id):
     target_user_role = get_user_role(target_user_id)
 
     if requester_role and target_user_role:
-        return USER_ROLES[requester_role] > USER_ROLES[target_user_role]
+        return USER_ROLES[target_user_role] > USER_ROLES[requester_role]
     return False
 
 def can_modify_user(requester_id, target_user_id):
