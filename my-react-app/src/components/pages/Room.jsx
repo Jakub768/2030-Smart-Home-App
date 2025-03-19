@@ -1,34 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "./Room.css"; // Import the CSS file
+import "./Room.css"; // Import CSS
 import userIcon from "../images/User.png";
+
+const API_BASE_URL = "http://127.0.0.1:5000"; // Change if needed
 
 const Room = () => {
   const navigate = useNavigate();
-  const { roomName } = useParams(); // Get the room name from the URL params
-  const [data, setData] = useState(null);
+  const { roomName } = useParams(); // Get room name from URL params
+  const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch data when component mounts
+  // Fetch the devices for the selected room
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/rooms")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched Room Data:", data); // Debugging
-        setData(data || {}); // Fix: Use data directly
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Failed to fetch data");
-        setLoading(false);
-      });
-  }, []);
+    const fetchRoomDevices = async () => {
+      try {
+        const username = sessionStorage.getItem("username"); // Retrieve username
+        if (!username) {
+          throw new Error("No username found in sessionStorage.");
+        }
 
-  // Render loading spinner
+        const response = await fetch(`${API_BASE_URL}/rooms?username=${username}&room_name=${roomName}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch room devices");
+        }
+        const jsonData = await response.json();
+        setDevices(jsonData[roomName] || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoomDevices();
+  }, [roomName]);
+
   if (loading) {
     return (
-      <main className="mainHome">
+      <main className="mainRoom">
         <div className="spinner-container">
           <div className="spinner"></div>
         </div>
@@ -36,13 +47,9 @@ const Room = () => {
     );
   }
 
-  // Render error message
   if (error) {
     return <div className="error">{error}</div>;
   }
-
-  // Get the devices for the current room
-  const roomDevices = data[roomName] || [];
 
   return (
     <main className="mainRoom">
@@ -53,15 +60,19 @@ const Room = () => {
           <img src={userIcon} alt="User Icon" />
         </button>
       </div>
+
       <div className="contentRoom">
         <div className="sectionRoom">
-          {/* Render each device in the current room */}
-          {roomDevices.map((device, index) => (
-            <div key={index} className="blockRoom">
-              <div>{device.device_name}</div>
-              <div>{device.device_status}</div>
-            </div>
-          ))}
+          {devices.length > 0 ? (
+            devices.map((device, index) => (
+              <div key={index} className="blockRoom">
+                <div>{device.device_name}</div>
+                <div>{device.device_status}</div>
+              </div>
+            ))
+          ) : (
+            <p>No devices found in this room.</p>
+          )}
         </div>
       </div>
     </main>

@@ -5,9 +5,7 @@ import database_execute, permissions_management, device_management, user_managem
 import datetime
 import decimal
 import bcrypt
-# import device_stats_auto_update
-# import weather_auto_update
-# import bill_stats_auto_update
+# import auto_update
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -15,7 +13,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(minutes=30)
 flask_session.Session(app)
-flask_cors.CORS(app, origins="*")
+flask_cors.CORS(app)
 
 # User Authentication Functions
 # -----------------------------
@@ -231,7 +229,6 @@ def get_home():
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
     last_payment_date = request.args.get('last_payment_date')
-    print(last_payment_date)
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -273,7 +270,7 @@ def get_home():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-def get_all_rooms(house_id):
+def get_all_rooms_id_and_name(house_id):
     query = """
         SELECT r.roomID, r.roomName FROM Rooms r WHERE r.houseID = %s
     """
@@ -296,10 +293,13 @@ def get_rooms():
         return jsonify({"error": "house_id is required"}), 400
 
     try:
-        rooms = get_all_rooms(house_id)
+        rooms = get_all_rooms_id_and_name(house_id)
+        print(rooms)
         device_list_in_this_room = {}
         for room in rooms:
+            print(room)
             room_id = room[0]
+            print(room_id)
             room_name = room[1]
             device_list = get_all_devices_in_this_room(room_id)
             if room_name not in device_list_in_this_room:
@@ -462,7 +462,6 @@ def get_dashboard():
 
     try:
         total_energy_consumed_in_last_24_hours = get_total_energy_consumed_in_last_24_hours(house_id)
-        print(total_energy_consumed_in_last_24_hours)
         total_costs_of_energy_in_last_24_hours = get_total_costs_of_energy_in_last_24_hours(house_id)
         last_24_hours_energy_consumption_per_device = get_last_24_hours_energy_consumption_per_device(house_id)
 
@@ -540,27 +539,99 @@ def get_all_devices(house_id):
         SELECT Devices.deviceID, Devices.deviceName, Devices.deviceType, Devices.deviceStatus
         FROM Devices
         JOIN Rooms ON Devices.roomID = Rooms.roomID
-        WHERE Rooms.houseID = %s;
+        WHERE Rooms.houseID = %s
     """
     result = database_execute.execute_SQL(query, (house_id,))
+    return result if result else []
+
+def get_all_rooms(house_id):
+    query = """
+        SELECT r.roomName
+        FROM Rooms r
+        WHERE r.houseID = %s
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result if result else []
+
+def get_all_device_type():
+    query = """
+        select dd.deviceType
+        from DeviceData dd
+    """
+    result = database_execute.execute_SQL(query)
     return result if result else []
 
 # Route to get all devices for a house
 @app.route('/devices', methods=['GET'])
 def get_devices():
     username = request.args.get('username')
+    
     house_id_list = get_house_id_by_username(username)
-    house_id = house_id_list[0][0]
-
-    if not house_id:
+    if not house_id_list:
         return jsonify({"error": "house_id is required"}), 400
+    
+    house_id = house_id_list[0][0]  # Properly fetch house_id
 
     try:
         devices = get_all_devices(house_id)
-        return jsonify({"devices": devices}), 200
+        rooms = get_all_rooms(house_id)
+        device_type = get_all_device_type()
+        result = {
+            "devices": devices,
+            "devices_types": device_type,
+            "rooms": rooms
+        }
+        return jsonify(result), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+def get_device_id_by_name(device_name, house_id):
+    query = """
+        SELECT d.deviceID
+        FROM Devices d
+        JOIN Rooms r ON r.roomID = d.roomID
+        WHERE r.houseID = %s
+        AND d.deviceName = %s
+    """
+    result = database_execute.execute_SQL(query, (house_id, device_name))
+    return result[0][0] if result else None  # Return single device ID or None
+
+def activate_devices(device_name, house_id):
+    device_id = get_device_id_by_name(device_name, house_id)
+    if device_id:
+        device_management.device_activate(device_id)
+
+def deactivate_devices(device_name, house_id):
+    device_id = get_device_id_by_name(device_name, house_id)
+    if device_id:
+        device_management.device_deactivate(device_id)
+
+@app.route('/change_device_status', methods=['POST'])
+def change_device_status():
+    data = request.get_json()
+
+    username = data.get('username')
+    device_name = data.get('device_name')
+    device_status = data.get('device_status')
+
+    house_id_list = get_house_id_by_username(username)
+    if not house_id_list:
+        return jsonify({"error": "house_id is required"}), 400
+    
+    house_id = house_id_list[0][0]  
+
+    if not all([username, device_name, device_status]):
+        return jsonify({"error": "Missing argument"}), 400
+
+    if device_status == 'activate':
+        activate_devices(device_name, house_id)
+    elif device_status == 'deactivate':
+        deactivate_devices(device_name, house_id)
+    else:
+        return jsonify({"error": "Invalid device status"}), 400
+
+    return jsonify({"message": f"Device '{device_name}' successfully {device_status}d"}), 200
     
 def get_energy_data(house_id, start_interval=None, 
                     end_interval=None):
@@ -684,7 +755,6 @@ def process_total_energy_data(house_id, start_days, end_days=None):
 def get_stats():
     username = request.args.get('username')
     intervals = request.args.get('intervals')
-    print(intervals)
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
 
@@ -770,7 +840,6 @@ def get_my_profiles():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
-    print(house_id)
     user_id_list = get_user_id_by_username(username)
     user_id = user_id_list[0][0]
     try:
@@ -814,17 +883,17 @@ def get_my_profiles():
 def update_user_role():
     username = request.args.get('username')
     changedUsername = request.args.get('changedUsername')
-    user_id_list = get_user_id_by_username(username)
+    user_id_list = get_user_id_by_username(changedUsername)
     user_id = user_id_list[0][0]
-    new_role = request.args.get('role')
-    requester_id_list = get_user_id_by_username(changedUsername)
+    new_role = request.args.get('new_role')
+    requester_id_list = get_user_id_by_username(username)
     requester_id = requester_id_list[0][0]
 
     if not all([user_id, new_role, requester_id]):
         return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400
 
     try:
-        if not permissions_management.has_permission(requester_id, user_id):
+        if permissions_management.has_permission(requester_id, user_id) == False:
             return jsonify({"error": "Requester does not have permission to update this user"}), 403
         rows_affected = permissions_management.set_role(user_id, new_role)
 
@@ -855,30 +924,44 @@ def update_permissions():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+def get_room_id_by_room_name(room_name, house_id):
+    query = """
+    select r.roomID
+    from Rooms r
+    where r.roomName = %s
+    AND r.houseID = %s
+    """
+    result = database_execute.execute_SQL(query, (room_name, house_id))
+    return result[0][0]
 
 # Route to add a new device
 @app.route('/add_device', methods=['POST'])
 def add_device():
     data = request.get_json()
 
+    print(data)
+
     device_name = data.get('device_name')
     device_type = data.get('device_type')
-    room_id = data.get('room_id')
-    user_id = data.get('user_id')
-    energy_consumption = data.get('energy_consumption')
-    energy_generation = data.get('energy_generation')
+    username = data.get('username')
+    room_name = data.get('room_name')
+    house_id_list = get_house_id_by_username(username)
+    house_id = house_id_list[0][0]
+    room_id = get_room_id_by_room_name(room_name, house_id)
+    user_id_list = get_user_id_by_username(username)
+    user_id = user_id_list[0][0]
 
-    if not all([device_name, device_type, room_id, user_id, energy_consumption, energy_generation]):
+    if not all([device_name, device_type, room_id, user_id]):
         return jsonify({"error": "All fields are required"}), 400
 
     try:
-        params = (device_name, device_type, room_id, user_id, energy_consumption, energy_generation, 'inactive', 0)
-        rows_affected = device_management.add_device(params)
-
+        rows_affected = device_management.add_device(device_name, device_type, room_id, user_id)
+        print(rows_affected)
         if rows_affected:
             return jsonify({"message": "Device added successfully"}), 201
         else:
-            return jsonify({"error": "Failed to add device"}), 500
+            return jsonify({"error": "Failed to add device1"}), 500
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -962,7 +1045,6 @@ def delete_users():
 
     username = data.get('username')
     password = data.get('password')
-    print(username, password)
 
     if not username or not password:
         return jsonify({"error": "Incorrect username or password"}), 400

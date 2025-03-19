@@ -122,6 +122,23 @@ const Stats = () => {
     setSelectedDevice(null);
   };
 
+  if (loading) {
+    const LoadingSpinner = () => {
+      return (
+        <main className="mainHome">
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+        </main>
+      );
+    };
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <main className="mainStats">
       <div className="statsHeader">
@@ -211,7 +228,7 @@ const Stats = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7">No devices found matching your search.</td>
+                <td colSpan="7">Loading...</td>
               </tr>
             )}
           </tbody>
@@ -284,7 +301,9 @@ const Stats = () => {
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+              <div className="spinner-container">
+                <div className="spinner"></div>
+              </div>
       ) : error ? (
         <p>{error}</p>
       ) : (

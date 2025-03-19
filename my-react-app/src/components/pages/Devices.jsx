@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './Devices.css'; // Import the CSS file
+import './Devices.css';
 import userIcon from '../images/User.png';
 
+const API_BASE_URL = "http://127.0.0.1:5000"; // Change if deployed
 
 const ToggleButton = ({ isOn, toggleSwitch }) => (
   <div className={`toggle-switch ${isOn ? "on" : "off"}`} onClick={toggleSwitch}>
@@ -11,65 +12,117 @@ const ToggleButton = ({ isOn, toggleSwitch }) => (
 );
 
 const Devices = () => {
-  const [light1On, setLight1On] = useState(false);
-  const [light2On, setLight2On] = useState(false);
-  const [light3On, setLight3On] = useState(false);
-  const [light4On, setLight4On] = useState(false);
-  const [KettleOn, setKettleOn] = useState(false);
-  const [DishwasherOn, setDishwasherOn] = useState(false);
-  const [OvenOn, setOvenOn] = useState(false);
-  const [MicrowaveOn, setMicrowaveOn] = useState(false);
-  const [WMOn, setWMOn] = useState(false);
-  const [DMOn, setDMOn] = useState(false);
-
-  // Prepping for pull from Back-end
   const [devices, setDevices] = useState([]);
+  const [deviceTypes, setDeviceTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const username = sessionStorage.getItem("username");
 
-  // Fetch devices from an API
   useEffect(() => {
-    fetch('https://api.example.com/devices') // Replace with your API endpoint
-      .then((response) => response.json())
-      .then((data) => setDevices(data))
-      .catch((error) => console.error("Error fetching devices:", error));
-  }, []);
+    if (!username) {
+      setError("No username found in sessionStorage.");
+      setLoading(false);
+      return;
+    }
 
-  const toggleDevice = (id) => {
-    setDevices(devices.map(device =>
-      device.id === id ? { ...device, isOn: !device.isOn } : device
-    ));
-  };
+    fetch(`${API_BASE_URL}/devices?username=${username}`)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.devices || data.devices.length === 0) {
+          throw new Error("No devices found.");
+        }
 
-  const addDevice = () => {
-    const newDevice = {
-      id: devices.length + 1, // Generate a new ID
-      name: `New Device ${devices.length + 1}`,
-      type: "light", // Default type, you can change this as needed
-      isOn: false,
-    };
-    setDevices([...devices, newDevice]);
-  };
+        // Format devices from response
+        const formattedDevices = data.devices.map(([id, name, type, status]) => ({
+          id,
+          name,
+          type,
+          isOn: status === "active"
+        }));
 
-  const removeDevice = (id) => {
-    setDevices(devices.filter(device => device.id !== id));
+        // Extract unique device types from "devices_types"
+        const extractedDeviceTypes = data.devices_types.map(typeArr => typeArr[0]); // Fix: Extract type names correctly
+
+        setDevices(formattedDevices);
+        setDeviceTypes(extractedDeviceTypes);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Error fetching devices:", error);
+        setError("Failed to fetch devices.");
+        setLoading(false);
+      });
+  }, [username]);
+
+  const toggleDevice = (device) => {
+    const newStatus = device.isOn ? "deactivate" : "activate";
+
+    // Optimistically update UI
+    setDevices(prevDevices =>
+      prevDevices.map(d =>
+        d.id === device.id ? { ...d, isOn: !d.isOn } : d
+      )
+    );
+
+    // Send request to backend
+    fetch(`${API_BASE_URL}/change_device_status`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        device_name: device.name,
+        device_status: newStatus
+      })
+    })
+      .then(response => response.json())
+      .then((data) => {
+        if (!data.message) {
+          console.error("Error updating device:", data.error);
+          // Revert toggle if API request fails
+          setDevices(prevDevices =>
+            prevDevices.map(d =>
+              d.id === device.id ? { ...d, isOn: !d.isOn } : d
+            )
+          );
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        setError("Network error while updating device.");
+        // Revert toggle if network request fails
+        setDevices(prevDevices =>
+          prevDevices.map(d =>
+            d.id === device.id ? { ...d, isOn: !d.isOn } : d
+          )
+        );
+      });
   };
 
   const renderDevicesByType = (type) => {
-    return devices
-      .filter(device => device.type === type)
-      .map(device => (
-        <div className="toggle-container" key={device.id}>
-          <button className="no-gap1">
-            {device.name}
-            <div className="controls-wrapper">
-              <ToggleButton isOn={device.isOn} toggleSwitch={() => toggleDevice(device.id)} />
-              <button className="remove-device" onClick={() => removeDevice(device.id)}>Remove</button>
-            </div>
-          </button>
-        </div>
-      ));
+    const filteredDevices = devices.filter(device => device.type === type);
+
+    if (filteredDevices.length === 0) {
+      return <p className="no-devices">No devices available.</p>;
+    }
+
+    return filteredDevices.map(device => (
+      <div className="toggle-container" key={device.id}>
+        <button className="no-gap1">
+          {device.name}
+          <ToggleButton isOn={device.isOn} toggleSwitch={() => toggleDevice(device)} />
+        </button>
+      </div>
+    ));
+  };
+
+  if (loading) {
+    return <div className="mainDevices">Loading devices...</div>;
   }
-  
-  const navigate = useNavigate();
+
+  if (error) {
+    return <div className="mainDevices">{error}</div>;
+  }
 
   return (
       <main className="mainDevices">

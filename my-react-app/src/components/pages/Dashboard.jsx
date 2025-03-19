@@ -21,7 +21,6 @@ export const Dashboard = () => {
   // Fetch data when component mounts
   useEffect(() => {
     const username = sessionStorage.getItem('username');
-    console.log(username)  // Retrieve username from sessionStorage
 
     if (username) {
       fetch(`http://127.0.0.1:5000/dashboard?username=${username}`)
