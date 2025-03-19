@@ -210,7 +210,7 @@ const Stats = () => {
                   <td>{device.device_name ?? "N/A"}</td>
                   <td>{device.energy_consumption ?? "N/A"}</td>
                   <td>{device.energy_generation ?? "N/A"}</td>
-                  <td>{device.device_usage ?? "N/A"}</td>
+                  <td>{device.device_usage ? (device.device_usage / 3600).toFixed(2) : "N/A"}</td>
                   <td>{device.device_status ?? "N/A"}</td>
                   <td>${(device.energy_consumption != null && device.costs_of_energy != null) ? (parseFloat(device.energy_consumption) * parseFloat(device.costs_of_energy)).toFixed(2) : "N/A"}</td>
                   <td>{device.room_name ?? "N/A"}</td>
@@ -251,7 +251,7 @@ const Stats = () => {
             </div>
           )}
         </div>
-        <p>&nbsp;with the previous <i><b><u>{selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)}</u></b></i></p>
+        <p>&nbsp;with the previous {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)}&nbsp;:</p>
 
       </div>
       {loading ? (
@@ -272,8 +272,8 @@ const Stats = () => {
               </div>
               <div className="dataRow">
                 <span>Total Device Usage:</span>
-                <span>{data?.bottom_data?.result_1?.total_device_usage ?? "N/A"}</span>
-              </div>
+                <span>{data?.bottom_data?.result_1?.total_device_usage ? (data?.bottom_data?.result_1?.total_device_usage / 3600).toFixed(2) : "N/A"}</span>
+                </div>
               <div className="dataRow">
                 <span>Total Energy Consumption:</span>
                 <span>{data?.bottom_data?.result_1?.total_energy_consumption ?? "N/A"} kWh</span>

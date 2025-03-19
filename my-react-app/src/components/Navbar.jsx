@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Navbar.css";
 import { Link, NavLink } from "react-router-dom";
+import logo from './images/VBLogo.png';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +47,9 @@ export const Navbar = () => {
       {/* Sidebar */}
       <nav className={`sidebar ${isOpen ? "open" : ""}`}>
         {/* Top Links */}
+        <div className="branding">
+          <h1>Virtual Butler</h1>
+        </div>
         <div className="sidebar-top">
           <ul className="sidebar-links">
             <li>

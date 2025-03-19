@@ -336,7 +336,7 @@ export const Home = () => {
             <img src={weatherIcon} alt={data.Outside_The_Residence.Weather_Description} style={{maxWidth: '100%', maxHeight: '60px'}}/>
           </div>
           <div className="blockHome">{data.Outside_The_Residence.Temperature}°C</div>
-          <div className="blockHome">{data.Outside_The_Residence.Humidity}%</div>
+          <div className="blockHome">{Math.round(data.Outside_The_Residence.Humidity)}%</div>
           <div className="blockHome lastBlockHome">{data.Outside_The_Residence.Wind_Speed} mph</div>
         </div>
         <div className="paragraphsContainer2Home">

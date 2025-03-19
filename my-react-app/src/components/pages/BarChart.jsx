@@ -13,9 +13,25 @@ ChartJS.register(
 const BarChart = ({ consumptionData }) => {
   // Extract data for chart
   const labels = Object.keys(consumptionData); // Time intervals as the labels for the chart
+  
+  // The data for each time period
   const data = labels.map(timePeriod => {
     return parseFloat(consumptionData[timePeriod][0][0]); // The consumption data for each time period
   });
+
+  if (labels.length >= 5) {
+    // Swap the 4th (index 3) with the 2nd (index 1)
+    const tempLabel = labels[1];
+    const tempData = data[1];
+    
+    // Swap the 2nd (index 1) with the 3rd (index 2)
+    labels[1] = labels[3];
+    data[1] = data[3];
+    
+    // Set the 3rd (index 2) as the new 4th (index 3)
+    labels[3] = tempLabel;
+    data[3] = tempData;
+  }
 
   // Prepare chart data
   const chartData = {
