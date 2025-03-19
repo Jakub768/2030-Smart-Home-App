@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import './Dashboard.css'; // Import the CSS file
 import userIcon from '../images/User.png';
 import PieChart from "./PieChart"; // Import PieChart component
+import BarChart from "./BarChart"; // Import BarChart component
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -128,8 +129,9 @@ useEffect(() => {
           <div className="rightSectionDashboard">
             <h2 className="headingsDashboard">Consumption</h2>
             <div className="blockColumnDashboard">
-              <div className="barChartBlockDashboard">Bar Chart</div>
-            </div>
+              <div className="barChartBlockDashboard"><BarChart consumptionData={data?.Consumption} /></div>
+              
+            </div>  
           </div>
         </div>
 
