@@ -118,9 +118,9 @@ export const Settings = () => {
             <button className="no-gap1" onClick={() => navigate("/about")}>About<span className="arrow">&gt;</span></button>
             <button className="no-gap1" onClick={() => navigate("/softwareUpdate")}>Software Update<span className="arrow">&gt;</span></button>
 
-            <h2>Accessibility</h2>
+            {/* <h2>Accessibility</h2>
             <button className="no-gap1">Background<span className="arrow">&gt;</span></button>
-            <button className="no-gap1  ">Theme<span className="arrow">&gt;</span></button>
+            <button className="no-gap1  ">Theme<span className="arrow">&gt;</span></button> */}
           </div>
         </div>
 

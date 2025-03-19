@@ -24,9 +24,9 @@ def update_device_stats(deviceID, deviceType, deviceUsage, devicestatus):
     energyGenerationPerHour = decimal.Decimal(device_data[0][1]) if device_data[0][1] is not None else decimal.Decimal("0.00")
 
     # Compute actual energy consumption & generation based on usage
-    energyConsumption = energyConsumptionPerHour * decimal.Decimal(deviceUsage) * efficiency
-    energyGeneration = energyGenerationPerHour * decimal.Decimal(deviceUsage) * efficiency
-    costsOfEnergy = energyConsumption * decimal.Decimal('0.6')  # Assuming energy cost rate is 0.6 per unit
+    energyConsumption = energyConsumptionPerHour * (decimal.Decimal(deviceUsage) / (60 * 60)) * efficiency
+    energyGeneration = energyGenerationPerHour * (decimal.Decimal(deviceUsage) / (60 * 60)) * efficiency
+    costsOfEnergy = energyConsumption * decimal.Decimal('0.27')
 
     # Get current timestamp
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

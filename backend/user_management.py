@@ -1,22 +1,23 @@
 import database_execute
 
-def add_user(username, password, eMailAddress, firstName, lastName, dateOfBirth):
+def add_user(username, password, eMailAddress, firstName, lastName, roles):
     # Check if the username already exists
     result = database_execute.execute_SQL("""
         SELECT * FROM Users WHERE username = %s
     """, (username,))
 
     if result is None:
-        data = (username, password, eMailAddress, firstName, lastName, dateOfBirth)
+        data = (username, password, eMailAddress, firstName, lastName, roles)
         
         # Insert the new user into the database
         rows_affected = database_execute.execute_SQL("""
-            INSERT INTO Users (username, password, eMailAddress, firstName, lastName, dateOfBirth) 
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO Users (username, password, eMailAddress, firstName, lastName, roles)
+            VALUES (%s, %s, %s, %s, %s, %s);
         """, data)
 
         if rows_affected:
             print(f"User '{username}' added successfully!")
+            return rows_affected
         else:
             print("Failed to add user.")
     else:

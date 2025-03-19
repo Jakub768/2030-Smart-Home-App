@@ -13,17 +13,17 @@ def add_device(deviceName, deviceType, roomID, userID):
             roomID, 
             userID, 
             "inactive",
-            0
         )
 
         # Insert the new device into the database
         rows_affected = database_execute.execute_SQL("""
-            INSERT INTO Devices (deviceName, deviceType, roomID, userID, deviceStatus, deviceUsage) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO Devices (deviceName, deviceType, roomID, userID, deviceStatus) 
+            VALUES (%s, %s, %s, %s, %s)
         """, data)
 
         if rows_affected:
             print(f"Device '{deviceName}' added successfully!")
+            return rows_affected
         else:
             print("Failed to add device.")
     else:
@@ -80,7 +80,7 @@ def device_activate(deviceID):
         # Activate the device
         rows_updated = database_execute.execute_SQL("""
             UPDATE Devices
-            SET deviceStatus = %s,
+            SET deviceStatus = %s
             WHERE deviceID = %s;
         """, ("active", deviceID))
 
@@ -101,7 +101,7 @@ def device_deactivate(deviceID):
         # Deactivate the device
         rows_updated = database_execute.execute_SQL("""
             UPDATE Devices
-            SET deviceStatus = %s,
+            SET deviceStatus = %s
             WHERE deviceID = %s;
         """, ("inactive", deviceID))
 

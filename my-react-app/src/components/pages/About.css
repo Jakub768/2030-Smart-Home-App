@@ -54,3 +54,106 @@
     text-align: center;
     font-weight: bold;
   }
+  @media screen and (max-width: 480px) {
+    .mainAbout {
+        /* For mobile, take up most of the screen */
+        margin-top: 1vh;
+        margin-left: 2vw;
+        width: 96vw;
+        height: 80vh;
+        padding: 15px;
+        border-bottom-left-radius: 25px;
+        border-top-left-radius: 25px;
+        border-left: 2px solid rgba(240, 240, 240, 0.5);
+        margin-top: 65px;
+    }
+    
+    .aboutHeader {
+      display: flex; /* Set up a flexible layout in the header */
+      justify-content: space-between; /* Even spacing between elements */
+      margin-bottom: 30px; /* Margin at the bottom of the header */
+      flex-shrink: 0;
+    }
+    
+    /* .blockHome {
+        width: 100%; 
+        margin-bottom: 2px;
+        border-radius: 10px; 
+    } */
+  /*   
+    .paragraphsContainer1Home,
+    .paragraphsContainer2Home {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .paragraphHome {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .energyRowHome {
+        flex-direction: column;
+    }
+    
+    .topBlockHome,
+    .bottomBlockHome {
+        width: 100%;
+        margin-bottom: 2px;
+    } */
+  
+    /* New styles for grouping blocks with their labels */
+    .sectionHome {
+      display: block; /* Change from flex to block for mobile */
+    }
+    
+    /* Create a container for each block and its label */
+    .blockContainer {
+      margin-bottom: 15px;
+    }
+    
+    .blockHome {
+      width: 100%;
+      border-radius: 10px 10px 0 0; /* Round only top corners */
+      margin-bottom: 0; /* Remove margin between block and its label */
+    }
+    
+    .paragraphsContainer1Home,
+    .paragraphsContainer2Home {
+      display: block; /* Override flex display */
+    }
+    
+    .paragraphHome {
+      width: 100%;
+      text-align: center;
+      padding: 5px 0;
+      margin: 0;
+      background-color: rgba(35, 35, 35, 0.3);
+      border-radius: 0 0 10px 10px; /* Round only bottom corners */
+      margin-bottom: 15px; /* Space between block-label groups */
+    }
+    .energyRowHome {
+      flex-direction: column;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    
+    .topBlockHome,
+    .bottomBlockHome {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background-color: rgba(35, 35, 35, 0.5);
+    }
+    
+    /* First block in each row */
+    .energyRowHome:first-child .topBlockHome:first-child {
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    
+    /* Last block in each row */
+    .energyRowHome:last-child .bottomBlockHome:last-child {
+      border-radius: 10px;
+    }
+  }
