@@ -101,8 +101,16 @@ const Users = () => {
     setOpenDropdownId(prevOpen => (prevOpen === username ? null : username)); // Toggle open/close of dropdown
   };
 
+  // Calculate dynamic height class based on the number of filtered users
+  const getUserListHeightClass = () => {
+    const count = filteredUsers.length;
+    if (count <= 3) return 'few-users';
+    if (count <= 6) return 'medium-users';
+    return 'many-users';
+  };
+
   return (
-    <main className="mainUsers">
+    <main className={`mainUsers ${getUserListHeightClass()}`}>
       <div className="headerUsers">
         <button className="navButtonUsers" onClick={() => navigate(-1)}>{"<"}</button>
         <h1>Users</h1>
@@ -123,9 +131,11 @@ const Users = () => {
         {filteredUsers.map((user, index) => (
           <div
             key={user.username} // Unique key for each user
-            className={`userItem ${index == 0 ? 'topBlockUser' : ''} ${filteredUsers.length > 1 && index == filteredUsers.length - 1 ? 'bottomBlockUser' : ''}`}
+            className={`userItem ${index === 0 ? 'topBlockUser' : ''} ${filteredUsers.length > 1 && index === filteredUsers.length - 1 ? 'bottomBlockUser' : ''}`}
             >
-            <span className="username">{user.username}</span>
+            <div className="userInfoSection">
+              <span className="username">{user.username}</span>
+            </div>
 
             {/* Custom dropdown */}
             <div className="roleSelectWrapper">
@@ -141,7 +151,7 @@ const Users = () => {
                 </span>
               </div>
 
-              {openDropdownId == user.username && (
+              {openDropdownId === user.username && (
                 <ul className="customDropdown">
                   {['Homeowner', 'Admin', 'User'].map((role) => (
                     <li

@@ -11,15 +11,39 @@
   border-bottom: 2px solid rgba(240, 240, 240, 0.5);
   border-right: 2px solid rgba(240, 240, 240, 0.5);
   width: 71vw;
-  height: 85vh;
   display: flex;
   flex-direction: column;
+  /* Dynamic height will be controlled by classes */
+  transition: height 0.3s ease;
+}
+
+/* Dynamic height classes based on number of users */
+.mainUsers.few-users {
+  height: auto;
+  min-height: 50vh;
+  max-height: 60vh;
+}
+
+.mainUsers.medium-users {
+  height: auto;
+  min-height: 60vh;
+  max-height: 75vh;
+}
+
+.mainUsers.many-users {
+  height: 85vh;
 }
 
 .headerUsers {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+}
+
+.headerUsers h1 {
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .navButtonUsers {
@@ -92,6 +116,14 @@
   margin-bottom: 2px;
 }
 
+.userInfoSection {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0; /* Important for text truncation to work */
+  overflow: hidden;
+}
+
 .topBlockUser {
   border-radius: 10px 10px 0 0;
 }
@@ -101,12 +133,17 @@
 }
 
 .username {
-  padding-right: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  padding-right: 10px;
 }
 
 .roleSelectWrapper {
   position: relative;
   width: 150px;
+  min-width: 150px; /* Prevent from shrinking */
   cursor: pointer;
 }
 
@@ -136,6 +173,10 @@
   border-radius: 5px;
   margin-top: 5px;
   z-index: 10;
+  /* Ensure the dropdown list appears above other elements */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 0;
+  list-style: none;
 }
 
 .dropdownOption {
@@ -156,4 +197,89 @@
 .separatorLine {
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   margin-bottom: 16px;
+}
+
+/* Mobile responsive styles */
+@media screen and (max-width: 480px) {
+  .mainUsers {
+    margin-top: 65px;
+    margin-left: 2vw;
+    width: 96vw;
+    padding: 15px;
+    height:  auto;
+    border-radius: 25px;
+    border-left: 2px solid rgba(240, 240, 240, 0.5);
+  }
+  
+  /* Adjust dynamic heights for mobile */
+  .mainUsers.few-users {
+    min-height: 40vh;
+    max-height: 50vh;
+  }
+  
+  .mainUsers.medium-users {
+    min-height: 50vh;
+    max-height: 60vh;
+  }
+  
+  .mainUsers.many-users {
+    height: 70vh;
+  }
+  
+  .headerUsers {
+    margin-bottom: 15px;
+  }
+  
+  .searchInput {
+    padding: 10px 15px;
+    font-size: 16px;
+    height: 30px;
+  }
+  
+  .userItem {
+    padding: 5px 10px;
+    font-size: 16px;
+    height: 40px;
+  }
+  
+  .username {
+    max-width: 150px; /* Limit username width on mobile */
+  }
+  
+  .roleSelectWrapper {
+    width: 110px;
+    min-width: 110px;
+  }
+  
+  .roleSelect {
+    padding: 5px 8px;
+    font-size: 14px;
+  }
+  
+  .customDropdown {
+    max-height: 150px;
+  }
+  
+  .dropdownOption {
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+/* For very small screens */
+@media screen and (max-width: 350px) {
+  .username {
+    max-width: 100px;
+    font-size: 14px;
+  }
+  
+  .roleSelectWrapper {
+    width: 90px;
+    min-width: 90px;
+  }
+  
+  .roleSelect {
+    padding: 5px;
+    font-size: 12px;
+  }
 }

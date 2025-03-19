@@ -60,14 +60,14 @@ const Devices = () => {
         <div className="toggle-container" key={device.id}>
           <button className="no-gap1">
             {device.name}
-            <ToggleButton isOn={device.isOn} toggleSwitch={() => toggleDevice(device.id)} />
-            <button onClick={() => removeDevice(device.id)}>Remove</button>
+            <div className="controls-wrapper">
+              <ToggleButton isOn={device.isOn} toggleSwitch={() => toggleDevice(device.id)} />
+              <button className="remove-device" onClick={() => removeDevice(device.id)}>Remove</button>
+            </div>
           </button>
         </div>
       ));
   }
-
-  // These need under "sectionDevices" class :   {renderDevicesByType("light")}, {renderDevicesByType("kitchen")}, {renderDevicesByType("laundry")}
   
   const navigate = useNavigate();
 
@@ -75,59 +75,64 @@ const Devices = () => {
       <main className="mainDevices">
         <div className="DevicesHeader">
           <div className="leftHeader">
-          <button className="navButtonDevices" onClick={() => navigate(-1)}>{"<"}</button>
-          <button className="addDevice" onClick={() => navigate("/add_device")}>Add Device</button>
+            <button className="navButtonDevices" onClick={() => navigate(-1)}>{"<"}</button>
+            <button className="addDevice" onClick={() => navigate("/add_device")}>
+              <span className="button-text">Add Device</span>
+              <span className="button-icon">+</span>
+            </button>
           </div>
           <div className="centreHeader">
-          <h1>Devices</h1>
+            <h1>Devices</h1>
           </div>
           <div className="rigthHeader">
-          <button className="navButtonDashboard" onClick={() => navigate("/profile")}>
-            <img src={userIcon} alt="User Icon" />
-          </button>
+            <button className="navButtonDashboard" onClick={() => navigate("/profile")}>
+              <img src={userIcon} alt="User Icon" />
+            </button>
           </div>
         </div>
-        <div>
+        <div className="contentDevices">
             <h2 className="headingsDevices">Lights</h2>
             <div className="sectionDevices">
-            <div className="toggle-container">
-              <button className="no-gap1">Light 1<ToggleButton isOn={light1On} toggleSwitch={() => setLight1On(!light1On)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap1">Light 2<ToggleButton isOn={light2On} toggleSwitch={() => setLight2On(!light2On)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap1">Light 3<ToggleButton isOn={light3On} toggleSwitch={() => setLight3On(!light3On)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap1">Light 4<ToggleButton isOn={light4On} toggleSwitch={() => setLight4On(!light4On)} /></button>
-            </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Light 1<ToggleButton isOn={light1On} toggleSwitch={() => setLight1On(!light1On)} /></button>
+              </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Light 2<ToggleButton isOn={light2On} toggleSwitch={() => setLight2On(!light2On)} /></button>
+              </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Light 3<ToggleButton isOn={light3On} toggleSwitch={() => setLight3On(!light3On)} /></button>
+              </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Light 4<ToggleButton isOn={light4On} toggleSwitch={() => setLight4On(!light4On)} /></button>
+              </div>
+              {/* {renderDevicesByType("light")} */}
             </div>
             <h2 className="headingsDevices">Kitchen appliances</h2>
             <div className="sectionDevices">
-            <div className="toggle-container">
-              <button className="no-gap1">Kettle<ToggleButton isOn={KettleOn} toggleSwitch={() => setKettleOn(!KettleOn)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap1">Dishwasher<ToggleButton isOn={DishwasherOn} toggleSwitch={() => setDishwasherOn(!DishwasherOn)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap1">Oven<ToggleButton isOn={OvenOn} toggleSwitch={() => setOvenOn(!OvenOn)} /></button>
-            </div>
-            <div className="toggle-container">
-              <button className="no-gap1">Microwave<ToggleButton isOn={MicrowaveOn} toggleSwitch={() => setMicrowaveOn(!MicrowaveOn)} /></button>
-            </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Kettle<ToggleButton isOn={KettleOn} toggleSwitch={() => setKettleOn(!KettleOn)} /></button>
+              </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Dishwasher<ToggleButton isOn={DishwasherOn} toggleSwitch={() => setDishwasherOn(!DishwasherOn)} /></button>
+              </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Oven<ToggleButton isOn={OvenOn} toggleSwitch={() => setOvenOn(!OvenOn)} /></button>
+              </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Microwave<ToggleButton isOn={MicrowaveOn} toggleSwitch={() => setMicrowaveOn(!MicrowaveOn)} /></button>
+              </div>
+              {/* {renderDevicesByType("kitchen")} */}
             </div>
             <h2 className="headingsDevices">Laundry appliances</h2>
             <div className="sectionDevices">
-            <div className="toggle-container">
-              <button className="no-gap1">Washing Machine<ToggleButton isOn={WMOn} toggleSwitch={() => setWMOn(!WMOn)} /></button>
+              <div className="toggle-container">
+                <button className="no-gap1">Washing Machine<ToggleButton isOn={WMOn} toggleSwitch={() => setWMOn(!WMOn)} /></button>
+              </div>
+              <div className="toggle-container">
+                <button className="no-gap1">Dryer Machine<ToggleButton isOn={DMOn} toggleSwitch={() => setDMOn(!DMOn)} /></button>
+              </div>
+              {/* {renderDevicesByType("laundry")} */}
             </div>
-            <div className="toggle-container">
-              <button className="no-gap1">Dryer Machine<ToggleButton isOn={DMOn} toggleSwitch={() => setDMOn(!DMOn)} /></button>
-            </div>
-            </div>
-
         </div>
       </main>
   );

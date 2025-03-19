@@ -1,160 +1,237 @@
 .mainDevices {
-    position: fixed; /* keep the page content in place */
-    background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
-    border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
-    border-top-right-radius: 25px;
-    padding: 40px; /* padding inside the main element */
-    margin-top: 3vw; /* margin on the top and left of the main element */
-    margin-left: 26vw;
-    color: rgb(255, 255, 255); /* text colour */
-    border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
-    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
-    border-right: 2px solid rgba(240, 240, 240, 0.5);
-    width: 71vw; /* width of the main element */
-    height: 85vh; /* height of the main element */
+  position: fixed; /* keep the page content in place */
+  background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
+  border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
+  border-top-right-radius: 25px;
+  padding: 40px; /* padding inside the main element */
+  margin-top: 3vw; /* margin on the top and left of the main element */
+  margin-left: 26vw;
+  color: rgb(255, 255, 255); /* text colour */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw; /* width of the main element */
+  height: 85vh; /* height of the main element */
+  overflow-y: auto; /* Enable scrolling */
+}
+
+.DevicesHeader {
+  display: flex; /* set up a flexible layout in the header */
+  justify-content: space-between; /* even spacing between elements */
+  margin-bottom: 10px; /* margin at the bottom of the header */
+}
+
+.navButtonDevices {
+  background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
+  color: white; /* colour of the text in the button */
+  border: none; /* remove the border on the button */
+  border-radius: 10px; /* round the corners of the button */
+  cursor: pointer; /* change cursor when hovering */
+  width: 40px; /* width of button */
+  height: 40px; /* height of button */
+  display: flex; /* set up a flexible layout in the button */
+  align-items: center; /* centre the content in the button */
+  justify-content: center;
+}
+
+.contentDevices {
+  height: 100vh;
+}
+
+.sectionDevices {
+  display: flex; /* set up a flexible layout in the section */
+  gap: 2px; /* gap between the blocks */
+  margin-top: 20px; /* margin at the top of the section */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+}
+
+.blockDevices {
+  background-color: rgba(35, 35, 35, 0.5); /* block colour */
+  width: 25%; /* width of each block */
+  height: 80px; /* height of each block */
+  display: grid; /* set up a grid layout inside the box */
+  place-items: center; /* put the content inside the block in the centre */
+}
+
+.firstBlockDevices {
+  border-top-left-radius: 10px; /* round the top and bottom left corners of the first block */
+  border-bottom-left-radius: 10px;
+}
+
+.lastBlockDevices {
+  border-top-right-radius: 10px; /* round the top and bottom right corners of the last block */
+  border-bottom-right-radius: 10px;
+}
+
+.headingsDevices {
+  margin-top: 20px; /* margin at the bottom of the headings */
+}
+
+/* Button Spacing and Styling */
+.no-gap {
+  margin-bottom: -10px;
+  border-radius: 10px;
+}
+
+.no-gap1 {
+  border-radius: 10px;
+  margin-bottom: 0;
+  margin-bottom: -10px;
+  border: none;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(35, 35, 35, 0.5);
+}
+
+.no-gap2 {
+  border-radius: 10px;
+  margin-bottom: 0;
+}
+
+.individual-button {
+  width: 100%;
+}
+
+.help-button button {
+  margin-top: 18px;
+}
+
+.sign-out-button button {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.change-user-button button {
+  display: block;
+  text-align: center;
+  margin-top: 12.5px;
+}
+
+/* Toggle Switch */
+.toggle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.toggle-switch {
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+}
+
+.toggle-switch.on {
+  background-color: rgba(110,220,95,255);
+}
+
+.toggle-switch.off {
+  background-color: rgba(219,219,219,255);
+}
+
+.toggle-thumb {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transition: transform 0.3s;
+}
+
+.toggle-switch.on .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.toggle-switch.off .toggle-thumb {
+  transform: translateX(0);
+}
+
+.addDevice {
+  display: block;
+  justify-content: space-between;
+  align-items: center;
+  width: 115px;
+  text-align: center;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 16px;
+}
+
+/* For mobile view, hide the text and show only the plus sign */
+.addDevice .button-text {
+  display: inline;
+}
+
+.addDevice .button-icon {
+  display: none;
+}
+
+.leftHeader {
+  display: flex; /* set up a flexible layout in the header */
+  justify-content: left; /* even spacing between elements */
+  margin-bottom: 10px; /* margin at the bottom of the header */
+  gap: 10px; /* gap between the blocks */
+  width: 33%;
+}
+
+.centreHeader {
+  width: 33%;
+  display: flex; /* Set up a flexible layout in the header */
+  justify-content: center; /* even spacing between elements */
+  align-items: center;
+}
+
+.rigthHeader {
+  width: 33%;
+  display: flex; /* Set up a flexible layout in the header */
+  justify-content: right; /* even spacing between elements */
+}
+
+/* Remove device button */
+.remove-device {
+  background-color: rgba(255, 100, 100, 0.7);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 3px 8px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+@media screen and (max-width: 480px) {
+  .mainDevices {
+    /* For mobile, take up most of the screen */
+    margin-top: 8vh;
+    margin-left: 2vw;
+    width: 95vw;
+    height: 80vh;
+    padding: 15px;
+    border-radius: 25px; /* Round all corners */
+    border-left: 2px solid rgba(240, 240, 240, 0.5);
+    overflow-y: auto; /* Enable scrolling */
   }
 
   .DevicesHeader {
     display: flex; /* set up a flexible layout in the header */
     justify-content: space-between; /* even spacing between elements */
     margin-bottom: 10px; /* margin at the bottom of the header */
-  }
-  
-  .navButtonDevices {
-    background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
-    color: white; /* colour of the text in the button */
-    border: none; /* remove the border on the button */
-    border-radius: 10px; /* round the corners of the button */
-    cursor: pointer; /* change cursor when hovering */
-    width: 40px; /* width of button */
-    height: 40px; /* height of button */
-    display: flex; /* set up a flexible layout in the button */
-    align-items: center; /* centre the content in the button */
-    justify-content: center;
-  }
-
-  .contentDevices {
-    height: 100vh;
-  }
-
-  .sectionDevices {
-    display: flex; /* set up a flexible layout in the section */
-    gap: 2px; /* gap between the blocks */
-    margin-top: 20px; /* margin at the top of the section */
-  }
-
-  .blockDevices {
-    background-color: rgba(35, 35, 35, 0.5); /* block colour */
-    width: 25%; /* width of each block */
-    height: 80px; /* height of each block */
-    display: grid; /* set up a grid layout inside the box */
-    place-items: center; /* put the content inside the block in the centre */
-  }
-
-  .firstBlockDevices {
-    border-top-left-radius: 10px; /* round the top and bottom left corners of the first block */
-    border-bottom-left-radius: 10px;
-  }
-
-  .lastBlockDevices {
-    border-top-right-radius: 10px; /* round the top and bottom right corners of the last block */
-    border-bottom-right-radius: 10px;
-  }
-
-  .headingsDevices {
-    margin-top: 20px; /* margin at the bottom of the headings */
-  }
-
-  /* Button Spacing and Styling */
-.no-gap {
-    margin-bottom: -10px;
-    border-radius: 10px ;
-  }
-  
-  .no-gap1 {
-    border-radius: 10px;
-    margin-bottom: 0;
-    margin-bottom: -10px;
-    border: none
-  }
-  
-  .no-gap2 {
-    border-radius: 10px;
-    margin-bottom: 0;
-  }
-  
-  .individual-button {
-    width: 100%;
-  }
-  
-  .help-button button {
-    margin-top: 18px;
-  }
-  
-  .sign-out-button button {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  .change-user-button button {
-    display: block;
-    text-align: center;
-    margin-top: 12.5px;
-  }
-  
-  /* Toggle Switch */
-  .toggle-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .toggle-switch {
-    width: 40px;
-    height: 20px;
-    background-color: #ccc;
-    border-radius: 30px;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .toggle-switch.on {
-    background-color: rgba(110,220,95,255);
-  }
-  
-  .toggle-switch.off {
-    background-color: rgba(219,219,219,255);
-  }
-  
-  .toggle-thumb {
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    transition: transform 0.3s;
-  }
-  
-  .toggle-switch.on .toggle-thumb {
-    transform: translateX(20px);
-  }
-  
-  .toggle-switch.off .toggle-thumb {
-    transform: translateX(0);
-  }
-
-  .addDevice {
-    display: block;
-    justify-content: space-between;
-    align-items: center;
-    width: 115px;
-    text-align: center;
-    border: none
   }
 
   .leftHeader {
@@ -165,14 +242,60 @@
     width: 33%;
   }
 
-  .centreHeader {
-    width: 33%;
-    display: flex; /* Set up a flexible layout in the header */
-    justify-content: center; /* even spacing between elements */
+  .centreHeader h1 {
+    margin: 10px 0;
   }
 
-  .rigthHeader {
-    width: 33%;
-    display: flex; /* Set up a flexible layout in the header */
-    justify-content: right; /* even spacing between elements */
+  .addDevice {
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 0px;
   }
+  
+  /* For mobile view, hide the text and show only the plus sign */
+  .addDevice .button-text {
+    display: none;
+  }
+  
+  .addDevice .button-icon {
+    display: inline;
+  }
+  
+  /* Stack devices in mobile view */
+  .sectionDevices {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .toggle-container {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .no-gap1 {
+    width: 100%;
+    padding: 12px;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1px;
+  }
+  
+  /* Adjust heading spacing */
+  .headingsDevices {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  /* Make sure toggle switches are properly aligned */
+  .toggle-switch {
+    flex-shrink: 0;
+  }
+}
