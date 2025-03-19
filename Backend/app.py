@@ -148,13 +148,7 @@ def register():
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     try:
-        query = """
-            INSERT INTO Users (username, password, eMailAddress, firstName, lastName, roles)
-            VALUES (%s, %s, %s, %s, %s, %s);
-        """
-        params = (username, hashed_password, email, first_name, last_name, role)
-        database_execute.execute_SQL(query, params)
-
+        user_management.add_user(username, hashed_password, email, first_name, last_name, role)
         return jsonify({"message": "User registered successfully"}), 201
 
     except Exception as e:
