@@ -165,7 +165,50 @@ html, body {
   font-size: 16px;
 }
 
-/* Bottom Action Buttons */
+@media screen and (max-width: 480px) {
+  .mainAddDevices {
+    /* For mobile, take up most of the screen */
+    margin-top: 8vh;
+    margin-left: 2vw;
+    width: 95vw;
+    height: 80vh;
+    padding: 15px;
+    border-radius: 25px; /* Round all corners */
+    border-left: 2px solid rgba(240, 240, 240, 0.5);
+    overflow-y: auto; /* Enable scrolling */
+  }
+
+  .addDevicesHeader {
+    display: flex; /* set up a flexible layout in the header */
+    justify-content: space-between; /* even spacing between elements */
+    margin-bottom: 10px; /* margin at the bottom of the header */
+  }
+
+  .leftHeader {
+    display: flex; /* set up a flexible layout in the header */
+    justify-content: left; /* even spacing between elements */
+    margin-bottom: 10px; /* margin at the bottom of the header */
+    gap: 10px; /* gap between the blocks */
+    width: 33%;
+  }
+
+  .centreHeader h1 {
+    margin: 10px 0;
+  }
+
+  .addDevice {
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 0px;
+  }
+}/* Bottom Action Buttons */
 .addDevices-bottom {
   display: flex;
   justify-content: space-between;

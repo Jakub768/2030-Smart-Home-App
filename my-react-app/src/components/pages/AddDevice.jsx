@@ -80,7 +80,7 @@ export const AddDevice = () => {
         <main className="mainAddDevices">
             <div className="addDevicesHeader">
                 <button className="navButtonAddDevices" onClick={() => navigate(-1)}>{"<"}</button>
-                <h1>+ Add Device</h1>
+                <h1>Add Device</h1>
                 <button className="navButtonAddDevices" onClick={() => navigate("/profile")}>
                     <img src={userIcon} alt="User Icon" />
                 </button>

@@ -10,18 +10,19 @@ const Stats = () => {
   const [error, setError] = useState(null);
   const username = sessionStorage.getItem('username'); 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTimePeriod, setSelectedTimePeriod] = useState("week"); // Default to "week"
-  const [dropdownOpen, setDropdownOpen] = useState(false); // Track if the dropdown is open
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("week");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sortConfig, setSortConfig] = useState({
-    key: 'device_name',  // Default sorting by device_name
-    direction: 'asc',    // Default direction is ascending
+    key: 'device_name',
+    direction: 'asc',
   });
+  const [selectedDevice, setSelectedDevice] = useState(null);
 
   useEffect(() => { 
     if (username) {
-      fetchStatData(username, selectedTimePeriod); // Fetch data based on selected time period
+      fetchStatData(username, selectedTimePeriod);
     } else {
-      setError('No username found'); // Handle case where no username is found
+      setError('No username found');
       setLoading(false);
     }
   }, [username, selectedTimePeriod]); 
@@ -29,24 +30,22 @@ const Stats = () => {
   const fetchStatData = (username, selectedTimePeriod) => {
     const formattedPeriod = selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1);
 
-    // Make the API call with the selected time period
     fetch(`http://127.0.0.1:5000/stats?username=${username}&intervals=${formattedPeriod}`)
       .then((response) => response.json())
       .then((data) => {
-        setData(data); // Set the fetched data to the state
-        setLoading(false); // Set loading to false once data is fetched
+        setData(data);
+        setLoading(false);
       })
       .catch((err) => {
-        setError('Failed to fetch data'); // Handle error
+        setError('Failed to fetch data');
         setLoading(false);
       });
   };
 
-  // Handle time period change from custom dropdown
   const handleTimePeriodChange = (period) => {
-    setSelectedTimePeriod(period); // Update the selected time period
-    setDropdownOpen(false); // Close the dropdown after selecting
-    fetchStatData(username, period);  // Fetch data based on the new period
+    setSelectedTimePeriod(period);
+    setDropdownOpen(false);
+    fetchStatData(username, period);
   };
 
   // Filter the devices based on the search query
@@ -58,7 +57,6 @@ const Stats = () => {
       sortableDevices = [...sortableDevices, ...Object.values(deviceData).flat()];
     });
 
-    // Filter the devices based on device_name or room_name
     return sortableDevices.filter((device) =>
       device.device_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       device.room_name?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -73,27 +71,24 @@ const Stats = () => {
       const aValue = a[key];
       const bValue = b[key];
   
-      // Check if the column is numeric
       const isNumeric = !isNaN(aValue) && !isNaN(bValue);
   
       if (isNumeric) {
-        // For numeric values, sort in descending order
         const numA = parseFloat(aValue);
         const numB = parseFloat(bValue);
   
         if (numA < numB) {
-          return direction === 'asc' ? 1 : -1; // Descending for numbers
+          return direction === 'asc' ? 1 : -1;
         }
         if (numA > numB) {
-          return direction === 'asc' ? -1 : 1; // Descending for numbers
+          return direction === 'asc' ? -1 : 1;
         }
       } else {
-        // For strings, sort in ascending order
         if (aValue.toLowerCase() < bValue.toLowerCase()) {
-          return direction === 'asc' ? -1 : 1; // Ascending for strings
+          return direction === 'asc' ? -1 : 1;
         }
         if (aValue.toLowerCase() > bValue.toLowerCase()) {
-          return direction === 'asc' ? 1 : -1; // Ascending for strings
+          return direction === 'asc' ? 1 : -1;
         }
       }
       return 0;
@@ -101,13 +96,12 @@ const Stats = () => {
   
     return sortedDevices;
   };
-  
 
   // Handle column click for sorting
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc'; // Reverse direction
+      direction = 'desc';
     }
     setSortConfig({ key, direction });
   };
@@ -115,8 +109,18 @@ const Stats = () => {
   // Get sorted devices
   const sortedDevices = useMemo(() => {
     const devices = filteredDevices;
-    return sortDevices(devices);  // Sort the filtered devices
+    return sortDevices(devices);
   }, [filteredDevices, sortConfig]);
+
+  // Show device details
+  const showDeviceDetails = (device) => {
+    setSelectedDevice(device);
+  };
+
+  // Close device details
+  const closeDeviceDetails = () => {
+    setSelectedDevice(null);
+  };
 
   if (loading) {
     const LoadingSpinner = () => {
@@ -155,51 +159,57 @@ const Stats = () => {
         />
       </div>
 
+      {/* Mobile view: Card-based layout */}
+      <div className="deviceCards">
+        {sortedDevices.length > 0 ? (
+          sortedDevices.map((device, index) => (
+            <div key={index} className="deviceCard" onClick={() => showDeviceDetails(device)}>
+              <div className="deviceCardHeader">
+                <h3>{device.device_name ?? "N/A"}</h3>
+                <span className="deviceRoom">{device.room_name ?? "N/A"}</span>
+              </div>
+              <div className="deviceCardStats">
+                <div className="deviceStat">
+                  <span className="statLabel">Energy:</span>
+                  <span className="statValue">{device.energy_consumption ?? "N/A"} kWh</span>
+                </div>
+                <div className="deviceStat">
+                  <span className="statLabel">Status:</span>
+                  <span className="statValue">{device.device_status ?? "N/A"}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="noDevicesFound">No devices found matching your search.</div>
+        )}
+      </div>
+
+      {/* Desktop view: Table layout */}
       <div className="deviceStatsContainer">
         <table className="deviceTable">
           <thead>
             <tr>
-              <th
-                onClick={() => requestSort('device_name')}
-                className={sortConfig.key === 'device_name' ? (sortConfig.direction === 'asc' ? 'asc' : 'desc') : ''}
-              >
+              <th onClick={() => requestSort('device_name')}>
                 Device Name
               </th>
-              <th
-                onClick={() => requestSort('energy_consumption')}
-                className={sortConfig.key === 'energy_consumption' ? (sortConfig.direction === 'asc' ? 'asc' : 'desc') : ''}
-              >
-                Energy Consumption (kWh)
+              <th onClick={() => requestSort('energy_consumption')}>
+                Energy (kWh)
               </th>
-              <th
-                onClick={() => requestSort('energy_generation')}
-                className={sortConfig.key === 'energy_generation' ? (sortConfig.direction === 'asc' ? 'asc' : 'desc') : ''}
-              >
-                Energy Generation (kWh)
+              <th onClick={() => requestSort('energy_generation')}>
+                Generation (kWh)
               </th>
-              <th
-                onClick={() => requestSort('device_usage')}
-                className={sortConfig.key === 'device_usage' ? (sortConfig.direction === 'asc' ? 'asc' : 'desc') : ''}
-              >
-                Device Usage (hrs)
+              <th onClick={() => requestSort('device_usage')}>
+                Usage (hrs)
               </th>
-              <th
-                onClick={() => requestSort('device_status')}
-                className={sortConfig.key === 'device_status' ? (sortConfig.direction === 'asc' ? 'asc' : 'desc') : ''}
-              >
-                Device Status
+              <th onClick={() => requestSort('device_status')}>
+                Status
               </th>
-              <th
-                onClick={() => requestSort('costs_of_energy')}
-                className={sortConfig.key === 'costs_of_energy' ? (sortConfig.direction === 'asc' ? 'asc' : 'desc') : ''}
-              >
-                Cost of Energy ($)
+              <th onClick={() => requestSort('costs_of_energy')}>
+                Cost ($)
               </th>
-              <th
-                onClick={() => requestSort('room_name')}
-                className={sortConfig.key === 'room_name' ? (sortConfig.direction === 'asc' ? 'asc' : 'desc') : ''}
-              >
-                Room Name
+              <th onClick={() => requestSort('room_name')}>
+                Room
               </th>
             </tr>
           </thead>
@@ -225,35 +235,71 @@ const Stats = () => {
         </table>
       </div>
 
-      {/* Custom Dropdown */}
+      {/* Device Detail Modal */}
+      {selectedDevice && (
+        <div className="deviceDetailModal">
+          <div className="modalContent">
+            <div className="modalHeader">
+              <h2>{selectedDevice.device_name}</h2>
+              <button className="closeButton" onClick={closeDeviceDetails}>×</button>
+            </div>
+            <div className="modalBody">
+              <div className="detailRow">
+                <span className="detailLabel">Room:</span>
+                <span className="detailValue">{selectedDevice.room_name ?? "N/A"}</span>
+              </div>
+              <div className="detailRow">
+                <span className="detailLabel">Energy Consumption:</span>
+                <span className="detailValue">{selectedDevice.energy_consumption ?? "N/A"} kWh</span>
+              </div>
+              <div className="detailRow">
+                <span className="detailLabel">Energy Generation:</span>
+                <span className="detailValue">{selectedDevice.energy_generation ?? "N/A"} kWh</span>
+              </div>
+              <div className="detailRow">
+                <span className="detailLabel">Device Usage:</span>
+                <span className="detailValue">{selectedDevice.device_usage ?? "N/A"} hrs</span>
+              </div>
+              <div className="detailRow">
+                <span className="detailLabel">Device Status:</span>
+                <span className="detailValue">{selectedDevice.device_status ?? "N/A"}</span>
+              </div>
+              <div className="detailRow">
+                <span className="detailLabel">Cost of Energy:</span>
+                <span className="detailValue">${(selectedDevice.energy_consumption != null && selectedDevice.costs_of_energy != null) ? (parseFloat(selectedDevice.energy_consumption) * parseFloat(selectedDevice.costs_of_energy)).toFixed(2) : "N/A"}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Time Period Selector */}
       <div className="bottomSectionStats">
         <p>Compare stats from the current&nbsp;</p>
         
         <div className="dropdown">
-          {/* Toggle Button for Dropdown */}
           <div className="dropdown-toggle" onClick={() => setDropdownOpen(!dropdownOpen)}>
-            {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)} {/* Capitalize first letter */}
+            {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)}
             <span className="arrow">{dropdownOpen ? '▼' : '►'}</span>
           </div>
 
-          {/* Dropdown List */}
           {dropdownOpen && (
             <div className="dropdown-list">
               {['day', 'week', 'month', 'year'].map((period) => (
                 <div
                   key={period}
                   className="dropdown-item"
-                  onClick={() => handleTimePeriodChange(period)} // Corrected: Pass period directly
+                  onClick={() => handleTimePeriodChange(period)}
                 >
-                  {period.charAt(0).toUpperCase() + period.slice(1)} {/* Capitalize first letter */}
+                  {period.charAt(0).toUpperCase() + period.slice(1)}
                 </div>
               ))}
             </div>
           )}
         </div>
         <p>&nbsp;with the previous <i><b><u>{selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)}</u></b></i></p>
-
       </div>
+
       {loading ? (
               <div className="spinner-container">
                 <div className="spinner"></div>

@@ -13,6 +13,7 @@
   border-right: 2px solid rgba(240, 240, 240, 0.5);
   width: 71vw; /* Width of the main element */
   height: 85vh; /* Height of the main element */
+  overflow-y: auto; /* Enable scrolling for content that doesn't fit */
 }
 
 /* Header section - back button, title, profile button */
@@ -201,4 +202,139 @@
 
 .xAxisTitle {
   margin: auto;
+}
+
+/* Hide breakdown header on desktop */
+.pieChartHeaderMobile {
+  display: none;
+}
+
+/* Mobile styles */
+@media screen and (max-width: 480px) {
+  .mainDashboard {
+    /* For mobile, take up most of the screen */
+    margin-top: 8vh;
+    margin-left: 2vw;
+    width: 96vw;
+    height: 90vh;
+    padding: 15px;
+    border-radius: 25px; /* Round all corners */
+    border-left: 2px solid rgba(240, 240, 240, 0.5);
+    overflow-y: auto; /* Enable scrolling */
+  }
+  
+  /* .mainHome {
+    margin-top: 1vh;
+    margin-left: 2vw;
+    width: 96vw;
+    padding: 15px;
+    border-bottom-left-radius: 25px;
+    border-top-left-radius: 25px;
+    border-left: 2px solid rgba(240, 240, 240, 0.5);
+    margin-top: 65px;
+} */
+
+  .headerDashboard {
+    margin-bottom: 15px;
+    align-items: center;
+  }
+  
+  .headerDashboard h1 {
+    font-size: 1.5rem; /* Smaller font size for mobile */
+  }
+  
+  /* Stack content vertically */
+  .contentRowDashboard {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  /* Make left section full width */
+  .leftSectionDashboard {
+    width: 100%;
+  }
+  
+  /* Adjust block widths for mobile */
+  .blockDashboard {
+    width: 100%;
+    height: auto; /* Auto height to accommodate content */
+    min-height: 50px; /* Minimum height */
+    padding: 10px 15px;
+  }
+  
+  /* Adjust bar chart for mobile */
+  .barChartBlockDashboard {
+    width: 100%;
+    height: 200px; /* Slightly shorter */
+  }
+  
+  .bottomOfBarChartBlock {
+    width: 100%;
+    margin-left: 0;
+    font-size: 10px;
+  }
+  
+  /* Bottom section adjustments */
+  .bottomSectionDashboard {
+    flex-direction: column;
+    margin-top: 15px;
+    width: 100%;
+  }
+  
+  /* Make scrollable messages full width */
+  .scrollableMessages {
+    width: 100%;
+    max-height: 130px;
+  }
+  
+  .scrollBlockDashboard {
+    width: 100%;
+    padding: 10px 15px;
+  }
+  
+  /* Show breakdown header on mobile */
+  .pieChartHeaderMobile {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: left;
+  }
+  
+  /* Reposition pie chart for mobile */
+  .circularBlockWrapperDashboard {
+    position: relative; /* Change from absolute to relative */
+    bottom: auto;
+    right: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px; /* Reduced top margin since we now have a header */
+  }
+  
+  .circularBlockDashboard {
+    width: 150px; /* Smaller pie chart */
+    height: 150px;
+  }
+  
+  /* Right section adjustments */
+  .rightSectionDashboard {
+    width: 100%;
+  }
+  
+  /* Adjust bar chart wrapper for mobile */
+  .barChartWrapper {
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  /* Text size adjustments */
+  .blockDashboard p {
+    font-size: 0.9rem;
+  }
+  
+  .bottomOfBarChartBlock p {
+    font-size: 0.8rem;
+  }
 }
