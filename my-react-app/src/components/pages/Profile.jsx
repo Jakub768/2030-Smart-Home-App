@@ -36,29 +36,7 @@ const Profile = () => {
     "password": "Password",
     "nick name": "Nickname",
     "address": "Address"
-  };
-
-  // Fetch data when component mounts
-    useEffect(() => {
-      const username = sessionStorage.getItem('username');  // Retrieve username from sessionStorage
-      console.log(username);
-
-      if (username) {
-        fetch(`http://127.0.0.1:5000/my_profiles?username=${username}`)
-          .then((response) => response.json())
-          .then((data) => {
-            setData(data);
-            setLoading(false);
-          })
-          .catch((err) => {
-            setError('Failed to fetch data');
-            setLoading(false);
-          });
-      } else {
-        setError('No username found');
-        setLoading(false);
-      }
-    }, []);
+  };  
 
   // Handle clicking on a block to start editing
   const editClick = (field, section) => {
@@ -85,9 +63,7 @@ const Profile = () => {
           [editing]: newPassword
         }
       });
-  
-      console.log(formattedData);
-  
+    
       // POST the updated password
       fetch('http://127.0.0.1:5000/update_profile', {
         method: 'POST',
@@ -116,9 +92,7 @@ const Profile = () => {
           [editing]: newValue
         }
       });
-  
-      console.log(formattedData);
-  
+    
       // POST the other updated fields
       fetch('http://127.0.0.1:5000/update_profile', {
         method: 'POST',
@@ -168,7 +142,6 @@ const Profile = () => {
     fetch(`http://127.0.0.1:5000/my_profiles?username=${username}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log('Fetched profile data:', data); // Check what data you get
         setData(data);
         setLoading(false);
       })

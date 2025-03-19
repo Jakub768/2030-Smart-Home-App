@@ -68,24 +68,50 @@ const Users = () => {
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const updateUserRole = (username, newRole) => {
-    setData(prevData => {
-      const updatedRooms = prevData.users.map((usersData) => {
-        if (usersData[0] === username) { // Use username to identify the user
-          return [usersData[0], newRole]; // Update role
-        }
-        return usersData;
-      });
-      return { ...prevData, users: updatedRooms }; // Return updated data object
-    });
-  };
-
   // Handle option selection for the custom dropdown
   const handleOptionClick = (role, username) => {
-    updateUserRole(username, role);
-    setOpenDropdownId(null); // Close dropdown after selection
-    setRoleSelectArrow(prev => ({ ...prev, [username]: false })); // Reset arrow state after selection
+    const requesterUsername = sessionStorage.getItem('username');
+  
+    if (requesterUsername) {
+      fetch(`http://127.0.0.1:5000/update_user_role?username=${requesterUsername}&changedUsername=${username}&new_role=${role}`, {
+        method: 'POST', // POST request for sending data
+        headers: {
+          'Content-Type': 'application/json', // Ensure you're sending JSON data
+        },
+      })
+        .then((response) => response.json())  // Parse the response as JSON
+        .then((data) => {
+        refetchData(requesterUsername);  // Refetch the data to reflect the changes
+        })
+        .catch((err) => {
+          // Handle fetch errors
+          setError('Failed to fetch data');
+          setLoading(false);
+        });
+    } else {
+      setError('No username found');
+      setLoading(false);
+    }
+  
+    setOpenDropdownId(null);  // Close dropdown after selection
+    setRoleSelectArrow(prev => ({ ...prev, [username]: false }));  // Reset arrow state after selection
   };
+  
+  
+  const refetchData = (username) => {
+    setLoading(true); // Set loading to true before refetching data
+    fetch(`http://127.0.0.1:5000/users?username=${username}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data); // Update the data state with the latest user data
+        setLoading(false); // Set loading to false after the data is fetched
+      })
+      .catch((err) => {
+        setError('Failed to fetch data');
+        setLoading(false);
+      });
+  };
+  
 
   const toggleArrow = (username) => {
     // Close previously opened dropdown and reset the arrow for it

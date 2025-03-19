@@ -17,7 +17,6 @@ const Rooms = () => {
         if (!response.ok) throw new Error("Failed to fetch data");
         const jsonData = await response.json();
         
-        console.log("Fetched data:", jsonData); // Debugging API response
         setData(jsonData); // Use jsonData directly since it's already structured correctly
       } catch (err) {
         setError(err.message);
@@ -50,8 +49,6 @@ const Rooms = () => {
   if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
     return <div className="error">No data available.</div>;
   }
-
-  console.log("Rendering rooms:", data); // Debug rendering data
 
   return (
     <main className="mainRooms">

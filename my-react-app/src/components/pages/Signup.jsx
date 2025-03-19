@@ -11,15 +11,24 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [emailError, setEmailError] = useState(''); // State for email error
+
+  // Regular expression for validating email format
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name == 'username') setUsername(value);
-    if (name == 'firstName') setFirstName(value);
-    if (name == 'lastName') setLastName(value);
-    if (name == 'email') setEmail(value);
-    if (name == 'password') setPassword(value);
+    if (name === 'username') setUsername(value);
+    if (name === 'firstName') setFirstName(value);
+    if (name === 'lastName') setLastName(value);
+    if (name === 'email') setEmail(value);
+    if (name === 'password') setPassword(value);
+
+    // Reset email error when user changes the email input
+    if (name === 'email') {
+      setEmailError('');
+    }
   };
 
   // Handle form submission
@@ -30,6 +39,12 @@ const Signup = () => {
     setErrorMessage('');
     setSuccessMessage('');
 
+    // Check if the email is valid
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return; // Stop form submission if the email is invalid
+    }
+    
     // Prepare the data to send in the POST request
     const requestData = {
       username,
@@ -111,6 +126,8 @@ const Signup = () => {
             value={email}
             onChange={handleChange}
           />
+          {/* Display email error message if email is invalid */}
+          {emailError && <div className="error">{emailError}</div>}
         </div>
         <div className="input">
           <input

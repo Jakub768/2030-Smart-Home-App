@@ -33,6 +33,10 @@
     justify-content: center;
   }
 
+  .navButtonDevices:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+  }
+
   .contentDevices {
     height: 100vh;
   }

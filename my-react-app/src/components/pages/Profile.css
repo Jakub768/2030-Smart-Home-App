@@ -35,6 +35,10 @@
     align-items: center; /* centre the content in the button */
     justify-content: center;
   }
+
+  .navButtonProfile:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+  }
   
   .bottomSectionProfile {
     display: flex; /* set up a flexible layout in the bottom section */

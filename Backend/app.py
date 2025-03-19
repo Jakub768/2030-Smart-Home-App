@@ -231,7 +231,6 @@ def get_home():
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
     last_payment_date = request.args.get('last_payment_date')
-    print(last_payment_date)
 
     if not house_id:
         return jsonify({"error": "house_id is required"}), 400
@@ -462,7 +461,6 @@ def get_dashboard():
 
     try:
         total_energy_consumed_in_last_24_hours = get_total_energy_consumed_in_last_24_hours(house_id)
-        print(total_energy_consumed_in_last_24_hours)
         total_costs_of_energy_in_last_24_hours = get_total_costs_of_energy_in_last_24_hours(house_id)
         last_24_hours_energy_consumption_per_device = get_last_24_hours_energy_consumption_per_device(house_id)
 
@@ -684,7 +682,6 @@ def process_total_energy_data(house_id, start_days, end_days=None):
 def get_stats():
     username = request.args.get('username')
     intervals = request.args.get('intervals')
-    print(intervals)
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
 
@@ -770,7 +767,6 @@ def get_my_profiles():
     username = request.args.get('username')
     house_id_list = get_house_id_by_username(username)
     house_id = house_id_list[0][0]
-    print(house_id)
     user_id_list = get_user_id_by_username(username)
     user_id = user_id_list[0][0]
     try:
@@ -814,17 +810,17 @@ def get_my_profiles():
 def update_user_role():
     username = request.args.get('username')
     changedUsername = request.args.get('changedUsername')
-    user_id_list = get_user_id_by_username(username)
+    user_id_list = get_user_id_by_username(changedUsername)
     user_id = user_id_list[0][0]
-    new_role = request.args.get('role')
-    requester_id_list = get_user_id_by_username(changedUsername)
+    new_role = request.args.get('new_role')
+    requester_id_list = get_user_id_by_username(username)
     requester_id = requester_id_list[0][0]
 
     if not all([user_id, new_role, requester_id]):
         return jsonify({"error": "user_id, new_role, and requester_id are required"}), 400
 
     try:
-        if not permissions_management.has_permission(requester_id, user_id):
+        if permissions_management.has_permission(requester_id, user_id) == False:
             return jsonify({"error": "Requester does not have permission to update this user"}), 403
         rows_affected = permissions_management.set_role(user_id, new_role)
 
@@ -962,7 +958,6 @@ def delete_users():
 
     username = data.get('username')
     password = data.get('password')
-    print(username, password)
 
     if not username or not password:
         return jsonify({"error": "Incorrect username or password"}), 400

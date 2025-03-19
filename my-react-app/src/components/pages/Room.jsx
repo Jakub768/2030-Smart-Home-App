@@ -15,7 +15,6 @@ const Room = () => {
     fetch("http://127.0.0.1:5000/rooms")
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched Room Data:", data); // Debugging
         setData(data || {}); // Fix: Use data directly
         setLoading(false);
       })

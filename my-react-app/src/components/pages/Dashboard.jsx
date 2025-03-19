@@ -8,18 +8,6 @@ import BarChart from "./BarChart"; // Import BarChart component
 export const Dashboard = () => {
   const navigate = useNavigate();
   
-  // array for message block to be replace by imported messages down the line
-  const [messages, setMessages] = useState([
-    "Message 1",
-    "Message 2",
-    "Message 3",
-    "Message 4",
-    "Message 5",
-    "Message 6",
-    "Message 7",
-    "Message 8"
-  ]);
-
   // State to store the data
     const [data, setData] = useState(null);
   
@@ -30,7 +18,6 @@ export const Dashboard = () => {
     // Fetch data when component mounts
 useEffect(() => {
     const username = sessionStorage.getItem('username');
-    console.log(username)  // Retrieve username from sessionStorage
 
     if (username) {
       fetch(`http://127.0.0.1:5000/dashboard?username=${username}`)
@@ -66,24 +53,6 @@ useEffect(() => {
     if (error) {
       return <div>{error}</div>;
     }
-
-    const groupAndSumPieData = (pieData) => {
-      const groupedData = pieData.reduce((acc, curr) => {
-        const { device_name, usage } = curr;
-        if (acc[device_name]) {
-          acc[device_name] += usage; // Sum usage for the same device
-        } else {
-          acc[device_name] = usage; // Initialize the usage for the device
-        }
-        return acc;
-      }, {});
-  
-      // Convert the grouped data into an array format for the PieChart component
-      return Object.keys(groupedData).map(device_name => ({
-        device_name,
-        usage: groupedData[device_name]
-      }));
-    };
 
   return (
       <main className="mainDashboard">
