@@ -5,7 +5,7 @@ import database_execute, permissions_management, device_management, user_managem
 import datetime
 import decimal
 import bcrypt
-# import auto_update
+import auto_update
 
 # Initialize Flask app
 app = Flask(__name__)
