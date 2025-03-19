@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import './Room.css'; // Import the CSS file
-import userIcon from '../images/User.png';
+import "./Room.css"; // Import the CSS file
+import userIcon from "../images/User.png";
 
 const Room = () => {
   const navigate = useNavigate();
@@ -12,55 +12,37 @@ const Room = () => {
 
   // Fetch data when component mounts
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/rooms')
+    fetch("http://127.0.0.1:5000/rooms")
       .then((response) => response.json())
       .then((data) => {
-        setData(data);
+        console.log("Fetched Room Data:", data); // Debugging
+        setData(data || {}); // Fix: Use data directly
         setLoading(false);
       })
       .catch((err) => {
-        setError('Failed to fetch data');
+        setError("Failed to fetch data");
         setLoading(false);
       });
   }, []);
 
-  // Render the component
+  // Render loading spinner
   if (loading) {
-    const LoadingSpinner = () => {
-      return (
-        <main className="mainHome">
+    return (
+      <main className="mainHome">
         <div className="spinner-container">
           <div className="spinner"></div>
         </div>
-        </main>
-      );
-    };
-    return <LoadingSpinner />;
+      </main>
+    );
   }
 
+  // Render error message
   if (error) {
-    return <div>{error}</div>;
+    return <div className="error">{error}</div>;
   }
 
-  // Group the devices by room (same as in the Rooms component)
-  const groupedRooms = data.rooms.reduce((acc, roomData) => {
-    const room = roomData[0];
-    const device = {
-      name: roomData[1],
-      type: roomData[2],
-      energyUsage: roomData[3],
-    };
-
-    if (!acc[room]) {
-      acc[room] = [];
-    }
-    acc[room].push(device);
-
-    return acc;
-  }, {});
-
-  // Get the devices for the current room (using roomName from URL)
-  const roomDevices = groupedRooms[roomName] || [];
+  // Get the devices for the current room
+  const roomDevices = data[roomName] || [];
 
   return (
     <main className="mainRoom">
@@ -73,11 +55,11 @@ const Room = () => {
       </div>
       <div className="contentRoom">
         <div className="sectionRoom">
-          {/* Render a block for each device in the current room */}
+          {/* Render each device in the current room */}
           {roomDevices.map((device, index) => (
-            <div className="blockRoom">
-              <div>{device.name}</div>
-              <div>{device.energyUsage} kWh</div>
+            <div key={index} className="blockRoom">
+              <div>{device.device_name}</div>
+              <div>{device.device_status}</div>
             </div>
           ))}
         </div>

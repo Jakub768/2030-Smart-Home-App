@@ -16,16 +16,19 @@ const Rooms = () => {
         const response = await fetch("http://127.0.0.1:5000/rooms");
         if (!response.ok) throw new Error("Failed to fetch data");
         const jsonData = await response.json();
-        setData(jsonData.rooms); // Directly set rooms object
+        
+        console.log("Fetched data:", jsonData); // Debugging API response
+        setData(jsonData); // Use jsonData directly since it's already structured correctly
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchRooms();
   }, []);
+  
 
   // Show loading spinner
   if (loading) {
@@ -44,9 +47,11 @@ const Rooms = () => {
   }
 
   // Ensure data exists before rendering
-  if (!data || Object.keys(data).length === 0) {
+  if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
     return <div className="error">No data available.</div>;
   }
+
+  console.log("Rendering rooms:", data); // Debug rendering data
 
   return (
     <main className="mainRooms">
