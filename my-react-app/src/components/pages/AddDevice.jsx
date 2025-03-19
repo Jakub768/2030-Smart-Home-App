@@ -1,108 +1,167 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './AddDevice.css'; // Import the CSS file
+import './AddDevice.css';
 import userIcon from '../images/User.png';
+
+const API_BASE_URL = "http://127.0.0.1:5000"; // Change if deployed
 
 export const AddDevice = () => {
     const navigate = useNavigate();
-  
-    const goToAdd = () => navigate("/devices");
-    const goToCancel = () => navigate("/devices");
+    const [deviceName, setDeviceName] = useState("");
+    const [selectedDeviceType, setSelectedDeviceType] = useState("");
+    const [selectedRoom, setSelectedRoom] = useState("");
+    const [deviceTypes, setDeviceTypes] = useState([]);
+    const [rooms, setRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [dropdownOpen, setDropdownOpen] = useState({ deviceType: false, room: false });
 
-    const [selectedTimePeriod, setSelectedTimePeriod] = useState("Light"); // Default to "week"
-    const [dropdownOpen, setDropdownOpen] = useState(false); // Track if the dropdown is open
+    const username = sessionStorage.getItem("username"); // Get username from sessionStorage
 
-    // Handle time period change from custom dropdown
-  const handleTimePeriodChange = (period) => {
-    setSelectedTimePeriod(period); // Update the selected time period
-    setDropdownOpen(false); // Close the dropdown after selecting
-    console.log(`Selected Time Period: ${period}`);
-    // You can add additional logic here to handle data changes based on selected time period
-  };
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/devices?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.devices_types || !data.rooms) {
+                    throw new Error("Failed to fetch data");
+                }
+
+                setDeviceTypes(data.devices_types.map(typeArr => typeArr[0])); // Extract type names
+                setRooms(data.rooms.map(roomArr => roomArr[0])); // Extract room names
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Error fetching data:", err);
+                setError("Failed to fetch device types and rooms.");
+                setLoading(false);
+            });
+    }, [username]);
+
+    const handleDropdownToggle = (key) => {
+        setDropdownOpen(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const handleAddDevice = () => {
+        if (!deviceName || !selectedDeviceType || !selectedRoom || !username) {
+            alert("Please fill in all fields before adding a device.");
+            return;
+        }
+
+        const requestData = {
+            username: username, // Include username
+            device_name: deviceName,
+            device_type: selectedDeviceType,
+            room_name: selectedRoom
+        };
+
+        console.log("Sending request:", requestData); // Debug: Check request payload
+
+        fetch(`${API_BASE_URL}/add_device`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Response received:", data); // Debug: Log response
+            if (data.message) {
+                navigate("/devices");
+            } else {
+                alert("Error adding device: " + data.error);
+            }
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            alert("Failed to add device.");
+        });
+    };
 
     return (
-      
         <main className="mainAddDevices">
-          <div className="addDevicesHeader">
-            <button className="navButtonAddDevices" onClick={() => navigate(-1)}>{"<"}</button>
-            <h1>+ Add Device</h1>
-            <button className="navButtonAddDevices" onClick={() => navigate("/profile")}>
-              <img src={userIcon} alt="User Icon" />
-            </button>
-          </div>
-  
-          <div className="addDevices-columns">
-            <div className="addDevices-left">
-              <div className=" blockAddDevice no-gap2Device">
-              <div className="inputText">Device Name</div>
-              <div className='inputDevice'>
-                <inputs>
-                <input 
-                 type="text"
-                 name="name"
-                 placeholder="Device Name"
-                />
-                </inputs>
-             </div>
-             
-              </div>
-              <div className=" blockAddDevice no-gap2Device">
-              <div className="inputText">Device Type</div>
-              <div className='inputDevice'>
-              <div className="dropdown">
-          {/* Toggle Button for Dropdown */}
-          <div className="dropdown-toggle" onClick={() => setDropdownOpen(!dropdownOpen)}>
-            {selectedTimePeriod.charAt(0).toUpperCase() + selectedTimePeriod.slice(1)} {/* Capitalize first letter */}
-            <span className="arrow">{dropdownOpen ? '▼' : '►'}</span>
-          </div>
+            <div className="addDevicesHeader">
+                <button className="navButtonAddDevices" onClick={() => navigate(-1)}>{"<"}</button>
+                <h1>+ Add Device</h1>
+                <button className="navButtonAddDevices" onClick={() => navigate("/profile")}>
+                    <img src={userIcon} alt="User Icon" />
+                </button>
+            </div>
 
-          {/* Dropdown List */}
-          {dropdownOpen && (
-            <div className="dropdown-list">
-              {['Light', 'Kitchen', 'Laundry'].map((period) => (
-                <div
-                  key={period}
-                  className="dropdown-item"
-                  onClick={() => handleTimePeriodChange(period)} // Corrected: Pass period directly
-                >
-                  {period.charAt(0).toUpperCase() + period.slice(1)} {/* Capitalize first letter */}
+            {loading ? (
+                <div className="loadingMessage">Loading device types and rooms...</div>
+            ) : error ? (
+                <div className="errorMessage">{error}</div>
+            ) : (
+                <div className="addDevices-columns">
+                    <div className="addDevices-left">
+                        {/* Device Name Input */}
+                        <div className="blockAddDevice no-gap2Device">
+                            <div className="inputText">Device Name</div>
+                            <div className="inputDevice">
+                                <input 
+                                    type="text"
+                                    name="name"
+                                    placeholder="Enter Device Name"
+                                    value={deviceName}
+                                    onChange={(e) => setDeviceName(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Device Type Dropdown */}
+                        <div className="blockAddDevice no-gap2Device">
+                            <div className="inputText">Device Type</div>
+                            <div className="dropdown">
+                                <div className="dropdown-toggle" onClick={() => handleDropdownToggle("deviceType")}>
+                                    {selectedDeviceType || "Select Device Type"} 
+                                    <span className="arrow">{dropdownOpen.deviceType ? "▼" : "►"}</span>
+                                </div>
+                                {dropdownOpen.deviceType && (
+                                    <div className="dropdown-list">
+                                        {deviceTypes.map((type) => (
+                                            <div key={type} className="dropdown-item" onClick={() => { 
+                                                setSelectedDeviceType(type); 
+                                                handleDropdownToggle("deviceType");
+                                            }}>
+                                                {type}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Room Selection Dropdown */}
+                        <div className="blockAddDevice no-gap2Device">
+                            <div className="inputText">Room Name</div>
+                            <div className="dropdown">
+                                <div className="dropdown-toggle" onClick={() => handleDropdownToggle("room")}>
+                                    {selectedRoom || "Select Room"}
+                                    <span className="arrow">{dropdownOpen.room ? "▼" : "►"}</span>
+                                </div>
+                                {dropdownOpen.room && (
+                                    <div className="dropdown-list">
+                                        {rooms.map((room) => (
+                                            <div key={room} className="dropdown-item" onClick={() => { 
+                                                setSelectedRoom(room);
+                                                handleDropdownToggle("room");
+                                            }}>
+                                                {room}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-        
-             </div>
-              </div>
-              
-              <div className=" blockAddDevice no-gap2Device">
-              <div className="inputText">Room Name</div>
-              <div className='inputDevice'>
-                <inputs>
-                <input 
-                 type="text"
-                 name="name"
-                 placeholder="Room Name"
-                />
-                </inputs>
-             </div>
-             
-              </div>
+            )}
 
+            <div className="addDevices-bottom">
+                <button className="left-button" onClick={() => navigate("/devices")}>Cancel</button>
+                <button className="right-button" onClick={handleAddDevice}>Add Device</button>
             </div>
-          </div>
-  
-          <div className="addDevices-bottom">
-            <button className="left-button" onClick={goToCancel}>Cancel</button>
-            <button className="right-button" onClick={goToAdd}>Add Device</button>
-          </div>
         </main>
     );
 };
 
 export default AddDevice;
-
-
-
-
-
