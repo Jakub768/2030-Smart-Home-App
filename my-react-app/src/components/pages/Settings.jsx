@@ -125,7 +125,7 @@ export const Settings = () => {
         </div>
 
         <div className="settings-bottom">
-          <button className="bottom-button" onClick={handleLogout}>Log Out</button>
+          <button className="bottom-button" onClick={handleLogout}>Sign Out</button>
           <button className="bottom-button" onClick={() => { handleDelete(); navigate("/"); }}>Delete Account</button>
         </div>
       </main>

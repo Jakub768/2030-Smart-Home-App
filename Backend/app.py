@@ -409,19 +409,43 @@ def get_energy_consumption_by_time_interval(house_id, time1, time2):
 def get_last_completed_jobs(house_id):
     query = """
         SELECT 
-        ds.timestamp, d.deviceName, ds.energyConsumption
+            d.deviceName, 
+            SUM(ds.energyConsumption) AS totalEnergyConsumption
         FROM 
-        DeviceStats ds
+            DeviceStats ds
         JOIN 
-        Devices d ON ds.deviceID = d.deviceID
+            Devices d ON ds.deviceID = d.deviceID
         JOIN
-        Rooms r ON d.roomID = r.roomID
+            Rooms r ON d.roomID = r.roomID
         WHERE 
-        timestamp BETWEEN NOW() - INTERVAL 1 DAY AND NOW()
-        AND ds.deviceStatus = 'conclusion'
-        AND r.houseID = %s
+            ds.timestamp BETWEEN NOW() - INTERVAL 1 DAY AND NOW()
+            AND ds.deviceStatus = 'conclusion'
+            AND r.houseID = %s
+        GROUP BY 
+            d.deviceName
         ORDER BY 
-        ds.deviceID DESC
+            totalEnergyConsumption DESC;
+    """
+    result = database_execute.execute_SQL(query, (house_id,))
+    return result
+
+def message_data(house_id):
+    query = """
+        SELECT 
+            DATE_FORMAT(ds.timestamp, '%h:%i %p') AS formatted_timestamp,               
+            d.deviceName,
+            ds.deviceStatus
+        FROM 
+            DeviceStats ds
+        JOIN 
+            Devices d ON ds.deviceID = d.deviceID
+        JOIN
+            Rooms r ON d.roomID = r.roomID
+        WHERE 
+            r.houseID = %s
+            AND ds.deviceStatus IN ('active', 'conclusion')
+        ORDER BY 
+            ds.timestamp DESC;
     """
     result = database_execute.execute_SQL(query, (house_id,))
     return result
@@ -438,6 +462,7 @@ def get_dashboard():
 
     try:
         total_energy_consumed_in_last_24_hours = get_total_energy_consumed_in_last_24_hours(house_id)
+        print(total_energy_consumed_in_last_24_hours)
         total_costs_of_energy_in_last_24_hours = get_total_costs_of_energy_in_last_24_hours(house_id)
         last_24_hours_energy_consumption_per_device = get_last_24_hours_energy_consumption_per_device(house_id)
 
@@ -494,11 +519,14 @@ def get_dashboard():
             "devices": get_last_completed_jobs(house_id)
         }
 
+        messages = message_data(house_id)
+
         response_data = {
         "Last_24_hours": Last_24_hours,
         "Most_energy_used_by": Most_energy_used_by,
         "Consumption": Consumption,
-        "pie_chart": pie_chart
+        "pie_chart": pie_chart,
+        "messages": messages  # Add messages to the response data
     }
 
 
@@ -655,9 +683,10 @@ def process_total_energy_data(house_id, start_days, end_days=None):
 @app.route('/stats', methods=['GET'])
 def get_stats():
     username = request.args.get('username')
-    intervals = 'Day' #request.args.get('intervals')
+    intervals = request.args.get('intervals')
+    print(intervals)
     house_id_list = get_house_id_by_username(username)
-    house_id = 1 #house_id_list[0][0]
+    house_id = house_id_list[0][0]
 
     
     try:

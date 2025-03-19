@@ -19,10 +19,10 @@ const PieChart = ({ pieData }) => {
 
   // Prepare the data for the pie chart
   const chartData = {
-    labels: pieData?.devices?.map((device) => device[1]) || [], // Labels: Device names (e.g., "Kitchen", "Light")
+    labels: pieData?.devices?.map((device) => device[0]) || [], // Labels: Device names (e.g., "Stove", "Roomba")
     datasets: [
       {
-        data: pieData?.devices?.map((device) => parseFloat(device[2])) || [], // Data: Energy consumed values (e.g., "0.00", "3.00")
+        data: pieData?.devices?.map((device) => parseFloat(device[1])) || [], // Data: Energy consumed values (e.g., "0.87", "0.59")
         backgroundColor: generateGreyScaleColors(pieData?.devices?.length || 3), // Dynamically generate grey colors based on the number of segments
         hoverBackgroundColor: generateGreyScaleColors(pieData?.devices?.length || 3), // Same color on hover
         borderWidth: 0, // No border outline

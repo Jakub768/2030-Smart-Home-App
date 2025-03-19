@@ -8,8 +8,6 @@ ChartJS.register(
   LinearScale,
   BarElement,
   Title,
-  Tooltip,
-  Legend
 );
 
 const BarChart = ({ consumptionData }) => {
@@ -30,24 +28,41 @@ const BarChart = ({ consumptionData }) => {
     ],
   };
 
-  // Chart options to hide axis labels, tooltips, and legends
+  // Prepare chart options
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Ensures the chart can resize
-    scales: {
-      x: {
-        display: false, // Hide the x-axis labels (time intervals)
-      },
-      y: {
-        display: false, // Hide the y-axis labels (consumption values)
-      },
-    },
     plugins: {
       legend: {
-        display: false, // Hide the legend
+        display: false, // Disable the legend
       },
       tooltip: {
-        enabled: false, // Disable the tooltip
+        callbacks: {
+          // Add 'kWh' to the tooltip value
+          label: function(tooltipItem) {
+            return tooltipItem.raw + ' kWh'; // Add 'kWh' to the tooltip value
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        display: false,
+      },
+      y: {
+        display: true,
+        title: {
+          display: true, // Ensure title is displayed
+          text: 'Energy Consumption (kWh)', // Set the title for the y-axis
+          color: 'white', // Set color of the y-axis title
+          size: 14, // Adjust font size if needed
+          family: 'Arial', // Adjust font family if needed
+        },
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: 'white', // Set x-axis ticks color to white
+        },
       },
     },
   };

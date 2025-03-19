@@ -85,10 +85,10 @@
   background-color: rgba(35, 35, 35, 0.5); /* Background color */
   width: 400px; /* Bar chart width */
   height: 250px; /* Bar chart height */
-  display: flex; /* Flex layout */
-  justify-content: center; /* Center the chart */
-  align-items: center; /* Center the content */
   border-radius: 10px; /* Rounded corners */
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 /* Scrollable messages container */
@@ -105,10 +105,10 @@
   width: 700px; /* Width of the messages block */
   height: 50px; /* Height of the message block */
   display: flex; /* Flex layout */
-  justify-content: center; /* Center content horizontally */
   align-items: center; /* Center content vertically */
   margin-bottom: 2px; /* Space between messages */
   transition: background-color 0.3s ease; /* Hover effect */
+  padding: 20px;
 }
 
 .scrollBlockDashboard:hover {
@@ -160,9 +160,9 @@
 
 .barChartWrapper {
   position: relative; /* Ensure it's properly positioned */
-  width: 200%; /* Full width */
-  height: 200px; /* Set the height you want for the chart */
-  overflow: hidden; /* This ensures content doesn’t overflow */
+  width: 120%; /* Full width */
+  margin-top: 17px;
+  margin-left: -50px;
 }
 
 .leftText {
@@ -176,4 +176,29 @@
   bottom: -30px; /* Position it at the bottom of the chart */
   left: 50%; /* Center it horizontally */
   transform: translateX(-50%); /* Center it */
+}
+
+.bottomOfBarChartBlock {
+  display: flex; /* Use flexbox to align the <p> elements in a row */
+  justify-content: space-between; /* Evenly space the <p> elements */
+  width: 380px; /* Ensure the container takes the full width */
+  margin-left: 10px;/* Optional: Add padding for spacing around the text */
+}
+
+.bottomOfBarChartBlock p {
+  margin: 0; /* Remove default margin on <p> elements */
+  text-align: center; /* Center the text within each <p> element */
+  font-size: 12px;
+}
+
+.yAxisLayout{
+  display: flex;
+}
+
+.oneHunderedWidth {
+  width: 100%;
+}
+
+.xAxisTitle {
+  margin: auto;
 }

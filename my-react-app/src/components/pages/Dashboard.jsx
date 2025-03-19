@@ -67,6 +67,24 @@ useEffect(() => {
       return <div>{error}</div>;
     }
 
+    const groupAndSumPieData = (pieData) => {
+      const groupedData = pieData.reduce((acc, curr) => {
+        const { device_name, usage } = curr;
+        if (acc[device_name]) {
+          acc[device_name] += usage; // Sum usage for the same device
+        } else {
+          acc[device_name] = usage; // Initialize the usage for the device
+        }
+        return acc;
+      }, {});
+  
+      // Convert the grouped data into an array format for the PieChart component
+      return Object.keys(groupedData).map(device_name => ({
+        device_name,
+        usage: groupedData[device_name]
+      }));
+    };
+
   return (
       <main className="mainDashboard">
         {/* Top section containing Back button, Title, and Right-side div */}
@@ -126,12 +144,22 @@ useEffect(() => {
           </div>
 
           {/* Right Section with Bar Chart */}
-          <div className="rightSectionDashboard">
-            <h2 className="headingsDashboard">Consumption</h2>
-            <div className="blockColumnDashboard">
-              <div className="barChartBlockDashboard"><BarChart consumptionData={data?.Consumption} /></div>
-              
-            </div>  
+          <div>
+            <div className="rightSectionDashboard">
+              <h2 className="headingsDashboard">Consumption</h2>
+              <div className="blockColumnDashboard">
+                {/* Bar Chart div */}
+                <div className="barChartBlockDashboard">
+                  <BarChart consumptionData={data?.Consumption} />
+                </div>
+
+                {/* Bottom div */}
+                <div className="bottomOfBarChartBlock">
+                  {/* Content for the bottom of the bar chart */}
+                  <p>12am-6am</p><p>6am-12pm</p><p>12pm-4pm</p><p>4pm-8pm</p><p>8pm-12am</p>
+                </div>                
+              </div>  
+            </div>
           </div>
         </div>
 
@@ -141,12 +169,13 @@ useEffect(() => {
             <h2 className="headingsDashboard">Recent messages</h2>
 
             <div className="scrollableMessages">
-              {/*  pull the messages */}
-              {messages.map((message, index) => (
+              {/* Check if messages exist in data */}
+              {data?.messages?.slice(0, 20).map((message, index) => (
                 <div 
                   key={index} 
-                  className={`scrollBlockDashboard ${index === 0 ? 'topBlockDashboard' : index === messages.length - 1 ? 'bottomBlockDashboard' : ''}`}>
-                  {message}
+                  className={`scrollBlockDashboard ${index === 0 ? 'topBlockDashboard' : index === 19 ? 'bottomBlockDashboard' : ''}`}>
+                  {/* Assuming message is an array of [timestamp, device name, status] */}
+                  <p>{message[0]}</p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<p>{message[1]} is now {message[2] == 'active' ? 'active' : 'inactive'}.</p>
                 </div>
               ))}
             </div>
