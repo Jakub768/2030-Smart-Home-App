@@ -5,7 +5,7 @@ import database_execute, permissions_management, device_management, user_managem
 import datetime
 import decimal
 import bcrypt
-import auto_update
+# import auto_update
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -561,10 +561,7 @@ def get_devices():
     username = request.args.get('username')
     
     house_id_list = get_house_id_by_username(username)
-    if not house_id_list:
-        return jsonify({"error": "house_id is required"}), 400
-    
-    house_id = house_id_list[0][0]  # Properly fetch house_id
+    house_id = 1#house_id_list[0][0]  # Properly fetch house_id
 
     try:
         devices = get_all_devices(house_id)

@@ -8,7 +8,7 @@ import threading  # Import threading module
 last_updated_time = datetime.datetime.now()
 update_lock = threading.Lock()  # Add lock to protect shared resources
 
-schedule_update_time = (0, 0, 10, 0)  # Schedule update time: (days, hours, minutes, seconds)
+schedule_update_time = (0, 0, 15, 0)  # Schedule update time: (days, hours, minutes, seconds)
 schedule_update_time_in_seconds = (
     schedule_update_time[0] * 24 * 60 * 60 +
     schedule_update_time[1] * 60 * 60 +

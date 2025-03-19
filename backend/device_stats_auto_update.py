@@ -15,7 +15,7 @@ initial_dictionary_for_device_status = {}
 recently_updated_device = {}
 last_updated_time = datetime.datetime.now()
 
-schedule_update_time = (0, 0, 10, 0)  # (days, hours, minutes, seconds)
+schedule_update_time = (0, 0, 30, 0)  # (days, hours, minutes, seconds)
 schedule_update_time_in_seconds = (
     schedule_update_time[0] * 86400 +
     schedule_update_time[1] * 3600 +
