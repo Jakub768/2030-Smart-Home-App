@@ -13,7 +13,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(minutes=30)
 flask_session.Session(app)
-flask_cors.CORS(app, origins="*")
+flask_cors.CORS(app)
 
 # User Authentication Functions
 # -----------------------------
@@ -270,7 +270,7 @@ def get_home():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-def get_all_rooms(house_id):
+def get_all_rooms_id_and_name(house_id):
     query = """
         SELECT r.roomID, r.roomName FROM Rooms r WHERE r.houseID = %s
     """
@@ -293,10 +293,13 @@ def get_rooms():
         return jsonify({"error": "house_id is required"}), 400
 
     try:
-        rooms = get_all_rooms(house_id)
+        rooms = get_all_rooms_id_and_name(house_id)
+        print(rooms)
         device_list_in_this_room = {}
         for room in rooms:
+            print(room)
             room_id = room[0]
+            print(room_id)
             room_name = room[1]
             device_list = get_all_devices_in_this_room(room_id)
             if room_name not in device_list_in_this_room:

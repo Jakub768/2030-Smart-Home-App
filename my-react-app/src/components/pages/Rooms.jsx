@@ -12,12 +12,19 @@ const Rooms = () => {
   // Fetch data when component mounts
   useEffect(() => {
     const fetchRooms = async () => {
+      const username = sessionStorage.getItem("username"); // Get username from session storage
+      if (!username) {
+        setError("No username found in session.");
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await fetch("http://127.0.0.1:5000/rooms");
+        const response = await fetch(`http://127.0.0.1:5000/rooms?username=${username}`);
         if (!response.ok) throw new Error("Failed to fetch data");
+
         const jsonData = await response.json();
-        
-        setData(jsonData); // Use jsonData directly since it's already structured correctly
+        setData(jsonData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -26,7 +33,7 @@ const Rooms = () => {
     };
   
     fetchRooms();
-  }, []);
+}, []);
   
 
   // Show loading spinner
