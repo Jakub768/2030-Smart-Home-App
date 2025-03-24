@@ -4,14 +4,12 @@ import time
 import threading
 import datetime
 
-# Payment status dictionary
 PAYMENT_STATUS = {
     "unpaid": 0,
     "paid": 1
 }
 
-# Schedule update time in seconds
-schedule_update_time = (0, 0, 30, 0)  # (days, hours, minutes, seconds)
+schedule_update_time = (0, 0, 1, 0)  # (days, hours, minutes, seconds)
 schedule_update_time_in_seconds = (
     schedule_update_time[0] * 86400 +
     schedule_update_time[1] * 3600 +
@@ -19,9 +17,8 @@ schedule_update_time_in_seconds = (
     schedule_update_time[3]
 )
 
-# Global variables
 last_updated_time = datetime.datetime.now()
-update_lock = threading.Lock()  # Add a lock to protect shared resources
+
 initial_dictionary_for_payment_status = {}
 
 def get_house_id_list():
@@ -61,21 +58,26 @@ def routine_update():
     house_id_list = get_house_id_list()
     current_time = datetime.datetime.now()
 
-    with update_lock:  # Lock to prevent race condition
-        for house_id in house_id_list:
-            bill_amount = get_bill_amount(last_updated_time, current_time)
-            bill_stats_update_database.update_bill_stats(house_id, bill_amount, current_time)
-            print("Bill Stat Updated")
+    for house_id in house_id_list:
+        bill_amount = get_bill_amount(last_updated_time, current_time)
+        bill_stats_update_database.update_bill_stats(house_id, bill_amount, current_time)
 
 def routine_update_helper():
     global last_updated_time
 
     while True:
         current_time = datetime.datetime.now()
-        
-        with update_lock:  # Ensure thread-safe access to last_updated_time
-            if current_time - last_updated_time >= datetime.timedelta(seconds=schedule_update_time_in_seconds):
-                routine_update()
-                last_updated_time = current_time  # Update safely
-        
-        time.sleep(1)  # Prevent CPU overuse
+        if current_time - last_updated_time >= datetime.timedelta(seconds=schedule_update_time_in_seconds):
+            routine_update()
+            last_updated_time = current_time
+        time.sleep(1)
+
+
+# Start threads
+thread1 = threading.Thread(target=routine_update_helper, daemon=True)
+thread1.start()
+
+initialise_bill_stats()
+
+while True:
+        time.sleep(1)

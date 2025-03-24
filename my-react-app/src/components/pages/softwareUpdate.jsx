@@ -18,7 +18,7 @@ export const softwareUpdate = () => {
       
     <div className="softwareColumn">
      <div className='blockSoftware question'>
-     <p className='centeredText'>Latest update is installed.</p>
+     <p className='centeredText'>Q- How can I install the Virtual Butler smart home system in my home?</p>
      </div>
      </div>
       
@@ -27,5 +27,3 @@ export const softwareUpdate = () => {
 };
 
 export default softwareUpdate;
-
-

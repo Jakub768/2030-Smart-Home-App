@@ -13,6 +13,8 @@
   width: 71vw; /* width of the main element */
   height: 85vh; /* height of the main element */
   overflow-y: auto; /* Enable scrolling */
+  scrollbar-width: thin; /* Makes scrollbar thinner */
+  scrollbar-color: rgba(35, 35, 35, 0.5) transparent; /* Thumb color, then track color */
 }
 
 .DevicesHeader {
@@ -230,6 +232,8 @@
     border-radius: 25px; /* Round all corners */
     border-left: 2px solid rgba(240, 240, 240, 0.5);
     overflow-y: auto; /* Enable scrolling */
+    scrollbar-width: thin; /* Makes scrollbar thinner */
+    scrollbar-color: rgba(35, 35, 35, 0.5) transparent; /* Thumb color, then track color */
   }
 
   .DevicesHeader {

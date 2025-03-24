@@ -58,7 +58,7 @@ export const Home = () => {
   
     // Format the date to 'YYYY-MM-DD 00:00:00'
     const formattedDate = `${firstOfLastMonth.getFullYear()}-${String(firstOfLastMonth.getMonth() + 1).padStart(2, '0')}-${String(firstOfLastMonth.getDate()).padStart(2, '0')} 00:00:00`;
-  
+    console.log(formattedDate)
     return formattedDate;
   };
 
@@ -308,169 +308,71 @@ export const Home = () => {
       {renderHeader()}
 
       <div className="contentBoxHome">
-      <h2>Inside the residence</h2>
-{windowWidth <= 480 ? (
-  // Mobile layout - each block with its label grouped together
-  <div className="sectionHome">
-    <div className="blockContainer">
-      <div className="blockHome firstBlockHome">
-        <button className="minus" onClick={decreaseTemperature}>-</button>
-        {temperature}°C
-        <button className="plus" onClick={increaseTemperature}>+</button>
-      </div>
-      <p className="paragraphHome">{temperatureLabel(temperature)}</p>
-    </div>
-    
-    <div className="blockContainer">
-      <div className="blockHome">
-        <button className="minus" onClick={decreaseHumidity}>-</button>
-        {humidity}%
-        <button className="plus" onClick={increaseHumidity}>+</button>
-      </div>
-      <p className="paragraphHome">{humidityLabel(humidity)}</p>
-    </div>
-    
-    <div className="blockContainer">
-      <div className="blockHome">{data.Inside_The_Residence.Devices_Active}</div>
-      <p className="paragraphHome">Devices Active</p>
-    </div>
-    
-    <div className="blockContainer">
-      <div className="blockHome lastBlockHome">{data.Inside_The_Residence.Rooms_Occupied}</div>
-      <p className="paragraphHome">Occupied Rooms</p>
-    </div>
-  </div>
-) : (
-  // Desktop layout - unchanged
-  <>
-    <div className="sectionHome">
-      <div className="blockHome firstBlockHome">
-        <button className="minus" onClick={decreaseTemperature}>-</button>
-        {temperature}°C
-        <button className="plus" onClick={increaseTemperature}>+</button>
-      </div>
-      <div className="blockHome">
-        <button className="minus" onClick={decreaseHumidity}>-</button>
-        {humidity}%
-        <button className="plus" onClick={increaseHumidity}>+</button>
-      </div>
-      <div className="blockHome">{data.Inside_The_Residence.Devices_Active}</div>
-      <div className="blockHome lastBlockHome">{data.Inside_The_Residence.Rooms_Occupied}</div>
-    </div>
-    <div className="paragraphsContainer1Home">
-      <p className="paragraphHome">{temperatureLabel(temperature)}</p>
-      <p className="paragraphHome">{humidityLabel(humidity)}</p>
-      <p className="paragraphHome">Devices Active</p>
-      <p className="paragraphHome">Occupied Rooms</p>
-    </div>
-  </>
-)}
-
-<h2>Outside the residence</h2>
-{windowWidth <= 480 ? (
-  // Mobile layout
-  <div className="sectionHome">
-    <div className="blockContainer">
-      <div className="blockHome firstBlockHome">
-        <img src={weatherIcon} alt={data.Outside_The_Residence.Weather_Description} style={{maxWidth: '100%', maxHeight: '60px'}}/>
-      </div>
-      <p className="paragraphHome">{formattedWeatherDescription}</p>
-    </div>
-    
-    <div className="blockContainer">
-      <div className="blockHome">{data.Outside_The_Residence.Temperature}°C</div>
-      <p className="paragraphHome">{temperatureLabel(data.Outside_The_Residence.Temperature)}</p>
-    </div>
-    
-    <div className="blockContainer">
-      <div className="blockHome">{data.Outside_The_Residence.Humidity}%</div>
-      <p className="paragraphHome">{humidityLabel(data.Outside_The_Residence.Humidity)}</p>
-    </div>
-    
-    <div className="blockContainer">
-      <div className="blockHome lastBlockHome">{data.Outside_The_Residence.Wind_Speed} mph</div>
-      <p className="paragraphHome">{windSpeedLabel(data.Outside_The_Residence.Wind_Speed)}</p>
-    </div>
-  </div> ) : (
-
-        <>
-    <div className="sectionHome">
-      <div className="blockHome firstBlockHome">
-        <img src={weatherIcon} alt={data.Outside_The_Residence.Weather_Description} style={{maxWidth: '100%', maxHeight: '60px'}}/>
-      </div>
-      <div className="blockHome">{data.Outside_The_Residence.Temperature}°C</div>
-      <div className="blockHome">{Math.round(data.Outside_The_Residence.Humidity)}%</div>
-      <div className="blockHome lastBlockHome">{data.Outside_The_Residence.Wind_Speed} mph</div>
-    </div>
-    <div className="paragraphsContainer2Home">
-      <p className="paragraphHome">{formattedWeatherDescription}</p>
-      <p className="paragraphHome">{temperatureLabel(data.Outside_The_Residence.Temperature)}</p>
-      <p className="paragraphHome">{humidityLabel(data.Outside_The_Residence.Humidity)}</p>
-      <p className="paragraphHome">{windSpeedLabel(data.Outside_The_Residence.Wind_Speed)}</p>
-    </div>
-  </>
-)}
-</div>
-<div className="energySectionHome">
-  <h2 className="energyTitleHome">Energy bill</h2>
-  {windowWidth <= 480 ? (
-    // Mobile layout - stacked blocks
-    <div className="energyRowsHome">
-      <div className="blockContainer">
-        <div className="topBlockHome">
-          <p className="bottomTextLeft">{lastMonth}</p>
-          <p className="bottomTextRight">{data.Energy_Bill.Bill_Paid_Status}</p>
+        <h2>Inside the residence</h2>
+        <div className="sectionHome">
+          <div className="blockHome firstBlockHome">
+            <button className="minus" onClick={decreaseTemperature}>-</button>
+            {temperature}°C
+            <button className="plus" onClick={increaseTemperature}>+</button>
+          </div>
+          <div className="blockHome">
+            <button className="minus" onClick={decreaseHumidity}>-</button>
+            {humidity}%
+            <button className="plus" onClick={increaseHumidity}>+</button>
+          </div>
+          <div className="blockHome">{data.Inside_The_Residence.Devices_Active}</div>
+          <div className="blockHome lastBlockHome">{data.Inside_The_Residence.Rooms_Occupied}</div>
         </div>
-      </div>
-      
-      <div className="blockContainer">
-        <div className="bottomBlockHome">
-          <p className="bottomTextLeft">Amount</p>
-          <p className="bottomTextRight">£{data.Energy_Bill.Past_Bill_Amount}</p>
-        </div>
-      </div>
-      
-      <div className="blockContainer">
-        <div className="topBlockHome">
-          <p className="bottomTextLeft">Next bill due</p>
-          <p className="bottomTextRight">{getFirstOfNextMonth()}</p>
-        </div>
-      </div>
-      
-      <div className="blockContainer">
-        <div className="bottomBlockHome">
-          <p className="bottomTextLeft">Amount so far</p>
-          <p className="bottomTextRight">£{data.Energy_Bill.Current_Amount}</p>
-        </div>
-      </div>
-    </div>
-  ) : (
-    // Desktop layout - side by side (unchanged)
-    <div className="energyRowsHome">
-      <div className="energyRowHome">
-        <div className="blockHome topBlockHome">
-          <p className="bottomTextLeft">{lastMonth}</p>
-          <p className="bottomTextRight">{data.Energy_Bill.Bill_Paid_Status}</p>
+        <div className="paragraphsContainer1Home">
+          <p className="paragraphHome">{temperatureLabel(temperature)}</p>
+          <p className="paragraphHome">{humidityLabel(humidity)}</p>
+          <p className="paragraphHome">Devices Active</p>
+          <p className="paragraphHome">Occupied Rooms</p>
         </div>
 
-        <div className="blockHome topBlockHome">
-          <p className="bottomTextLeft">Next bill due</p>
-          <p className="bottomTextRight">{getFirstOfNextMonth()}</p>
+        <h2>Outside the residence</h2>
+        <div className="sectionHome">
+          <div className="blockHome firstBlockHome">
+            <img src={weatherIcon} alt={data.Outside_The_Residence.Weather_Description} style={{maxWidth: '100%', maxHeight: '60px'}}/>
+          </div>
+          <div className="blockHome">{data.Outside_The_Residence.Temperature}°C</div>
+          <div className="blockHome">{Math.round(data.Outside_The_Residence.Humidity)}%</div>
+          <div className="blockHome lastBlockHome">{data.Outside_The_Residence.Wind_Speed} mph</div>
+        </div>
+        <div className="paragraphsContainer2Home">
+          <p className="paragraphHome">{formattedWeatherDescription}</p>
+          <p className="paragraphHome">{temperatureLabel(data.Outside_The_Residence.Temperature)}</p>
+          <p className="paragraphHome">{humidityLabel(data.Outside_The_Residence.Humidity)}</p>
+          <p className="paragraphHome">{windSpeedLabel(data.Outside_The_Residence.Wind_Speed)}</p>
         </div>
       </div>
-      <div className="energyRowHome">
-        <div className="blockHome bottomBlockHome">
-          <p className="bottomTextLeft">Amount</p>
-          <p className="bottomTextRight">£{data.Energy_Bill.Past_Bill_Amount}</p>
-        </div>
-        <div className="blockHome bottomBlockHome">
-          <p className="bottomTextLeft">Amount so far</p>
-          <p className="bottomTextRight">£{data.Energy_Bill.Current_Amount}</p>
+
+      <div className="energySectionHome">
+        <h2 className="energyTitleHome">Energy bill</h2>
+        <div className="energyRowsHome">
+          <div className="energyRowHome">
+            <div className="blockHome topBlockHome">
+              <p className="bottomTextLeft">{lastMonth}</p>
+              <p className="bottomTextRight">{data.Energy_Bill.Bill_Paid_Status}</p>
+            </div>
+
+            <div className="blockHome topBlockHome">
+              <p className="bottomTextLeft">Next bill due</p>
+              <p className="bottomTextRight">{getFirstOfNextMonth()}</p>
+            </div>
+          </div>
+          <div className="energyRowHome">
+            <div className="blockHome bottomBlockHome">
+              <p className="bottomTextLeft">Amount</p>
+              <p className="bottomTextRight">£{data.Energy_Bill.Past_Bill_Amount}</p>
+            </div>
+            <div className="blockHome bottomBlockHome">
+              <p className="bottomTextLeft">Amount so far</p>
+              <p className="bottomTextRight">£{data.Energy_Bill.Current_Amount}</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  )}
-</div>
     </main>
   );
 };

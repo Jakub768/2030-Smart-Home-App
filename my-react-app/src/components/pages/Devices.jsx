@@ -117,7 +117,16 @@ const Devices = () => {
   };
 
   if (loading) {
-    return <div className="mainDevices">Loading devices...</div>;
+    const LoadingSpinner = () => {
+      return (
+        <main className="mainHome">
+        <div className="spinner-container">
+          <div className="spinner"></div>
+        </div>
+        </main>
+      );
+    };
+    return <LoadingSpinner />;
   }
 
   if (error) {

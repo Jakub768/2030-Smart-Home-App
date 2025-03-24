@@ -133,7 +133,7 @@ export const AddDevice = () => {
                         {/* Room Selection Dropdown */}
                         <div className="blockAddDevice no-gap2Device">
                             <div className="inputText">Room Name</div>
-                            <div className="dropdown">
+                            <div className="dropdownAddDevice">
                                 <div className="dropdown-toggle" onClick={() => handleDropdownToggle("room")}>
                                     {selectedRoom || "Select Room"}
                                     <span className="arrow">{dropdownOpen.room ? "▼" : "►"}</span>

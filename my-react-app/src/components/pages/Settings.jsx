@@ -53,7 +53,6 @@ export const Settings = () => {
   const handleDelete = () => {
     const username = sessionStorage.getItem('username');  // Or wherever you're storing the username
     const password = prompt('Please enter your password to confirm deletion:'); // Asking for the password
-    alert("Account successfully deleted.")
     
     if (!username || !password) {
       alert("Username or password is missing");

@@ -2,41 +2,37 @@
 
 /* Main stats container */
 .mainStats {
-  position: fixed;
-  background-color: rgba(105, 105, 105, 0.5);
-  border-bottom-right-radius: 25px;
+  position: fixed; /* Keep the page content in place */
+  background-color: rgba(105, 105, 105, 0.5); /* Color of the main element */
+  border-bottom-right-radius: 25px; /* Add radius to the bottom and top right corners */
   border-top-right-radius: 25px;
-  padding: 40px;
-  margin-top: 3vw;
+  padding: 40px; /* Padding inside the main element */
+  margin-top: 3vw; /* Margin on the top and left of the main element */
   margin-left: 26vw;
-  color: rgb(255, 255, 255);
-  border-top: 2px solid rgba(240, 240, 240, 0.5);
+  color: rgb(255, 255, 255); /* Text color */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* Border on the top, bottom, and right of the main element */
   border-bottom: 2px solid rgba(240, 240, 240, 0.5);
   border-right: 2px solid rgba(240, 240, 240, 0.5);
-  width: 71vw;
-  height: 85vh;
-  overflow-y: none;
+  width: 71vw; /* Width of the main element */
+  height: 85vh; /* Height of the main element */
 }
 
 .statsHeader {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  top: 0;
-  z-index: 10;
-  padding: 10px 0;
+  display: flex; /* Set up a flexible layout in the header */
+  justify-content: space-between; /* Even spacing between elements */
+  margin-bottom: 10px; /* Margin at the bottom of the header */
 }
 
 .navButtonStats {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2); /* Color of the button */
+  color: white; /* Color of the text in the button */
+  border: none; /* Remove the border on the button */
+  border-radius: 10px; /* Round the corners of the button */
+  cursor: pointer; /* Change cursor when hovering */
+  width: 40px; /* Width of button */
+  height: 40px; /* Height of button */
+  display: flex; /* Set up a flexible layout in the button */
+  align-items: center; /* Center the content in the button */
   justify-content: center;
 }
 
@@ -49,136 +45,18 @@
   height: 100%;
 }
 
-/* Device Cards (Mobile View) */
-.deviceCards {
-  display: none; /* Hidden by default, shown on mobile */
-}
-
-.deviceCard {
-  background-color: rgba(35, 35, 35, 0.5);
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.deviceCard:hover {
-  background-color: rgba(50, 50, 50, 0.7);
-}
-
-.deviceCardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.deviceCardHeader h3 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.deviceRoom {
-  font-size: 14px;
-  color: #ccc;
-}
-
-.deviceCardStats {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.deviceStat {
-  display: flex;
-  justify-content: space-between;
-}
-
-.statLabel {
-  font-weight: bold;
-}
-
-.statValue {
-  color: #eee;
-}
-
-.noDevicesFound {
-  text-align: center;
-  padding: 20px;
-  background-color: rgba(35, 35, 35, 0.5);
-  border-radius: 10px;
-}
-
-/* Modal for device details */
-.deviceDetailModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modalContent {
-  background-color: rgba(50, 50, 50, 0.95);
-  width: 90%;
-  max-width: 500px;
-  border-radius: 15px;
-  overflow: hidden;
-}
-
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: rgba(35, 35, 35, 0.8);
-}
-
-.modalHeader h2 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.closeButton {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.modalBody {
-  padding: 20px;
-}
-
-.detailRow {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.detailRow:last-child {
-  border-bottom: none;
-}
-
-.detailLabel {
-  font-weight: bold;
-}
-
-/* Table styling */
-.deviceStatsContainer {
+.deviceStatsContainer{
   max-height: 250px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(35, 35, 35, 0.5) transparent;
-  margin-bottom: 20px;
+}
+
+.deviceTable thead th {
+  position: sticky;
+  top: 0;
+  background-color: rgba(50, 50, 50, 1);
+  z-index: 1; /* Ensure the header is above the body rows */
 }
 
 .deviceTable {
@@ -186,48 +64,35 @@
   border-collapse: collapse;
 }
 
-.deviceTable thead th {
-  position: sticky;
-  top: 0;
-  background-color: rgba(50, 50, 50, 1);
-  z-index: 1;
-  cursor: pointer;
-}
-
 .deviceTable th,
 .deviceTable td {
   padding: 10px;
   text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid white;
 }
 
 .deviceTable th {
   background-color: rgba(35, 35, 35, 0.5);
 }
 
-.deviceTable tr:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 .searchInput {
   width: 100%;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 20px;
+  font-size: 20px;
   margin-bottom: 16px;
-  background-color: rgba(35, 35, 35, 0.5);
+  background-color: rgba(35, 35, 35, 0.5); /* Block color */
   color: white;
   border-radius: 50px;
   border: none;
   box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.5);
-  outline: none;
+  outline: none; /* Removes the outline */
   height: 40px;
 }
 
 .searchInput::placeholder {
-  color: rgb(180, 180, 180);
+  color: rgb(180, 180, 180); /* Set the placeholder text color */
 }
 
-/* Dropdown styling */
 .dropdown {
   position: relative;
   width: 150px;
@@ -283,27 +148,23 @@
   justify-content: left;
   margin-top: 20px;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .bottomSectionStats p {
-  font-size: 16px;
+  font-size: 20px;
 }
 
 /* Bottom Data Layout */
 .bottomDataContainer {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: space-between; /* Align the left and right columns */
+  gap: 20px; /* Add space between the two columns */
   margin-top: 20px;
 }
 
 .leftColumn,
 .rightColumn {
-  width: 48%;
-  background-color: rgba(35, 35, 35, 0.5);
-  padding: 10px;
-  border-radius: 10px;
+  width: 48%; /* Make each column take 48% of the available width */
 }
 
 .dataRow {
@@ -318,87 +179,17 @@
 }
 
 .dataRow span:nth-child(2) {
-  color: lightgray;
+  color: lightgray; /* Make the values less prominent */
 }
 
 h3 {
   margin-bottom: 10px;
 }
 
-/* Mobile Responsive Styles */
-@media screen and (max-width: 768px) {
-  .mainStats {
-    margin-top: 10px;
-    margin-left: 5vw;
-    width: 90vw;
-    height: 85vh;
-    padding: 15px;
-    border-radius: 15px;
-    border-left: 2px solid rgba(240, 240, 240, 0.5);
-    overflow-y: auto;
-  }
-  
-  .statsHeader {
-    margin-bottom: 15px;
-  }
-
-  /* Hide table on mobile */
-  .deviceStatsContainer {
-    display: none;
-  }
-  
-  /* Show cards on mobile */
-  .deviceCards {
-    display: block;
-  }
-  
-  .bottomSectionStats {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .bottomSectionStats p {
-    margin-bottom: 10px;
-  }
-  
-  .dropdown {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  .bottomDataContainer {
-    flex-direction: column;
-  }
-  
   .leftColumn,
   .rightColumn {
     width: 100%;
-    margin-bottom: 15px;
+    background-color: rgba(35, 35, 35, 0.5);
+    padding: 10px;
+    border-radius: 10px; /* Make each column take full width on smaller screens */
   }
-}
-
-/* Small Mobile Screens */
-@media screen and (max-width: 480px) {
-  .mainStats {
-    margin-top: 1vh;
-    margin-left: 2vw;
-    width: 96vw;
-    height: 90vh;
-    padding: 15px;
-    border-bottom-left-radius: 25px;
-    border-top-left-radius: 25px;
-    border-left: 2px solid rgba(240, 240, 240, 0.5);
-    margin-top: 65px;
-  }
-  
-  .statsHeader {
-      display: flex; /* Set up a flexible layout in the header */
-      justify-content: space-between; /* Even spacing between elements */
-      margin-bottom: 30px; /* Margin at the bottom of the header */
-      flex-shrink: 0;
-    }
-  
-  .modalContent {
-    width: 95%;
-  }
-}

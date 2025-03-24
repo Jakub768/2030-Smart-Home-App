@@ -8,6 +8,8 @@ ChartJS.register(
   LinearScale,
   BarElement,
   Title,
+  Tooltip,
+  Legend
 );
 
 const BarChart = ({ consumptionData }) => {
@@ -19,27 +21,36 @@ const BarChart = ({ consumptionData }) => {
     return parseFloat(consumptionData[timePeriod][0][0]); // The consumption data for each time period
   });
 
-  if (labels.length >= 5) {
-    // Swap the 4th (index 3) with the 2nd (index 1)
-    const tempLabel = labels[1];
-    const tempData = data[1];
-    
-    // Swap the 2nd (index 1) with the 3rd (index 2)
-    labels[1] = labels[3];
-    data[1] = data[3];
-    
-    // Set the 3rd (index 2) as the new 4th (index 3)
-    labels[3] = tempLabel;
-    data[3] = tempData;
-  }
+  // To debug, log the original labels and data
+  console.log("Original Labels:", labels);
+  console.log("Original Data:", data);
+
+  // Ensure data is sorted to match the intended display order
+  const correctOrder = [
+    "12am to 6am", 
+    "6am to 12pm", 
+    "12pm to 4pm", 
+    "4pm to 8pm", 
+    "8pm to 12am"
+  ];
+
+  // Sort labels and data to match the correct order
+  const sortedLabels = correctOrder;
+  const sortedData = correctOrder.map(timePeriod => {
+    const index = labels.indexOf(timePeriod);
+    return data[index];
+  });
 
   // Prepare chart data
   const chartData = {
-    labels: labels,
+    labels: sortedLabels,
     datasets: [
       {
-        data: data,
+        data: sortedData,
         backgroundColor: 'rgba(128, 128, 128, 1)', // Solid grey color for bars
+        borderRadius: 0, // Optionally, add rounded corners to the bars
+        borderColor: 'rgba(128, 128, 128, 1)', // Border color (same as background)
+        borderWidth: 1, // Add a border width to make the bars more defined
       },
     ],
   };
@@ -74,10 +85,10 @@ const BarChart = ({ consumptionData }) => {
           family: 'Arial', // Adjust font family if needed
         },
         grid: {
-          display: false,
+          display: false, // Hide the grid lines on the y-axis
         },
         ticks: {
-          color: 'white', // Set x-axis ticks color to white
+          color: 'white', // Set the color of the y-axis ticks
         },
       },
     },

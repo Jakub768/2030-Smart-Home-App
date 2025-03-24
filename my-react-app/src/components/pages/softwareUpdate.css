@@ -1,177 +1,71 @@
 .mainSoftware {
-    position: fixed; /* keeps the page fixed in place */
-    background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
-    border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
-    border-top-right-radius: 25px;
-    padding: 40px; /* padding inside the main element */
-    margin-top: 3vw; /* margin on the top and left of the main element */
-    margin-left: 26vw;
-    color: rgb(255, 255, 255); /* text colour */
-    border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
-    border-bottom: 2px solid rgba(240, 240, 240, 0.5);
-    border-right: 2px solid rgba(240, 240, 240, 0.5);
-    width: 71vw; /* width of the main element */
-    height: 85vh; /* height of the main element */
-    display: flex; /* set up a flexible layout in the main element */
-    flex-direction: column; /* sets up content vertically */
-    gap: 10px; /* gap between sections in the main */
-  }
-  
-  .softwareHeader {
-    display: flex; /* set up a flexible layout in the header */
-    justify-content: space-between; /* even spacing between elements */
-    margin-bottom: 10px; /* margin at the bottom of the header */
-  }
-  
-  .navButtonSoftware {
-    background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
-    color: white; /* colour of the text in the button */
-    border: none; /* remove the border on the button */
-    border-radius: 10px; /* round the corners of the button */
-    cursor: pointer; /* change cursor when hovering */
-    width: 40px; /* width of button */
-    height: 40px; /* height of button */
-    display: flex; /* set up a flexible layout in the button */
-    align-items: center; /* centre the content in the button */
-    justify-content: center;
-  }
+  position: fixed; /* keeps the page fixed in place */
+  background-color: rgba(105, 105, 105, 0.5); /* colour of the main element */
+  border-bottom-right-radius: 25px; /* add radius to the bottom and top right corners */
+  border-top-right-radius: 25px;
+  padding: 40px; /* padding inside the main element */
+  margin-top: 3vw; /* margin on the top and left of the main element */
+  margin-left: 26vw;
+  color: rgb(255, 255, 255); /* text colour */
+  border-top: 2px solid rgba(240, 240, 240, 0.5); /* border on the top, bottom and right of the main element */
+  border-bottom: 2px solid rgba(240, 240, 240, 0.5);
+  border-right: 2px solid rgba(240, 240, 240, 0.5);
+  width: 71vw; /* width of the main element */
+  height: 85vh; /* height of the main element */
+  display: flex; /* set up a flexible layout in the main element */
+  flex-direction: column; /* sets up content vertically */
+  gap: 10px; /* gap between sections in the main */
+}
 
-  .navButtonSoftware:hover {
-    background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
-  }
-  
-  .navButtonSoftware img {
-    width: 100%;
-    height: 100%;
-  }
+.softwareHeader {
+  display: flex; /* set up a flexible layout in the header */
+  justify-content: space-between; /* even spacing between elements */
+  margin-bottom: 10px; /* margin at the bottom of the header */
+}
 
-  .blockSoftware {
-    background-color: rgba(35, 35, 35, 0.5); /* colour of blocks */
-    width: 100%; /* width of blocks */
-    height: 55px; /* height of blocks */
-    display: flex; /* set up a flexible layout in the blocks */
-    justify-content: center; /* centre content in the blocks */
-    align-items: center;
-    padding: 20px;
-  }
+.navButtonSoftware {
+  background-color: rgba(255, 255, 255, 0.2); /* colour of the button */
+  color: white; /* colour of the text in the button */
+  border: none; /* remove the border on the button */
+  border-radius: 10px; /* round the corners of the button */
+  cursor: pointer; /* change cursor when hovering */
+  width: 40px; /* width of button */
+  height: 40px; /* height of button */
+  display: flex; /* set up a flexible layout in the button */
+  align-items: center; /* centre the content in the button */
+  justify-content: center;
+}
 
-  .softwareColumn {
-    display: grid; /* set up a grid layout in the columns of blocks */
-    gap: 2px; /* gap between blocks vertically */
-    margin-bottom: 20px; /* margin below each column of blocks */
-  }
+.navButtonSoftware:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Slightly lighter on hover */
+}
 
-  .question {
-    border-top-left-radius: 10px; /* round top corners of the top blocks */
-    border-top-right-radius: 10px;
-  }
+.navButtonSoftware img {
+  width: 100%;
+  height: 100%;
+}
 
-  .centeredText {
-    text-align: center; /* Center text horizontally */
-  }
+.blockSoftware {
+  background-color: rgba(35, 35, 35, 0.5); /* colour of blocks */
+  width: 100%; /* width of blocks */
+  height: 55px; /* height of blocks */
+  display: flex; /* set up a flexible layout in the blocks */
+  justify-content: center; /* centre content in the blocks */
+  align-items: center;
+  padding: 20px;
+}
 
-  @media screen and (max-width: 480px) {
-    .mainSoftware {
-      overflow-y: auto;
-        /* For mobile, take up most of the screen */
-        margin-top: 1vh;
-        margin-left: 2vw;
-        width: 96vw;
-        height: 20vh;
-        padding: 15px;
-        border-bottom-left-radius: 25px;
-        border-top-left-radius: 25px;
-        border-left: 2px solid rgba(240, 240, 240, 0.5);
-        margin-top: 65px;
-    }
+.softwareColumn {
+  display: grid; /* set up a grid layout in the columns of blocks */
+  gap: 2px; /* gap between blocks vertically */
+  margin-bottom: 20px; /* margin below each column of blocks */
+}
 
-    
-    .softwareHeader {
-      display: flex; /* Set up a flexible layout in the header */
-      justify-content: space-between; /* Even spacing between elements */
-      margin-bottom: 30px; /* Margin at the bottom of the header */
-      flex-shrink: 0;
-    }
-    
-    /* .blockHome {
-        width: 100%; 
-        margin-bottom: 2px;
-        border-radius: 10px; 
-    } */
-  /*   
-    .paragraphsContainer1Home,
-    .paragraphsContainer2Home {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .paragraphHome {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-    
-    .energyRowHome {
-        flex-direction: column;
-    }
-    
-    .topBlockHome,
-    .bottomBlockHome {
-        width: 100%;
-        margin-bottom: 2px;
-    } */
-  
-    /* New styles for grouping blocks with their labels */
-    .sectionHome {
-      display: block; /* Change from flex to block for mobile */
-    }
-    
-    /* Create a container for each block and its label */
-    .blockContainer {
-      margin-bottom: 15px;
-    }
-    
-    .blockHome {
-      width: 100%;
-      border-radius: 10px 10px 0 0; /* Round only top corners */
-      margin-bottom: 0; /* Remove margin between block and its label */
-    }
-    
-    .paragraphsContainer1Home,
-    .paragraphsContainer2Home {
-      display: block; /* Override flex display */
-    }
-    
-    .paragraphHome {
-      width: 100%;
-      text-align: center;
-      padding: 5px 0;
-      margin: 0;
-      background-color: rgba(35, 35, 35, 0.3);
-      border-radius: 0 0 10px 10px; /* Round only bottom corners */
-      margin-bottom: 15px; /* Space between block-label groups */
-    }
-    .energyRowHome {
-      flex-direction: column;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-    
-    .topBlockHome,
-    .bottomBlockHome {
-      width: 100%;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      background-color: rgba(35, 35, 35, 0.5);
-    }
-    
-    /* First block in each row */
-    .energyRowHome:first-child .topBlockHome:first-child {
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
-    
-    /* Last block in each row */
-    .energyRowHome:last-child .bottomBlockHome:last-child {
-      border-radius: 10px;
-    }
-  }
+.question {
+  border-top-left-radius: 10px; /* round top corners of the top blocks */
+  border-top-right-radius: 10px;
+}
+
+.centeredText {
+  text-align: center; /* Center text horizontally */
+}
